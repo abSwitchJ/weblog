@@ -1,0 +1,7 @@
+2026-03-16 18:18:32.627 [main] INFO  com.abswitch.weblog.web.WeblogWebApplicationTests - Starting WeblogWebApplicationTests using Java 21.0.5 with PID 21304 (started by -- in D:\weblog\weblog-springboot\weblog-web)
+2026-03-16 18:18:32.628 [main] INFO  com.abswitch.weblog.web.WeblogWebApplicationTests - The following 1 profile is active: "prod"
+2026-03-16 18:18:33.904 [main] INFO  com.abswitch.weblog.web.WeblogWebApplicationTests - Started WeblogWebApplicationTests in 1.739 seconds (process running for 2.788)
+2026-03-16 18:18:34.576 [main] INFO  com.abswitch.weblog.web.WeblogWebApplicationTests - info 级别日志
+2026-03-16 18:18:34.576 [main] WARN  com.abswitch.weblog.web.WeblogWebApplicationTests - warn 级别日志
+2026-03-16 18:18:34.576 [main] ERROR com.abswitch.weblog.web.WeblogWebApplicationTests - error 级别日志
+2026-03-16 18:18:34.576 [main] INFO  com.abswitch.weblog.web.WeblogWebApplicationTests - info 级别，作者：abswitch

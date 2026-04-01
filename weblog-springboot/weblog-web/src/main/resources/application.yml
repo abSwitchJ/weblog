@@ -1,0 +1,34 @@
+spring:
+  profiles:
+    # 默认激活 dev 环境
+    active: dev
+
+  servlet:
+    multipart:
+      max-file-size: 10MB # 限制单个上传文件的最大大小为 10MB。如果上传的文件大小超过这个值，将会被拒绝上传。
+      max-request-size: 10MB # 限制整个上传请求的最大大小为 10MB。这包括所有上传文件的大小之和。如果请求总大小超过这个值，将会被拒绝。
+
+jwt:
+  # 签发人
+  issuer: abSwitch
+  # 秘钥
+  secret: wDAIycGRjuKlTtOCCpWjZ4RsOfvQ1TD9xYUhpa+ja/FjVFq9hux9zDNigCJQJMjYsUSpGbMJL10AH/8zJ1f8ZQ==
+  # token 过期时间（单位：分钟） 24*60
+  tokenExpireTime: 1440
+  # token 请求头中的 key 值
+  tokenHeaderKey: Authorization
+  # token 请求头中的 value 值前缀
+  tokenPrefix: Bearer
+
+
+
+knife4j:
+  enable: true           # 启用 Knife4j 增强功能
+
+springdoc:
+  api-docs:
+    enabled: true        # 启用 OpenAPI 文档端点（默认就是 true，可省略）
+    path: /v3/api-docs   # 默认路径，可自定义
+  swagger-ui:
+    enabled: true        # 启用 Swagger UI（默认 true）
+    path: /swagger-ui.html  # 默认路径，Knife4j 会覆盖为 /doc.html
