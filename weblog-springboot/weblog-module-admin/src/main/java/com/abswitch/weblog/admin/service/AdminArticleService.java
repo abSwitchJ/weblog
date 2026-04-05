@@ -18,6 +18,7 @@ public interface AdminArticleService {
 
     Response findArticleDetail(FindArticleDetailReqVO findArticleDetailReqVO);
 
-    Response updateArticleReqVO(UpdateArticleReqVO updateArticleReqVO);
+    Response updateArticle(UpdateArticleReqVO updateArticleReqVO);
 
+    Response isTopUpdateArticle(IsTopUpdateArticleReqVO isTopUpdateArticleReqVO);
 }

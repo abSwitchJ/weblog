@@ -63,6 +63,7 @@
         <commonmark.version>0.20.0</commonmark.version>
         <lucene.version>8.11.1</lucene.version>
         <commons-io.version>2.11.0</commons-io.version>
+        <tianai-captcha.version>1.5.4</tianai-captcha.version>
     </properties>
 
     <!-- 统一依赖管理 -->
@@ -238,6 +239,13 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
+            </dependency>
+
+            <!-- 行为验证码 -->
+            <dependency>
+                <groupId>cloud.tianai.captcha</groupId>
+                <artifactId>tianai-captcha-springboot-starter</artifactId>
+                <version>${tianai-captcha.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

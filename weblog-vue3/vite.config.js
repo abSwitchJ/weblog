@@ -50,5 +50,13 @@ export default defineConfig({
       // 定义一个别名 '@'，该别名对应于当前 JavaScript 模块文件所在目录下的 'src' 目录的绝对文件路径。
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  define: {
+    __GISCUS_CONFIG__: {
+      repo: 'abSwitchJ/weblog',
+      repoId: 'R_kgDOR2qxHg',
+      category: 'General',
+      categoryId: 'DIC_kwDOR2qxHs4C6Fav',
+    }
   }
 })

@@ -7,6 +7,7 @@ import com.abswitch.weblog.admin.model.vo.article.UpdateArticleReqVO;
 import com.abswitch.weblog.common.domain.dos.ArticleContentDO;
 import com.abswitch.weblog.common.domain.dos.ArticleDO;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 /**
  * @Author：abSwitch
@@ -20,6 +21,7 @@ public interface ArticleConvert {
     ArticleDO convertVO2DO(PublishArticleReqVO vo);
     ArticleContentDO convertVO2ContentDO(PublishArticleReqVO vo);
 
+    @Mapping(target = "isTop", expression = "java(articleDO.getWeight()>0)")
     FindArticlePageListRspVO convertArticleDO2VO(ArticleDO articleDO);
 
     /**

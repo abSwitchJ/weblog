@@ -201,6 +201,20 @@
     <ScrollToTopButton></ScrollToTopButton>
 
     <Footer></Footer>
+
+    <!-- 评论区 -->
+    <Giscus
+      v-bind="config"
+      mapping="pathname"
+      strict="0"
+      reactions-enabled="1"
+      emit-metadata="1"
+      input-position="top"
+      theme="preferred_color_scheme"
+      lang="zh-CN"
+      loading="lazy"
+      crossorigin="anonymous"
+    />
 </template>
 
 <script setup>
@@ -219,7 +233,9 @@ import 'highlight.js/styles/tokyo-night-dark.css'
 import { initTooltips } from 'flowbite'
 
 import { useDark } from '@vueuse/core'
-
+import Giscus from '@giscus/vue';  
+// @ts-ignore
+const config = __GISCUS_CONFIG__;
 // 是否是暗黑模式
 const isDark = useDark()
 

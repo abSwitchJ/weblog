@@ -58,4 +58,9 @@ public class FindIndexArticlePageListRspVO {
      */
     private FindCategoryListRspVO category;
 
+    /**
+     * 文章置顶
+     */
+    private Boolean isTop;
+
 }
