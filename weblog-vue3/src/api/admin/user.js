@@ -1,8 +1,9 @@
 import axios from "@/axios";
 
 // 登录接口
-export function login(username, password) {
-    return axios.post("/login", {username, password})
+// 增加 captchaId 参数, 默认为空字符串
+export function login(username, password, captchaId = '') {
+    return axios.post("/login", {username, password, captchaId})
 }
 
 // 获取登录用户信息

@@ -19,5 +19,5 @@ import lombok.NoArgsConstructor;
 public class FindArticleDetailReqVO {
 
     @NotNull(message = "文章 Id 不能为空")
-    private Long id;
+    private Long articleId;
 }

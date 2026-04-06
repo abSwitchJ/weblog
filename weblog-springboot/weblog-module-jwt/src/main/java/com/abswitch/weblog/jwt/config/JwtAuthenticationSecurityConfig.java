@@ -1,5 +1,6 @@
 package com.abswitch.weblog.jwt.config;
 
+import cloud.tianai.captcha.application.ImageCaptchaApplication;
 import com.abswitch.weblog.jwt.filter.JwtAuthenticationFilter;
 import com.abswitch.weblog.jwt.handler.RestAuthenticationFailureHandler;
 import com.abswitch.weblog.jwt.handler.RestAuthenticationSuccessHandler;
@@ -35,11 +36,17 @@ public class JwtAuthenticationSecurityConfig extends SecurityConfigurerAdapter<D
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private ImageCaptchaApplication imageCaptchaApplication;
+
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
         // 自定义的用于 JWT 身份验证的过滤器
         JwtAuthenticationFilter filter = new JwtAuthenticationFilter();
         filter.setAuthenticationManager(httpSecurity.getSharedObject(AuthenticationManager.class));
+
+        // 设置验证码校验器
+        filter.setImageCaptchaApplication(imageCaptchaApplication);
 
         // 设置登录认证对应的处理类（成功处理、失败处理）
         filter.setAuthenticationSuccessHandler(restAuthenticationSuccessHandler);

@@ -2,6 +2,7 @@ package com.abswitch.weblog.jwt.handler;
 
 import com.abswitch.weblog.common.emuns.ResponseCodeEnum;
 import com.abswitch.weblog.common.utils.Response;
+import com.abswitch.weblog.jwt.expection.CaptchaVerificationFailedException;
 import com.abswitch.weblog.jwt.expection.UsernameOrPasswordNullException;
 import com.abswitch.weblog.jwt.utils.ResultUtil;
 import jakarta.servlet.ServletException;
@@ -38,6 +39,9 @@ public class RestAuthenticationFailureHandler implements AuthenticationFailureHa
         } else if (exception instanceof BadCredentialsException) {
             //用户名或密码错误
             ResultUtil.fail(response, Response.fail(ResponseCodeEnum.USERNAME_OR_PWD_WRROR));
+        } else if (exception instanceof CaptchaVerificationFailedException) {
+            // 行为验证码错误
+            ResultUtil.fail(response, Response.fail(exception.getMessage()));
         }
 
         //登录失败

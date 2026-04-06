@@ -142,7 +142,7 @@ public class ArticleImpl implements ArticleService {
     @Override
     public Response findArticleDetail(FindArticleDetailReqVO findArticleDetailReqVO) {
 
-        Long articleId = findArticleDetailReqVO.getId();
+        Long articleId = findArticleDetailReqVO.getArticleId();
 
         ArticleDO articleDO = articleMapper.selectById(articleId);
 

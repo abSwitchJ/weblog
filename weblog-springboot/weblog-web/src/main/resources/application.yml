@@ -56,6 +56,6 @@ captcha:
     - classpath:font/simhei.ttf
   secondary:
     # 二次验证， 默认false 不开启
-    enabled: false
+    enabled: true
     # 二次验证过期时间， 默认 2分钟
     expire: 120000

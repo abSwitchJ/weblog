@@ -132,7 +132,19 @@
                         <div :class="{ 'dark': isDark }">
                             <div ref="articleContentRef" class="mt-5 article-content" v-viewer v-html="article.content"></div>
                         </div>
-
+                        <!-- 评论区 -->
+                        <Giscus
+                          v-bind="config"
+                          mapping="pathname"
+                          strict="0"
+                          reactions-enabled="1"
+                          emit-metadata="1"
+                          input-position="top"
+                          theme="preferred_color_scheme"
+                          lang="zh-CN"
+                          loading="lazy"
+                          crossorigin="anonymous"
+                        />
                         <!-- 上下篇 -->
                         <nav class="flex flex-row mt-7">
                             <!-- basis-1/2 用于占用 flex 布局的一半空间 -->
@@ -202,19 +214,7 @@
 
     <Footer></Footer>
 
-    <!-- 评论区 -->
-    <Giscus
-      v-bind="config"
-      mapping="pathname"
-      strict="0"
-      reactions-enabled="1"
-      emit-metadata="1"
-      input-position="top"
-      theme="preferred_color_scheme"
-      lang="zh-CN"
-      loading="lazy"
-      crossorigin="anonymous"
-    />
+
 </template>
 
 <script setup>

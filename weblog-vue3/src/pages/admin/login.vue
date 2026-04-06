@@ -49,6 +49,19 @@
                         <el-button class="w-full mt-2" size="large" :loading="loading" type="primary" @click="onSubmit">登录</el-button>
                     </el-form-item>
                 </el-form>
+
+                <!-- 验证码弹窗 -->
+                <div v-show="showCaptcha" class="captcha-overlay">
+                    <Captcha
+                        ref="captchaRef"
+                        :visible="showCaptcha"
+                        type="SLIDER"
+                        @success="onCaptchaSuccess"
+                        @fail="onCaptchaFail"
+                        @close="showCaptcha = false"     
+                    />
+                </div>
+
             </div>
         </div>
     </div>
@@ -64,6 +77,15 @@ import { showMessage} from '@/composables/util'
 import { setToken } from '@/composables/cookie'
 import { useUserStore } from '@/stores/user'
 import { useDark, useToggle } from '@vueuse/core'
+// 引入验证码组件
+import Captcha from '@/components/Captcha.vue'
+
+// 验证码组件引用
+const captchaRef = ref(null)
+// 是否显示验证码
+const showCaptcha = ref(false)
+// 验证码验证成功后， 接口返回的验证码 ID
+const captchaId = ref('')
 
 const userStore = useUserStore()
 
@@ -97,6 +119,7 @@ const rules = {
     ]
 }
 
+// 点击登录按钮
 const onSubmit = () => {
     console.log('登录')
     // 先验证 form 表单字段
@@ -105,39 +128,70 @@ const onSubmit = () => {
             console.log('表单验证不通过')
             return false
         }
-        // 开始加载
-        loading.value = true
 
-        // 调用登录接口
-        login(form.username, form.password).then((res) => {
-            console.log(res)
-            // 判断是否成功
-            if (res.success == true) {
-                // 提示登录成功
-                showMessage('登录成功')
-
-                // 存储 Token 到 Cookie 中
-                let token = res.data.token
-                setToken(token)
-
-                // 获取用户信息，并存储到全局状态中
-                userStore.setUserInfo()
-
-                // 跳转到后台首页
-                router.push('/admin/index')
-            } else {
-                // 获取服务端返回的错误消息
-                let message = res.message
-                // 提示消息
-                showMessage(message, 'error')
-            }
-        })
-        .finally(() => {
-            // 结束加载
-            loading.value = false
-        })
+        // 如果验证码已经显示,刷新验证码
+        if (showCaptcha.value) {
+            captchaRef.value?.refresh()
+        } else { // 否则，显示验证码
+            showCaptcha.value = true
+        }
     })
 }
+
+// 验证码验证成功回调
+const onCaptchaSuccess = (id) => {
+    console.log('验证码验证成功, id:', id)
+    captchaId.value = id
+    // 关闭验证码
+    showCaptcha.value = false
+    // 执行登录
+    doLogin()
+}
+
+// 验证码验证失败回调
+const onCaptchaFail = (res) => {
+    console.log('验证码验证失败:', res)
+    // 刷新验证码
+    if (showCaptcha.value) {
+        captchaRef.value?.refresh()
+    }
+}
+
+// 执行登录
+const doLogin = () => {
+    // 开始加载
+    loading.value = true
+
+    // 调用登录接口时, 带上验证码 ID
+    login(form.username, form.password, captchaId.value).then((res) => {
+        console.log(res)
+        // 判断是否成功
+        if (res.success) {
+            // 提示登录成功
+            showMessage('登录成功')
+
+            // 存储 Token 到 Cookie 中
+            let token = res.data.token
+            setToken(token)
+
+            // 获取用户信息,并存储到全局状态中
+            userStore.setUserInfo()
+
+            // 跳转到后台首页
+            router.push('/admin/index')
+        } else {
+            // 获取服务端返回的错误消息
+            let message = res.message
+            // 提示消息
+            showMessage(message, 'error')
+        }
+    })
+    .finally(() => {
+        // 结束加载
+        loading.value = false
+    })
+}
+
 
 // 按回车键后，执行登录事件
 function onKeyUp(e) {
@@ -230,4 +284,13 @@ input:checked + .slider {
 input:checked + .slider:before {
   transform: translateX(100%);
   box-shadow: inset 15px -4px 0px 15px #fff000;
-}</style>
+}
+/* 验证码覆盖层 */
+.captcha-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+}
+</style>
