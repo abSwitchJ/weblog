@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "查询标签分页数据出参 VO")
+@Schema(description = "查询分类或标签分页数据出参 VO")
 public class FindTagPageListRspVO {
 
     /**
