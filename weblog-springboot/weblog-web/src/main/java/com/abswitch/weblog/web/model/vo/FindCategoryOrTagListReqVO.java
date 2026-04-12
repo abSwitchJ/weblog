@@ -1,4 +1,4 @@
-package com.abswitch.weblog.web.model.vo.tag;
+package com.abswitch.weblog.web.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FindTagListReqVO {
+public class FindCategoryOrTagListReqVO {
 
     /**
      * 展示数量

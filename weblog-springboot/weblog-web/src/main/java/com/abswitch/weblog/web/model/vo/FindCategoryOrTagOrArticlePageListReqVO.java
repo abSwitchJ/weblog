@@ -1,7 +1,6 @@
-package com.abswitch.weblog.web.model.vo.category;
+package com.abswitch.weblog.web.model.vo;
 
 import com.abswitch.weblog.common.model.BasePageQuery;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +17,7 @@ import jakarta.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FindCategoryArticlePageListReqVO extends BasePageQuery {
+public class FindCategoryOrTagOrArticlePageListReqVO extends BasePageQuery {
     /**
      * 分类 ID
      */

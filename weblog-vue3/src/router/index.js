@@ -60,7 +60,7 @@ const routes = [
         }
     },
     {
-        path: '/article/:articleId', // 文章详情页
+        path: '/article/:id', // 文章详情页
         component: ArticleDetail,
         meta: { // meta 信息
             title: 'Weblog 详情页'

@@ -9,9 +9,12 @@ import com.abswitch.weblog.common.utils.PageResponse;
 import com.abswitch.weblog.common.utils.Response;
 import com.abswitch.weblog.web.convert.ArticleConvert;
 import com.abswitch.weblog.web.markdown.MarkdownHelper;
-import com.abswitch.weblog.web.model.vo.article.*;
-import com.abswitch.weblog.web.model.vo.category.FindCategoryListRspVO;
-import com.abswitch.weblog.web.model.vo.tag.FindTagListRspVO;
+import com.abswitch.weblog.web.model.vo.FindIndexArticleOrArchivePageListReqVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagOrArticlePageListReqVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagListRspVO;
+import com.abswitch.weblog.web.model.vo.article.ArticleRspVO;
+import com.abswitch.weblog.web.model.vo.article.FindArticleDetailRspVO;
+import com.abswitch.weblog.web.model.vo.article.FindIndexArticlePageListRspVO;
 import com.abswitch.weblog.web.service.ArticleService;
 import com.abswitch.weblog.web.utils.MarkdownStatsUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -53,7 +56,7 @@ public class ArticleImpl implements ArticleService {
     private ApplicationEventPublisher eventPublisher;
 
     @Override
-    public Response findArticlePageList(FindIndexArticlePageListReqVO findIndexArticlePageListReqVO) {
+    public Response findArticlePageList(FindIndexArticleOrArchivePageListReqVO findIndexArticlePageListReqVO) {
 
         Long current = findIndexArticlePageListReqVO.getCurrent();
         Long size = findIndexArticlePageListReqVO.getSize();
@@ -112,7 +115,7 @@ public class ArticleImpl implements ArticleService {
                 Long categoryId = categoryRelDO.getCategoryId();
                 String categoryName = categoryIdNameMap.get(categoryId);
                 if (categoryName != null) {
-                    FindCategoryListRspVO categoryVO = FindCategoryListRspVO.builder()
+                    FindCategoryOrTagListRspVO categoryVO = FindCategoryOrTagListRspVO.builder()
                             .id(categoryId)
                             .name(categoryName)
                             .build();
@@ -120,11 +123,11 @@ public class ArticleImpl implements ArticleService {
                 }
             }
             if (tagRelDOS != null && !tagRelDOS.isEmpty()) {
-                List<FindTagListRspVO> tagVOs = tagRelDOS.stream()
+                List<FindCategoryOrTagListRspVO> tagVOs = tagRelDOS.stream()
                         .map(tagRelDO -> {
                             Long tagId = tagRelDO.getTagId();
                             String tagName = tagIdNameMap.get(tagId);
-                            return FindTagListRspVO.builder()
+                            return FindCategoryOrTagListRspVO.builder()
                                     .id(tagId)
                                     .name(tagName)
                                     .build();
@@ -140,9 +143,9 @@ public class ArticleImpl implements ArticleService {
     }
 
     @Override
-    public Response findArticleDetail(FindArticleDetailReqVO findArticleDetailReqVO) {
+    public Response findArticleDetail(FindCategoryOrTagOrArticlePageListReqVO findArticleDetailReqVO) {
 
-        Long articleId = findArticleDetailReqVO.getArticleId();
+        Long articleId = findArticleDetailReqVO.getId();
 
         ArticleDO articleDO = articleMapper.selectById(articleId);
 
@@ -170,8 +173,8 @@ public class ArticleImpl implements ArticleService {
                 .toList();
 
         List<TagDO> tagDOS = tagMapper.selectByIds(tagIds);
-        List<FindTagListRspVO> tagListRspVOS = tagDOS.stream().map(tagDO ->
-                        FindTagListRspVO.builder()
+        List<FindCategoryOrTagListRspVO> tagListRspVOS = tagDOS.stream().map(tagDO ->
+                        FindCategoryOrTagListRspVO.builder()
                                 .id(tagDO.getId())
                                 .name(tagDO.getName())
                                 .build()).toList();

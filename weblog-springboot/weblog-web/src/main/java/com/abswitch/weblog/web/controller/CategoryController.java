@@ -2,8 +2,8 @@ package com.abswitch.weblog.web.controller;
 
 import com.abswitch.weblog.common.aspect.ApiOperationLog;
 import com.abswitch.weblog.common.utils.Response;
-import com.abswitch.weblog.web.model.vo.category.FindCategoryArticlePageListReqVO;
-import com.abswitch.weblog.web.model.vo.category.FindCategoryListReqVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagOrArticlePageListReqVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagListReqVO;
 import com.abswitch.weblog.web.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,14 +31,14 @@ public class CategoryController {
     @PostMapping("/list")
     @ApiOperationLog(description = "前台获取分类列表")
     @Operation(summary = "前台获取分类列表")
-    public Response findCategoryList(@RequestBody @Validated FindCategoryListReqVO findCategoryListReqVO) {
+    public Response findCategoryList(@RequestBody @Validated FindCategoryOrTagListReqVO findCategoryListReqVO) {
         return categoryService.findCategoryList(findCategoryListReqVO);
     }
 
     @PostMapping("/article/list")
     @ApiOperationLog(description = "前台获取分类下文章分页数据")
     @Operation(summary = "前台获取分类下文章分页数据")
-    public Response findCategoryArticlePageList(@RequestBody @Validated FindCategoryArticlePageListReqVO findCategoryArticlePageListReqVO) {
+    public Response findCategoryArticlePageList(@RequestBody @Validated FindCategoryOrTagOrArticlePageListReqVO findCategoryArticlePageListReqVO) {
         return categoryService.findCategoryArticlePageList(findCategoryArticlePageListReqVO);
     }
 }

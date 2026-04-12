@@ -12,10 +12,10 @@ import com.abswitch.weblog.common.domain.mapper.ArticleMapper;
 import com.abswitch.weblog.common.domain.mapper.CategoryMapper;
 import com.abswitch.weblog.common.utils.Response;
 import com.abswitch.weblog.web.convert.CategoryConvert;
-import com.abswitch.weblog.web.model.vo.category.FindCategoryArticlePageListReqVO;
-import com.abswitch.weblog.web.model.vo.category.FindCategoryArticlePageListRspVO;
-import com.abswitch.weblog.web.model.vo.category.FindCategoryListReqVO;
-import com.abswitch.weblog.web.model.vo.category.FindCategoryListRspVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagOrArticlePageListReqVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagArticlePageListRspVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagListReqVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagListRspVO;
 import com.abswitch.weblog.web.service.CategoryService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @Author：abSwitch
@@ -47,7 +46,7 @@ public class CategoryImpl implements CategoryService {
     private ArticleMapper articleMapper;
 
     @Override
-    public Response findCategoryList(FindCategoryListReqVO findCategoryListReqVO) {
+    public Response findCategoryList(FindCategoryOrTagListReqVO findCategoryListReqVO) {
 
         Long size = findCategoryListReqVO.getSize();
 
@@ -60,16 +59,16 @@ public class CategoryImpl implements CategoryService {
             // 否则查询指定的数量
             categoryDOS = categoryMapper.selectByLimit(size);
         }
-        List<FindCategoryListRspVO> findCategoryListRspVOS = categoryDOS.stream()
+        List<FindCategoryOrTagListRspVO> findCategoryOrTagListRspVOS = categoryDOS.stream()
                 .map(CategoryConvert.INSTANCE::convertDO2VO).toList();
 
 
 
-        return Response.ok(findCategoryListRspVOS);
+        return Response.ok(findCategoryOrTagListRspVOS);
     }
 
     @Override
-    public Response findCategoryArticlePageList(FindCategoryArticlePageListReqVO findCategoryArticlePageListReqVO) {
+    public Response findCategoryArticlePageList(FindCategoryOrTagOrArticlePageListReqVO findCategoryArticlePageListReqVO) {
 
         Long categoryId = findCategoryArticlePageListReqVO.getId();
         Long current = findCategoryArticlePageListReqVO.getCurrent();
@@ -101,9 +100,9 @@ public class CategoryImpl implements CategoryService {
             return PageResponse.ok(null, null);
         }
 
-        List<FindCategoryArticlePageListRspVO> findCategoryArticlePageListRspVOS = articleDOS.stream()
+        List<FindCategoryOrTagArticlePageListRspVO> findCategoryOrTagArticlePageListRspVOS = articleDOS.stream()
                 .map(ArticleConvert.INSTANCE::convertDO2CategoryVO).toList();
 
-        return PageResponse.ok(articleDOPage, findCategoryArticlePageListRspVOS);
+        return PageResponse.ok(articleDOPage, findCategoryOrTagArticlePageListRspVOS);
     }
 }

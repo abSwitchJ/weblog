@@ -1,14 +1,11 @@
 package com.abswitch.weblog.web.model.vo.article;
 
-import com.abswitch.weblog.web.model.vo.category.FindCategoryListRspVO;
-import com.abswitch.weblog.web.model.vo.tag.FindTagListRspVO;
-import jakarta.validation.constraints.NotNull;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagListRspVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -54,7 +51,7 @@ public class FindArticleDetailRspVO {
     /**
      * 文章标签
      */
-    private List<FindTagListRspVO> tags;
+    private List<FindCategoryOrTagListRspVO> tags;
 
     /**
      * 上一篇文章

@@ -1,7 +1,7 @@
 package com.abswitch.weblog.web.convert;
 
 import com.abswitch.weblog.common.domain.dos.CategoryDO;
-import com.abswitch.weblog.web.model.vo.category.FindCategoryListRspVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagListRspVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -17,5 +17,5 @@ public interface CategoryConvert {
     CategoryConvert INSTANCE = Mappers.getMapper(CategoryConvert.class);
 
 
-    FindCategoryListRspVO convertDO2VO(CategoryDO categoryDO);
+    FindCategoryOrTagListRspVO convertDO2VO(CategoryDO categoryDO);
 }

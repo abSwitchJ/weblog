@@ -82,9 +82,11 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-jsqlparser</artifactId>
-            <version>${jsqlparser.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.rometools</groupId>
+            <artifactId>rome</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

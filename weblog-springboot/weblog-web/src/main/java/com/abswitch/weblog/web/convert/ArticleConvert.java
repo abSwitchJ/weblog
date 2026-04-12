@@ -1,13 +1,10 @@
 package com.abswitch.weblog.web.convert;
 
 import com.abswitch.weblog.common.domain.dos.ArticleDO;
-import com.abswitch.weblog.web.model.vo.archive.FindArchiveArticlePageListRspVO;
 import com.abswitch.weblog.web.model.vo.archive.FindArchiveArticleRspVO;
 import com.abswitch.weblog.web.model.vo.article.ArticleRspVO;
 import com.abswitch.weblog.web.model.vo.article.FindIndexArticlePageListRspVO;
-import com.abswitch.weblog.web.model.vo.category.FindCategoryArticlePageListReqVO;
-import com.abswitch.weblog.web.model.vo.category.FindCategoryArticlePageListRspVO;
-import com.abswitch.weblog.web.model.vo.tag.FindTagArticlePageListRspVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagArticlePageListRspVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -35,10 +32,10 @@ public interface ArticleConvert {
     FindArchiveArticleRspVO convertDO2ArchiveVO(ArticleDO articleDO);
 
     @Mapping(target = "createDate", expression = "java(java.time.LocalDate.from(articleDO.getCreateTime()))")
-    FindCategoryArticlePageListRspVO convertDO2CategoryVO(ArticleDO articleDO);
+    FindCategoryOrTagArticlePageListRspVO convertDO2CategoryVO(ArticleDO articleDO);
 
     @Mapping(target = "createDate", expression = "java(java.time.LocalDate.from(articleDO.getCreateTime()))")
-    FindTagArticlePageListRspVO convertDO2TagVO(ArticleDO articleDO);
+    FindCategoryOrTagArticlePageListRspVO convertDO2TagVO(ArticleDO articleDO);
 
     @Mapping(target = "articleId", expression = "java(articleDO.getId())")
     @Mapping(target = "articleTitle", expression = "java(articleDO.getTitle())")

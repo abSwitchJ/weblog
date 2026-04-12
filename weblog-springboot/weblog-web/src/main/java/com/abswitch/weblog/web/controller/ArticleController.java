@@ -3,7 +3,7 @@ package com.abswitch.weblog.web.controller;
 import com.abswitch.weblog.common.aspect.ApiOperationLog;
 import com.abswitch.weblog.common.domain.mapper.ArticleMapper;
 import com.abswitch.weblog.common.utils.Response;
-import com.abswitch.weblog.web.model.vo.article.FindArticleDetailReqVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagOrArticlePageListReqVO;
 import com.abswitch.weblog.web.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,7 +30,7 @@ public class ArticleController {
     @PostMapping("/detail")
     @ApiOperationLog(description = "获取文章详情")
     @Operation(summary = "获取文章详情")
-    public Response findArticleDetail(@RequestBody FindArticleDetailReqVO findArticleReqDetail){
+    public Response findArticleDetail(@RequestBody FindCategoryOrTagOrArticlePageListReqVO findArticleReqDetail){
 
         return articleService.findArticleDetail(findArticleReqDetail);
     }

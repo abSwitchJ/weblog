@@ -5,7 +5,7 @@ import com.abswitch.weblog.common.domain.mapper.ArticleMapper;
 import com.abswitch.weblog.common.utils.PageResponse;
 import com.abswitch.weblog.common.utils.Response;
 import com.abswitch.weblog.web.convert.ArticleConvert;
-import com.abswitch.weblog.web.model.vo.archive.FindArchiveArticlePageListReqVO;
+import com.abswitch.weblog.web.model.vo.FindIndexArticleOrArchivePageListReqVO;
 import com.abswitch.weblog.web.model.vo.archive.FindArchiveArticlePageListRspVO;
 import com.abswitch.weblog.web.model.vo.archive.FindArchiveArticleRspVO;
 import com.abswitch.weblog.web.service.ArchiveService;
@@ -34,7 +34,7 @@ public class ArchiveImpl implements ArchiveService {
     private ArticleMapper articleMapper;
 
     @Override
-    public Response findArchivePageList(FindArchiveArticlePageListReqVO findArchiveArticlePageListReqVO) {
+    public Response findArchivePageList(FindIndexArticleOrArchivePageListReqVO findArchiveArticlePageListReqVO) {
 
         Long current = findArchiveArticlePageListReqVO.getCurrent();
         Long size = findArchiveArticlePageListReqVO.getSize();

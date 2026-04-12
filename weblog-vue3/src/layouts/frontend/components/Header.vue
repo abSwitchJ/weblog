@@ -591,11 +591,11 @@ const prePage = () => {
 }
 
 // 点击搜索结果，跳转文章详情页
-const jumpToArticleDetailPage = (articleId) => {
+const jumpToArticleDetailPage = (id) => {
     // 隐藏搜索对话框
     searchModal.value.hide()
     // 路由跳转
-    router.push('/article/' + articleId)
+    router.push('/article/' + id)
 }
 
 const isDark = useDark()

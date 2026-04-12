@@ -1,7 +1,6 @@
 package com.abswitch.weblog.web.model.vo.article;
 
-import com.abswitch.weblog.web.model.vo.category.FindCategoryListRspVO;
-import com.abswitch.weblog.web.model.vo.tag.FindTagListRspVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagListRspVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -51,12 +50,12 @@ public class FindIndexArticlePageListRspVO {
     /**
      * 文章标签
      */
-    private List<FindTagListRspVO> tags;
+    private List<FindCategoryOrTagListRspVO> tags;
 
     /**
      * 文章分类
      */
-    private FindCategoryListRspVO category;
+    private FindCategoryOrTagListRspVO category;
 
     /**
      * 文章置顶

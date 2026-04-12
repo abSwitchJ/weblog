@@ -520,8 +520,8 @@ const showArticleUpdateEditor = (row) => {
     // 显示编辑文章对话框
     isArticleUpdateEditorShow.value = true
     // 拿到文章 ID
-    let articleId = row.id
-    getArticleDetail(articleId).then((res) => {
+    let id = row.id
+    getArticleDetail(id).then((res) => {
         if (res.success) {
             // 设置表单数据
             updateArticleForm.id = res.data.id
@@ -565,8 +565,8 @@ const updateSubmit = () => {
 
 
 // 跳转文章详情页
-const goArticleDetailPage = (articleId) => {
-    router.push('/article/' + articleId)
+const goArticleDetailPage = (id) => {
+    router.push('/article/' + id)
 }
 // 点击置顶事件
 const handleIsTopChange = (row) => {

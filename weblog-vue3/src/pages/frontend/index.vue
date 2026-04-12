@@ -189,8 +189,8 @@ function getArticles(currentNo) {
 getArticles(current.value)
 
 // 跳转文章详情页
-const goArticleDetailPage = (articleId) => {
-    router.push('/article/' + articleId)
+const goArticleDetailPage = (id) => {
+    router.push('/article/' + id)
 }
 
 // 跳转标签文章列表页

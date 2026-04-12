@@ -1,4 +1,4 @@
-package com.abswitch.weblog.web.model.vo.tag;
+package com.abswitch.weblog.web.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FindTagArticlePageListRspVO {
+public class FindCategoryOrTagArticlePageListRspVO {
     private Long id;
     private String cover;
     private String title;

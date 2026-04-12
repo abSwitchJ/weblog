@@ -1,7 +1,7 @@
 package com.abswitch.weblog.web.convert;
 
 import com.abswitch.weblog.common.domain.dos.TagDO;
-import com.abswitch.weblog.web.model.vo.tag.FindTagListRspVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagListRspVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -16,5 +16,5 @@ public interface TagConvert {
 
     TagConvert INSTANCE = Mappers.getMapper(TagConvert.class);
 
-    FindTagListRspVO convertDO2VO(TagDO tagDO);
+    FindCategoryOrTagListRspVO convertDO2VO(TagDO tagDO);
 }

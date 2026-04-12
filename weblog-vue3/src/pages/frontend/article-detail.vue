@@ -247,14 +247,14 @@ onMounted(() => {
 const route = useRoute()
 const router = useRouter()
 // 路由传递过来的文章 ID
-console.log(route.params.articleId)
+console.log(route.params.id)
 
 // 文章数据
 const article = ref({})
 
 // 获取文章详情
-function refreshArticleDetail(articleId) {
-    getArticleDetail(route.params.articleId).then((res) => {
+function refreshArticleDetail(id) {
+    getArticleDetail(route.params.id).then((res) => {
         // 该文章不存在(错误码为 20010)
         if (!res.success && res.errorCode == '20010') {
             // 手动跳转 404 页面
@@ -301,7 +301,7 @@ function refreshArticleDetail(articleId) {
         })
     })
 }
-refreshArticleDetail(route.params.articleId)
+refreshArticleDetail(route.params.id)
 
 // 跳转分类文章列表页
 const goCategoryArticleListPage = (id, name) => {
@@ -318,7 +318,7 @@ const goTagArticleListPage = (id, name) => {
 // 监听路由
 watch(route, (newRoute, oldRoute) => {
     // 重新渲染文章详情
-    refreshArticleDetail(newRoute.params.articleId)
+    refreshArticleDetail(newRoute.params.id)
 })
 
 // 复制内容到剪切板

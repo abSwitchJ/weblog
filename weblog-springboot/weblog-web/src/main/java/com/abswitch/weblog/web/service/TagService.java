@@ -1,9 +1,8 @@
 package com.abswitch.weblog.web.service;
 
 import com.abswitch.weblog.common.utils.Response;
-import com.abswitch.weblog.web.model.vo.category.FindCategoryListReqVO;
-import com.abswitch.weblog.web.model.vo.tag.FindTagArticlePageListReqVO;
-import com.abswitch.weblog.web.model.vo.tag.FindTagListReqVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagOrArticlePageListReqVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagListReqVO;
 
 /**
  * @Author：abSwitch
@@ -12,7 +11,7 @@ import com.abswitch.weblog.web.model.vo.tag.FindTagListReqVO;
  * @Description：
  */
 public interface TagService {
-    Response findTagList(FindTagListReqVO findTagListReqVO);
+    Response findTagList(FindCategoryOrTagListReqVO findCategoryOrTagListReqVO);
 
-    Response findTagArticlePageList(FindTagArticlePageListReqVO findTagArticlePageListReqVO);
+    Response findTagArticlePageList(FindCategoryOrTagOrArticlePageListReqVO findTagArticlePageListReqVO);
 }

@@ -10,12 +10,10 @@ import com.abswitch.weblog.common.utils.PageResponse;
 import com.abswitch.weblog.common.utils.Response;
 import com.abswitch.weblog.web.convert.ArticleConvert;
 import com.abswitch.weblog.web.convert.TagConvert;
-import com.abswitch.weblog.web.model.vo.category.FindCategoryArticlePageListRspVO;
-import com.abswitch.weblog.web.model.vo.category.FindCategoryListReqVO;
-import com.abswitch.weblog.web.model.vo.tag.FindTagArticlePageListReqVO;
-import com.abswitch.weblog.web.model.vo.tag.FindTagArticlePageListRspVO;
-import com.abswitch.weblog.web.model.vo.tag.FindTagListReqVO;
-import com.abswitch.weblog.web.model.vo.tag.FindTagListRspVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagOrArticlePageListReqVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagArticlePageListRspVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagListReqVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryOrTagListRspVO;
 import com.abswitch.weblog.web.service.TagService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -46,8 +44,8 @@ public class TagImpl implements TagService {
     private ArticleTagRelMapper articleTagRelMapper;
 
     @Override
-    public Response findTagList(FindTagListReqVO findTagListReqVO) {
-        Long size = findTagListReqVO.getSize();
+    public Response findTagList(FindCategoryOrTagListReqVO findCategoryOrTagListReqVO) {
+        Long size = findCategoryOrTagListReqVO.getSize();
 
         List<TagDO> tagDOS = null;
         // 如果接口入参中未指定 size
@@ -58,13 +56,13 @@ public class TagImpl implements TagService {
             // 否则查询指定的数量
             tagDOS = tagMapper.selectByLimit(size);
         }
-        List<FindTagListRspVO> findTagListRspVOS = tagDOS.stream().map(TagConvert.INSTANCE::convertDO2VO).collect(Collectors.toList());
+        List<FindCategoryOrTagListRspVO> findCategoryOrTagListRspVOS = tagDOS.stream().map(TagConvert.INSTANCE::convertDO2VO).collect(Collectors.toList());
 
-        return Response.ok(findTagListRspVOS);
+        return Response.ok(findCategoryOrTagListRspVOS);
     }
 
     @Override
-    public Response findTagArticlePageList(FindTagArticlePageListReqVO findTagArticlePageListReqVO) {
+    public Response findTagArticlePageList(FindCategoryOrTagOrArticlePageListReqVO findTagArticlePageListReqVO) {
 
 
         Long tagId = findTagArticlePageListReqVO.getId();
@@ -97,9 +95,9 @@ public class TagImpl implements TagService {
             return PageResponse.ok(null, null);
         }
 
-        List<FindTagArticlePageListRspVO> findTagArticlePageListRspVOS = articleDOS.stream()
+        List<FindCategoryOrTagArticlePageListRspVO> findCategoryOrTagArticlePageListRspVOS = articleDOS.stream()
                 .map(ArticleConvert.INSTANCE::convertDO2TagVO).toList();
 
-        return PageResponse.ok(articleDOPage, findTagArticlePageListRspVOS);
+        return PageResponse.ok(articleDOPage, findCategoryOrTagArticlePageListRspVOS);
     }
 }

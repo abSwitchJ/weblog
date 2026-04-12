@@ -64,6 +64,8 @@
         <lucene.version>8.11.1</lucene.version>
         <commons-io.version>2.11.0</commons-io.version>
         <tianai-captcha.version>1.5.4</tianai-captcha.version>
+        <rometools.version>2.1.0</rometools.version>
+
     </properties>
 
     <!-- 统一依赖管理 -->
@@ -246,6 +248,13 @@
                 <groupId>cloud.tianai.captcha</groupId>
                 <artifactId>tianai-captcha-springboot-starter</artifactId>
                 <version>${tianai-captcha.version}</version>
+            </dependency>
+
+            <!-- Source: https://mvnrepository.com/artifact/com.rometools/rome -->
+            <dependency>
+                <groupId>com.rometools</groupId>
+                <artifactId>rome</artifactId>
+                <version>${rometools.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
