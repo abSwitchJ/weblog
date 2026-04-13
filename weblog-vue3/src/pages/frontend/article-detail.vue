@@ -101,6 +101,7 @@
     <div class="giscus-container" :class="{ 'dark': isDark }">
         <!-- 评论区（报纸组件外） -->
         <div class="np-comments">
+            <h2 class="comment-welcome">欢迎一起交流~</h2>
             <Giscus
                 v-bind="config"
                 mapping="pathname"
@@ -278,10 +279,18 @@ const handleMouseLeave = (event) => {
     max-width: 1100px;
     margin: 0 auto;
     background: #fff;
-    padding: 0 20px 40px;
-    border-radius: 12px; 
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12); /* 更柔和的阴影 */
-    
+    padding: 24px 20px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+.comment-welcome {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 600;
+    color: #222;
+    margin: 0 0 20px;
+    font-family: Georgia, 'Times New Roman', "Songti SC", "SimSun", serif;
+    letter-spacing: 0.5px;
 }
 .prevnext-container {
   max-width: 1100px;

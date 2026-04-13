@@ -1,5 +1,5 @@
 /* =============================================
-   Giscus 自定义主题 — 报纸风格·简洁白
+   Giscus 自定义主题 — 简洁白
    ============================================= */
 
 :root {
@@ -36,52 +36,52 @@
   --color-prettylights-syntax-constant-other-reference-link: #0a3069;
 
   /* 普通按钮 */
-  --color-btn-text: #24292f;
+  --color-btn-text: #222;
   --color-btn-bg: #f6f8fa;
-  --color-btn-border: rgb(27 31 36 / 15%);
+  --color-btn-border: #eee;
   --color-btn-shadow: none;
   --color-btn-inset-shadow: none;
-  --color-btn-hover-bg: #f3f4f6;
-  --color-btn-hover-border: rgb(27 31 36 / 15%);
-  --color-btn-active-bg: hsl(220deg 14% 93% / 100%);
-  --color-btn-active-border: rgb(27 31 36 / 15%);
-  --color-btn-selected-bg: hsl(220deg 14% 94% / 100%);
+  --color-btn-hover-bg: #f0f0f0;
+  --color-btn-hover-border: #ddd;
+  --color-btn-active-bg: #e8e8e8;
+  --color-btn-active-border: #ddd;
+  --color-btn-selected-bg: #e8e8e8;
 
-  /* 主按钮（GitHub 登录）— 黑色 */
+  /* 主按钮（GitHub 登录）— 纯黑 */
   --color-btn-primary-text: #fff;
-  --color-btn-primary-bg: #1a1a1a;
+  --color-btn-primary-bg: #222;
   --color-btn-primary-border: transparent;
   --color-btn-primary-shadow: none;
   --color-btn-primary-inset-shadow: none;
-  --color-btn-primary-hover-bg: #333;
+  --color-btn-primary-hover-bg: #444;
   --color-btn-primary-hover-border: transparent;
   --color-btn-primary-selected-bg: #111;
   --color-btn-primary-selected-shadow: none;
-  --color-btn-primary-disabled-text: rgb(255 255 255 / 60%);
-  --color-btn-primary-disabled-bg: #888;
+  --color-btn-primary-disabled-text: rgb(255 255 255 / 50%);
+  --color-btn-primary-disabled-bg: #999;
   --color-btn-primary-disabled-border: transparent;
 
   /* 文字颜色 */
-  --color-fg-default: #1a1a1a;
-  --color-fg-muted: #57606a;
-  --color-fg-subtle: #6e7781;
+  --color-fg-default: #222;
+  --color-fg-muted: #555;
+  --color-fg-subtle: #777;
 
   /* 背景 */
   --color-canvas-default: #fff;
   --color-canvas-overlay: #fff;
-  --color-canvas-inset: #fafaf8;
-  --color-canvas-subtle: #fafaf8;
+  --color-canvas-inset: #fafafa;
+  --color-canvas-subtle: #fafafa;
 
   /* 边框 */
-  --color-border-default: #e8e4de;
-  --color-border-muted: #eeebe6;
+  --color-border-default: #eee;
+  --color-border-muted: #eee;
 
   /* 强调色 */
-  --color-neutral-muted: rgb(175 184 193 / 15%);
-  --color-accent-fg: #1a1a1a;
-  --color-accent-emphasis: #1a1a1a;
-  --color-accent-muted: #e8e4de;
-  --color-accent-subtle: #fafaf8;
+  --color-neutral-muted: rgb(0 0 0 / 8%);
+  --color-accent-fg: #222;
+  --color-accent-emphasis: #222;
+  --color-accent-muted: #eee;
+  --color-accent-subtle: #fafafa;
 
   --color-success-fg: #1a7f37;
   --color-attention-fg: #9a6700;
@@ -89,11 +89,11 @@
   --color-danger-muted: rgb(255 129 130 / 40%);
   --color-danger-subtle: #ffebe9;
   --color-primer-shadow-inset: none;
-  --color-primer-shadow-focus: 0 0 0 2px rgb(27 31 36 / 12%);
-  --color-scale-gray-1: #eaeef2;
-  --color-scale-blue-1: #f0ede8;
-  --color-social-reaction-bg-hover: #f0ede8;
-  --color-social-reaction-bg-reacted-hover: #f0ede8;
+  --color-primer-shadow-focus: none;
+  --color-scale-gray-1: #eee;
+  --color-scale-blue-1: #f0f0f0;
+  --color-social-reaction-bg-hover: #f0f0f0;
+  --color-social-reaction-bg-reacted-hover: #f0f0f0;
 
   color-scheme: light;
 }
@@ -114,69 +114,16 @@ main .gsc-loading-image {
 }
 
 /* =============================================
-   顶部标题区 — 隐藏原始计数，显示自定义文案
+   顶部区域 — 隐藏 gsc-header 和 reactions 区
+   标题 "欢迎一起交流~" 由 Vue 模板渲染
    ============================================= */
 
-/* 隐藏 gsc-header（"X Comments"、排序按钮等） */
-.gsc-header,
-main .gsc-left-header .color-text-secondary {
+.gsc-header {
   display: none;
 }
 
-/* 让 reactions 区成为块级居中容器 */
-.gsc-reactions {
-  text-align: center;
-  padding: 24px 0 16px;
-}
-
-/* 隐藏原始数字文字，用伪元素替换 */
 .gsc-reactions-count {
-  visibility: hidden;
-  display: block;
-  height: 0;
-  overflow: visible;
-  position: relative;
-}
-
-.gsc-reactions-count:before {
-  content: "欢迎一起交流~";
-  visibility: visible;
-  display: block;
-  font-size: 22px;
-  font-weight: 600;
-  color: #1a1a1a;
-  text-align: center;
-  margin-bottom: 14px;
-  line-height: 1.4;
-}
-
-html[lang="en"] .gsc-reactions-count:before {
-  content: "Feel free to discuss~";
-}
-
-/* 表情反应行居中 */
-.gsc-reactions-opaque {
-  visibility: visible;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 4px;
-}
-
-.gsc-social-reaction-summary-item {
-  font-size: 14px;
-  border-radius: 20px;
-  line-height: 24px;
-  padding: 2px 10px;
-  border: 1px solid #e8e4de;
-  background: #fafaf8;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.gsc-social-reaction-summary-item:hover {
-  background: #f0ede8;
+  display: none;
 }
 
 /* =============================================
@@ -190,11 +137,12 @@ html[lang="en"] .gsc-reactions-count:before {
 
 .gsc-comment-content {
   font-size: 15px;
+  line-height: 1.8;
 }
 
 .gsc-tl-line {
   width: 1px;
-  background: #e8e4de;
+  background: #eee;
 }
 
 .gsc-reply-content {
@@ -204,27 +152,25 @@ html[lang="en"] .gsc-reactions-count:before {
 
 .link-secondary.overflow-hidden.text-ellipsis {
   text-decoration: none;
-  word-spacing: -2px;
 }
 
 /* =============================================
    评论输入框
    ============================================= */
 
-/* 整体输入框容器 */
 .gsc-comment-box {
-  border: 1px solid #e8e4de;
-  border-radius: 10px;
+  border: 1px solid #eee;
+  border-radius: 8px;
   overflow: hidden;
   background: #fff;
 }
 
-/* Tab 栏（撰入 / 预览 / Aa） */
+/* Tab 栏（输入 / 预览 / Aa） */
 .gsc-comment-box-tabs {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #e8e4de;
-  background: #fafaf8;
+  border-bottom: 1px solid #eee;
+  background: #fafafa;
   padding: 0 4px;
 }
 
@@ -234,28 +180,28 @@ html[lang="en"] .gsc-reactions-count:before {
   background: transparent;
   font-size: 13px;
   padding: 8px 12px;
-  color: #57606a;
+  color: #555;
   font-family: Georgia, 'Times New Roman', "Songti SC", serif;
 }
 
 .gsc-comment-box-tabs .btn:hover {
-  color: #1a1a1a;
-  background: #f0ede8;
+  color: #222;
+  background: #f0f0f0;
 }
 
 .gsc-comment-box-tabs .btn[aria-selected="true"],
 .gsc-comment-box-tabs .btn.selected {
-  color: #1a1a1a;
+  color: #222;
   font-weight: 600;
   background: #fff;
-  border-bottom: 2px solid #1a1a1a;
+  border-bottom: 2px solid #222;
 }
 
 /* Aa 按钮 */
 .gsc-comment-box-md-toolbar {
   margin-left: auto;
   font-size: 13px;
-  color: #888;
+  color: #999;
   padding: 0 10px;
 }
 
@@ -273,11 +219,11 @@ html[lang="en"] .gsc-reactions-count:before {
   min-height: 120px;
   width: 100%;
   box-sizing: border-box;
-  color: #1a1a1a;
+  color: #222;
 }
 
 .gsc-comment-box-textarea::placeholder {
-  color: #aaa;
+  color: #bbb;
 }
 
 main .gsc-comment-box-textarea:focus,
@@ -294,15 +240,15 @@ input:focus {
   justify-content: flex-end;
   align-items: center;
   padding: 10px 14px;
-  border-top: 1px solid #e8e4de;
-  background: #fafaf8;
+  border-top: 1px solid #eee;
+  background: #fafafa;
   gap: 8px;
 }
 
-/* GitHub 登录按钮 */
+/* GitHub 登录 / 提交按钮 — 纯黑，无阴影 */
 .btn-primary,
 .btn.ml-1.rounded-md.border {
-  background: #1a1a1a !important;
+  background: #222 !important;
   color: #fff !important;
   border: none !important;
   box-shadow: none !important;
@@ -318,10 +264,10 @@ input:focus {
 }
 
 .btn-primary:hover {
-  background: #333 !important;
+  background: #444 !important;
 }
 
-/* 圆角控件 */
+/* 圆角控件统一 8px */
 #__next .rounded-md {
   border-radius: 8px;
 }
