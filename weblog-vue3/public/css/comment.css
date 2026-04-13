@@ -156,6 +156,7 @@ html[lang="en"] .gsc-reactions-count:before {
 
 /* 表情反应行居中 */
 .gsc-reactions-opaque {
+  visibility: visible;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
