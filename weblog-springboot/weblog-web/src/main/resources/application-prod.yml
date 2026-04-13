@@ -27,7 +27,7 @@ spring:
 # minio (上传图片需要，需配置成自己的地址)
 #=================================================================
 minio:
-  endpoint: http://img.abswitchj.com
+  endpoint: https://img.abswitchj.com
   accessKey: abswitch
   secretKey: abswitch
   bucketName: weblog
