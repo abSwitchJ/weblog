@@ -123,7 +123,7 @@ MapStruct 转换器（`*Convert.java`）负责 web 模块和 admin 模块中的 
 
 ### 上下篇导航
 
-- 在文章内容结尾下方，在报纸组件外
+- 在文章内容结尾下方
 
 ### Giscus 评论区
 

@@ -59,46 +59,45 @@
                     </div>
                 </aside>
             </div>
-
+            <!-- 上下篇导航 -->
+            <nav class="np-prevnext">
+                <div class="basis-1/2">
+                    <a v-if="article.preArticle"
+                        @click="router.push('/article/' + article.preArticle.articleId)"
+                        class="cursor-pointer flex flex-col h-full p-4 mr-3 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <div>
+                            <svg class="inline w-3.5 h-3.5 mr-2 mb-1" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"></path>
+                            </svg>
+                            上一篇
+                        </div>
+                        <div>{{ article.preArticle.articleTitle }}</div>
+                    </a>
+                </div>
+            
+                <div class="basis-1/2">
+                    <a v-if="article.nextArticle"
+                        @click="router.push('/article/' + article.nextArticle.articleId)"
+                        class="cursor-pointer flex flex-col h-full text-right p-4 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <div>
+                            下一篇
+                            <svg class="inline w-3.5 h-3.5 ml-2 mb-1" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"></path>
+                            </svg>
+                        </div>
+                        <div>{{ article.nextArticle.articleTitle }}</div>
+                    </a>
+                </div>
+            </nav>
         </div>
     </div>
 
-    <!-- 上下篇导航（报纸组件外） -->
-    <div class="prevnext-container" :class="{ 'dark': isDark }">
-        <nav class="np-prevnext">
-            <div class="basis-1/2">
-                <a v-if="article.preArticle"
-                    @click="router.push('/article/' + article.preArticle.articleId)"
-                    class="cursor-pointer flex flex-col h-full p-4 mr-3 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <div>
-                        <svg class="inline w-3.5 h-3.5 mr-2 mb-1" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"></path>
-                        </svg>
-                        上一篇
-                    </div>
-                    <div>{{ article.preArticle.articleTitle }}</div>
-                </a>
-            </div>
     
-            <div class="basis-1/2">
-                <a v-if="article.nextArticle"
-                    @click="router.push('/article/' + article.nextArticle.articleId)"
-                    class="cursor-pointer flex flex-col h-full text-right p-4 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <div>
-                        下一篇
-                        <svg class="inline w-3.5 h-3.5 ml-2 mb-1" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"></path>
-                        </svg>
-                    </div>
-                    <div>{{ article.nextArticle.articleTitle }}</div>
-                </a>
-            </div>
-        </nav>
-    </div>
+
     <div class="giscus-container" :class="{ 'dark': isDark }">
         <!-- 评论区（报纸组件外） -->
         <div class="np-comments">
