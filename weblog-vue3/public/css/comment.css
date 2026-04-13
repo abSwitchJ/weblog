@@ -2,7 +2,7 @@
    Giscus 自定义主题 — 报纸风格·简洁白
    ============================================= */
 
-main {
+:root {
   /* Syntax highlighting */
   --color-prettylights-syntax-comment: #6e7781;
   --color-prettylights-syntax-constant: #0550ae;
