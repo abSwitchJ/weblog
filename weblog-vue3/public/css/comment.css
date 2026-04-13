@@ -186,7 +186,7 @@ main .gsc-loading-image {
 
 .gsc-comment-box-tabs .btn:hover {
   color: #222;
-  background: #fff;
+  background: #f0f0f0;
 }
 
 .gsc-comment-box-tabs .btn[aria-selected="true"],
@@ -201,14 +201,14 @@ main .gsc-loading-image {
 .gsc-comment-box-md-toolbar {
   margin-left: auto;
   font-size: 13px;
-  color: #999;
+  color: #fff;
   padding: 0 10px;
 }
 
 /* 文本区域 */
 .gsc-comment-box-textarea {
-  border: 1px solid #eee !important;
-  border-radius: 4px;
+  border: none !important;
+  border-radius: 0;
   background: #fff;
   font-family: Georgia, 'Times New Roman', "Songti SC", "SimSun", serif;
   font-size: 15px;
@@ -222,14 +222,15 @@ main .gsc-loading-image {
 }
 
 .gsc-comment-box-textarea::placeholder {
-  color: #bbb;
+  color: #fff;
 }
 
 main .gsc-comment-box-textarea:focus,
-.gsc-comment-box-textarea:focus {
-  outline: none !important;
-  box-shadow: none !important;
-  /* border-color: #ccc !important; */
+#__next .form-control:focus,
+textarea:focus,
+input:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 /* 底部按钮栏 */
@@ -238,7 +239,7 @@ main .gsc-comment-box-textarea:focus,
   justify-content: flex-end;
   align-items: center;
   padding: 10px 14px;
-  border-top: 1px solid #eee;
+  /* border-top: 1px solid #eee; */
   background: #fff;
   gap: 8px;
 }
@@ -248,9 +249,9 @@ main .gsc-comment-box-textarea:focus,
 .btn.ml-1.rounded-md.border {
   background: #222 !important;
   color: #fff !important;
-  /* border: none !important; */
+  border: none !important;
   box-shadow: none !important;
-  /* border-radius: 8px !important; */
+  border-radius: 8px !important;
   font-size: 14px;
   padding: 7px 16px;
   display: inline-flex;
