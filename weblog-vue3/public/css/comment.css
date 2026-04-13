@@ -226,8 +226,8 @@ main .gsc-comment-box-tabs {
 .gsc-comment-box-tabs {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #e8e4de;
-  background: #fafaf8;
+  border-bottom: 1px solid #eee;
+  background: #fff;
   padding: 0 4px;
 }
 
