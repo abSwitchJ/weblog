@@ -1,0 +1,61 @@
+spring:
+  profiles:
+    # 默认激活 dev 环境
+    active: dev
+
+  servlet:
+    multipart:
+      max-file-size: 10MB # 限制单个上传文件的最大大小为 10MB。如果上传的文件大小超过这个值，将会被拒绝上传。
+      max-request-size: 10MB # 限制整个上传请求的最大大小为 10MB。这包括所有上传文件的大小之和。如果请求总大小超过这个值，将会被拒绝。
+
+jwt:
+  # 签发人
+  issuer: abSwitch
+  # 秘钥
+  secret: wDAIycGRjuKlTtOCCpWjZ4RsOfvQ1TD9xYUhpa+ja/FjVFq9hux9zDNigCJQJMjYsUSpGbMJL10AH/8zJ1f8ZQ==
+  # token 过期时间（单位：分钟） 24*60
+  tokenExpireTime: 1440
+  # token 请求头中的 key 值
+  tokenHeaderKey: Authorization
+  # token 请求头中的 value 值前缀
+  tokenPrefix: Bearer
+
+
+
+knife4j:
+  enable: true           # 启用 Knife4j 增强功能
+
+springdoc:
+  api-docs:
+    enabled: true        # 启用 OpenAPI 文档端点（默认就是 true，可省略）
+    path: /v3/api-docs   # 默认路径，可自定义
+  swagger-ui:
+    enabled: true        # 启用 Swagger UI（默认 true）
+    path: /swagger-ui.html  # 默认路径，Knife4j 会覆盖为 /doc.html
+
+# 滑块验证码配置， 详细请看 cloud.tianai.captcha.autoconfiguration.ImageCaptchaProperties 类
+captcha:
+  # 验证码过期时间，默认是2分钟,单位毫秒， 可以根据自身业务进行调整
+  expire:
+    # 默认缓存时间 2分钟
+    default: 10000
+    # 针对 点选验证码 过期时间设置为 2分钟， 因为点选验证码验证比较慢，把过期时间调整大一些
+    WORD_IMAGE_CLICK: 20000
+  # 使用加载系统自带的资源， 默认是 false
+  init-default-resource: true
+  # 缓存控制， 默认为false不开启
+  local-cache-enabled: true
+  # 验证码会提前缓存一些生成好的验证数据， 默认是20
+  local-cache-size: 20
+  # 缓存拉取失败后等待时间 默认是 5秒钟
+  local-cache-wait-time: 5000
+  # 缓存检查间隔 默认是2秒钟
+  local-cache-period: 2000
+  # 配置字体库，文字点选验证码的字体库，可以配置多个
+  font-path:
+    - classpath:font/simhei.ttf
+  secondary:
+    # 二次验证， 默认false 不开启
+    enabled: true
+    # 二次验证过期时间， 默认 2分钟
+    expire: 120000
