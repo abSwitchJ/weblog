@@ -109,6 +109,9 @@ main .gsc-left-header .color-text-secondary,
 main .gsc-comment-box-textarea {
   border-color: #eee;
 }
+main .gsc-comment-box-textarea-extras {
+  border-color: #eee;
+}
 .form-control {
   padding-top: 6px;
   padding-bottom: 6px;
@@ -121,8 +124,19 @@ main .gsc-comment-box-textarea:focus,
 }
 .btn-primary,
 .btn.ml-1.rounded-md.border {
-  box-shadow: none;
-  border: none;
+  background: #1a1a1a !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 8px !important;
+  font-size: 14px;
+  padding: 7px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: Georgia, 'Times New Roman', "Songti SC", serif;
+  cursor: pointer;
+  transition: background 0.15s;
 }
 .gsc-tl-line {
   width: 1px;
@@ -140,7 +154,9 @@ main .gsc-comment-box-textarea:focus,
 .gsc-reactions-count {
   visibility: hidden;
 }
-
+.gsc-reactions-count {
+  border-color: #eee;
+}
 .gsc-reactions-count:after {
   content: "欢迎一起交流~";
   visibility: visible;
@@ -182,18 +198,70 @@ main .gsc-comment-box {
 main .gsc-comment-box-tabs {
   border-color: #eee;
 }
-/* 表情按钮边框 */
-main .btn {
-  border-color: #eee;
-  box-shadow: none;
+/* 表情反应行居中 */
+.gsc-reactions-opaque {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.gsc-social-reaction-summary-item {
+  font-size: 14px;
+  border-radius: 20px;
+  line-height: 24px;
+  padding: 2px 10px;
+  border: 1px solid #e8e4de;
+  background: #fafaf8;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.gsc-social-reaction-summary-item:hover {
+  background: #f0ede8;
 }
 /* 选中 Tab 底部高亮线 */
-main .gsc-comment-box-tab-active,
-main [aria-selected="true"].gsc-comment-box-tab-link {
-  border-bottom-color: #eee !important;
+/* Tab 栏（撰入 / 预览 / Aa） */
+.gsc-comment-box-tabs {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e8e4de;
+  background: #fafaf8;
+  padding: 0 4px;
+}
+
+.gsc-comment-box-tabs .btn {
+  border: none;
+  border-radius: 6px 6px 0 0;
+  background: transparent;
+  font-size: 13px;
+  padding: 8px 12px;
+  color: #57606a;
+  font-family: Georgia, 'Times New Roman', "Songti SC", serif;
+}
+
+.gsc-comment-box-tabs .btn:hover {
+  color: #1a1a1a;
+  background: #f0ede8;
+}
+.gsc-comment-box-tabs .btn[aria-selected="true"],
+.gsc-comment-box-tabs .btn.selected {
+  color: #1a1a1a;
+  font-weight: 600;
+  background: #fff;
+  border-bottom: 2px solid #1a1a1a;
+}
+
+/* Aa 按钮 */
+.gsc-comment-box-md-toolbar {
+  margin-left: auto;
+  font-size: 13px;
+  color: #888;
+  padding: 0 10px;
 }
 /* M↓ Markdown 标识边框 */
-main .gsc-comment-box-bottom,
+main .gsc-comment-box-markdown-hink,
 main .color-border-default {
   border-color: #eee;
 }
