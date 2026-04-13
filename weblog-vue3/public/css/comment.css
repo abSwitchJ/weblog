@@ -176,4 +176,10 @@ input:focus {
   text-decoration: none;
   word-spacing: -2px;
 }
+main .gsc-comment-box {
+  border-color: #eee;
+}
+main .gsc-comment-box-tabs {
+  border-color: #eee;
+}
 
