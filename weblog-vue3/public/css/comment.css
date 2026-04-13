@@ -182,4 +182,19 @@ main .gsc-comment-box {
 main .gsc-comment-box-tabs {
   border-color: #eee;
 }
+/* 表情按钮边框 */
+main .btn {
+  border-color: #eee;
+  box-shadow: none;
+}
+/* 选中 Tab 底部高亮线 */
+main .gsc-comment-box-tab-active,
+main [aria-selected="true"].gsc-comment-box-tab-link {
+  border-bottom-color: #eee !important;
+}
+/* M↓ Markdown 标识边框 */
+main .gsc-comment-box-bottom,
+main .color-border-default {
+  border-color: #eee;
+}
 
