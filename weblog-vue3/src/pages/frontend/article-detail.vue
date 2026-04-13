@@ -101,7 +101,6 @@
     <div class="giscus-container" :class="{ 'dark': isDark }">
         <!-- 评论区（报纸组件外） -->
         <div class="np-comments">
-            <h2 class="comment-welcome">欢迎一起交流~</h2>
             <Giscus
                 v-bind="config"
                 mapping="pathname"
