@@ -170,7 +170,7 @@ main .gsc-loading-image {
   display: flex;
   align-items: center;
   border-bottom: 1px solid #eee;
-  background: #fafafa;
+  background: #fff;
   padding: 0 4px;
 }
 
@@ -186,7 +186,7 @@ main .gsc-loading-image {
 
 .gsc-comment-box-tabs .btn:hover {
   color: #222;
-  background: #f0f0f0;
+  background: #fff;
 }
 
 .gsc-comment-box-tabs .btn[aria-selected="true"],
@@ -206,10 +206,9 @@ main .gsc-loading-image {
 }
 
 /* 文本区域 */
-.gsc-comment-box-textarea,
-.form-control {
-  border: none !important;
-  border-radius: 0;
+.gsc-comment-box-textarea {
+  border: 1px solid #eee !important;
+  border-radius: 4px;
   background: #fff;
   font-family: Georgia, 'Times New Roman', "Songti SC", "SimSun", serif;
   font-size: 15px;
@@ -227,11 +226,10 @@ main .gsc-loading-image {
 }
 
 main .gsc-comment-box-textarea:focus,
-#__next .form-control:focus,
-textarea:focus,
-input:focus {
-  outline: none;
-  box-shadow: none;
+.gsc-comment-box-textarea:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  /* border-color: #ccc !important; */
 }
 
 /* 底部按钮栏 */
@@ -241,7 +239,7 @@ input:focus {
   align-items: center;
   padding: 10px 14px;
   border-top: 1px solid #eee;
-  background: #fafafa;
+  background: #fff;
   gap: 8px;
 }
 
@@ -250,9 +248,9 @@ input:focus {
 .btn.ml-1.rounded-md.border {
   background: #222 !important;
   color: #fff !important;
-  border: none !important;
+  /* border: none !important; */
   box-shadow: none !important;
-  border-radius: 8px !important;
+  /* border-radius: 8px !important; */
   font-size: 14px;
   padding: 7px 16px;
   display: inline-flex;
