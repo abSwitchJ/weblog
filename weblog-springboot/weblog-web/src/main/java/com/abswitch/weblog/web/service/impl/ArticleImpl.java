@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -181,7 +182,7 @@ public class ArticleImpl implements ArticleService {
 
         FindArticleDetailRspVO findArticleDetailRspVO = FindArticleDetailRspVO.builder()
                 .title(articleDO.getTitle())
-                .createTime(articleDO.getCreateTime())
+                .createDate(LocalDate.from(articleDO.getCreateTime()))
                 .readNum(articleDO.getReadNum())
                 .content(contentHtml)
                 .categoryId(categoryId)

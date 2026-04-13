@@ -1,93 +1,147 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+本文件为 Claude Code (claude.ai/code) 在该仓库中工作时提供指导。
 
-## Repository Layout
+## 仓库结构
 
-This is a monorepo with two sibling projects:
-- `weblog-vue3/` — Vue 3 frontend (this directory)
-- `weblog-springboot/` — Spring Boot 3 backend (sibling directory)
+这是一个包含两个子项目的 monorepo：
+- `weblog-vue3/` — Vue 3 前端（当前目录）
+- `weblog-springboot/` — Spring Boot 3 后端（同级目录）
 
 ---
 
-## Frontend (weblog-vue3)
+## 前端（weblog-vue3）
 
-### Commands
+### 常用命令
 
 ```bash
-npm run dev       # Dev server at http://127.0.0.1:5173 (proxies /api → localhost:8080)
-npm run build     # Production build to dist/
-npm run preview   # Preview production build
+npm run dev       # 开发服务器，地址 http://127.0.0.1:5173（/api 代理到 localhost:8080）
+npm run build     # 生产构建，输出到 dist/
+npm run preview   # 预览生产构建
 ```
 
-No test runner is configured in this project.
+本项目未配置测试运行器。
 
-### Architecture
+### 架构概览
 
-**Entry**: `src/main.js` → mounts Vue app, registers plugins (Pinia, Router, Element Plus, etc.)
+**入口**：`src/main.js` → 挂载 Vue 应用，注册插件（Pinia、Router、Element Plus 等）
 
-**Routing** (`src/router/index.js`): Hash-mode Vue Router v4. Two route trees:
-- Public: `/`, `/archive/list`, `/category/list`, `/tag/list`, `/article/:id`, `/login`, etc.
-- Admin: `/admin/*` — guarded by `src/permission.js` (requires JWT token in cookie)
+**路由**（`src/router/index.js`）：Hash 模式 Vue Router v4，包含两棵路由树：
+- 公开路由：`/`、`/archive/list`、`/category/list`、`/tag/list`、`/article/:id`、`/login` 等
+- 管理路由：`/admin/*` — 由 `src/permission.js` 守卫（需要 cookie 中的 JWT token）
 
-**Global router guard** (`src/permission.js`): Shows NProgress, checks token for admin routes, and fetches blog settings on public route entry.
+**全局路由守卫**（`src/permission.js`）：显示 NProgress，检查管理路由的 token，并在公开路由进入时获取博客设置。
 
-**HTTP layer** (`src/axios.js`): Axios instance with base URL `/api`. Injects `Authorization: Bearer {token}` header from cookie on every request. Handles 401 by clearing user state and reloading.
+**HTTP 层**（`src/axios.js`）：Axios 实例，base URL 为 `/api`。每次请求从 cookie 中注入 `Authorization: Bearer {token}` 请求头，遇到 401 时清除用户状态并重新加载。
 
-**State** (`src/stores/`): Pinia with `pinia-plugin-persistedstate`.
-- `user.js` — userInfo, setUserInfo(), logout()
-- `blogsettings.js` — blog config fetched once and cached
-- `menu.js` — admin sidebar width state
+**状态管理**（`src/stores/`）：Pinia + `pinia-plugin-persistedstate`。
+- `user.js` — userInfo、setUserInfo()、logout()
+- `blogsettings.js` — 博客配置，获取一次后缓存
+- `menu.js` — 管理后台侧边栏宽度状态
 
-**API layer** (`src/api/`): Split into `admin/` (authenticated) and `frontend/` (public). All calls use POST, even reads.
+**API 层**（`src/api/`）：分为 `admin/`（需认证）和 `frontend/`（公开）。所有调用均使用 POST，包括读取操作。
 
-**Pages** (`src/pages/frontend/` and `src/pages/admin/`): File-per-page Vue SFCs. Admin pages use the shared layout at `src/layouts/admin/admin.vue`.
+**页面**（`src/pages/frontend/` 和 `src/pages/admin/`）：每个页面一个 Vue SFC 文件。管理页面使用 `src/layouts/admin/admin.vue` 共享布局。
 
-**Key dependencies**: Element Plus (UI), md-editor-v3 (Markdown editor/renderer), ECharts (dashboard charts), Giscus (article comments), Tailwind CSS, GSAP (animations), highlight.js, v-viewer (image lightbox).
+**主要依赖**：Element Plus（UI）、md-editor-v3（Markdown 编辑器/渲染器）、ECharts（Dashboard 图表）、Giscus（文章评论）、Tailwind CSS、GSAP（动画）、highlight.js、v-viewer（图片灯箱）。
 
-### API Response Shape
+### API 响应结构
 
 ```json
 { "success": true, "data": { ... }, "message": "" }
 ```
 
-Errors surface via Element Plus `ElMessage` in `src/composables/util.js`.
+错误通过 `src/composables/util.js` 中的 Element Plus `ElMessage` 展示。
 
 ---
 
-## Backend (weblog-springboot)
+## 后端（weblog-springboot）
 
-### Commands
+### 常用命令
 
 ```bash
-# From weblog-springboot/
-mvn clean install                    # Build all modules
-mvn spring-boot:run -pl weblog-web   # Run the application
-mvn clean package                    # Build deployable JAR
+# 在 weblog-springboot/ 目录下执行
+mvn clean install                    # 构建所有模块
+mvn spring-boot:run -pl weblog-web   # 启动应用
+mvn clean package                    # 打包可部署的 JAR
 ```
 
-Java 21 required. Maven mirrors are configured for Aliyun.
+需要 Java 21。Maven 镜像已配置为阿里云。
 
-### Module Structure (dependency order)
+### 模块结构（依赖顺序）
 
-1. **weblog-module-common** — Domain objects (DO), MyBatis Plus mappers, shared config, AOP (`@ApiOperationLog`), custom exceptions, utilities
-2. **weblog-module-jwt** — Spring Security + JWT authentication (`JwtAuthenticationFilter`, bcrypt password encoding)
-3. **weblog-module-search** — Lucene 8.11 full-text search with Chinese analyzer; indexes articles on startup via `InitLuceneIndexRunner`
-4. **weblog-module-admin** — Admin REST controllers (`/admin/*` endpoints): articles, categories, tags, users, blog settings, file uploads (Minio), dashboard metrics
-5. **weblog-web** — Application entry point; aggregates all modules; hosts public controllers (article list/detail, archive, category, tag, search, captcha, blog settings, statistics)
+1. **weblog-module-common** — 领域对象（DO）、MyBatis Plus Mapper、共享配置、AOP（`@ApiOperationLog`）、自定义异常、工具类
+2. **weblog-module-jwt** — Spring Security + JWT 认证（`JwtAuthenticationFilter`、bcrypt 密码加密）
+3. **weblog-module-search** — Lucene 8.11 全文搜索，使用中文分词器；通过 `InitLuceneIndexRunner` 在启动时建立文章索引
+4. **weblog-module-admin** — 管理端 REST 控制器（`/admin/*` 接口）：文章、分类、标签、用户、博客设置、文件上传（Minio）、Dashboard 指标
+5. **weblog-web** — 应用入口；聚合所有模块；托管公开控制器（文章列表/详情、归档、分类、标签、搜索、验证码、博客设置、统计）
 
-### Key Architectural Decisions
+### 关键架构决策
 
-- **All endpoints use POST** (no REST verbs for data fetching)
-- **URL prefix**: All backend endpoints are under `/api`; Vite proxy strips this in dev; production routes through the deployed server
-- **Auth**: JWT bearer token, 24-hour expiry, issued by `POST /login`; admin endpoints secured via Spring Security `@PreAuthorize("hasRole('ROLE_ADMIN')")`
-- **Markdown**: Stored as raw Markdown in `ArticleContentDO`; rendered to HTML server-side by CommonMark with extensions (tables, heading anchors, task lists, image attributes)
-- **File storage**: Images uploaded via admin panel to Minio object storage
-- **Captcha**: Tianai-Captcha behavior verification (slider/click) on the login page
-- **API docs**: Knife4j available at `/doc.html` in development
+- **所有接口均使用 POST**（读取数据也不使用 REST 动词）
+- **URL 前缀**：所有后端接口均在 `/api` 下；开发环境由 Vite 代理去除该前缀；生产环境通过已部署服务器路由
+- **认证**：JWT Bearer Token，有效期 24 小时，由 `POST /login` 签发；管理接口通过 Spring Security `@PreAuthorize("hasRole('ROLE_ADMIN')")` 保护
+- **Markdown**：原始 Markdown 存储在 `ArticleContentDO` 中；由 CommonMark（含表格、标题锚点、任务列表、图片属性扩展）在服务端渲染为 HTML
+- **文件存储**：通过管理面板上传图片至 Minio 对象存储
+- **验证码**：登录页使用天爱验证码（Tianai-Captcha）行为验证（滑动/点击）
+- **API 文档**：开发环境下 Knife4j 可在 `/doc.html` 访问
 
-### Data Model (weblog-module-common)
+### 数据模型（weblog-module-common）
 
-Core entities: `ArticleDO`, `ArticleContentDO`, `ArticleCategoryRelDO`, `ArticleTagRelDO`, `CategoryDO`, `TagDO`, `UserDO`, `BlogSettingsDO`
+核心实体：`ArticleDO`、`ArticleContentDO`、`ArticleCategoryRelDO`、`ArticleTagRelDO`、`CategoryDO`、`TagDO`、`UserDO`、`BlogSettingsDO`
 
-MapStruct converters (`*Convert.java`) handle DO ↔ VO mapping in the web and admin modules.
+MapStruct 转换器（`*Convert.java`）负责 web 模块和 admin 模块中的 DO ↔ VO 映射。
+
+---
+
+## 前台文章详情页设计规范
+
+**文件**：`src/pages/frontend/article-detail.vue`
+
+文章详情页采用**复古报纸排版风格**，具体规则如下：
+
+### 布局结构
+- 页面背景：米黄色 `#f5f5f0`（深色模式 `#111`）
+- 报纸容器：白色背景 + `box-shadow`，最大宽度 `1100px`，居中显示
+- 主内容区：`2fr 1fr` 两列 grid（文章正文 + 右侧目录）
+- 移动端：两列折叠为单列
+
+### 报头（Masthead）
+- 文章标题：居中，Georgia/衬线字体，2.6em，letter-spacing
+- 双线分隔：`border-top: 3px double #1a1a1a`
+- 发布信息行（byline）：斜体，格式为 `日期 · 分类   `左对齐， ` 字数 · 阅读时长 `右对齐
+
+### 文章内容排版
+- 正文段落：`text-align: justify`（两端对齐）+ Georgia 衬线字体
+- `h2` 标题：全大写 + `text-transform: uppercase` + 2px 粗实线底边
+- `h3` 标题：衬线粗体，无下划线
+- `blockquote`：浅米黄背景 `#f8f7f4` + 4px 左实线边框
+
+### 侧边栏
+- **文章目录（`Toc` 组件）**，可折叠
+- `Toc` 使用 `::v-deep` 覆盖背景色以匹配报纸风格（浅米黄 `#faf9f7`）
+
+### 上下篇导航
+
+- 在文章内容结尾下方，在报纸组件外
+
+### Giscus 评论区
+
+- 在上下篇导航下方，报纸组件外
+
+- 黑色 GitHub 登录按钮
+
+  “欢迎一起交流~”
+
+  圆角输入框
+
+  更现代的排版
+
+  更柔和的颜色
+
+  更干净的 UI
+
+### 保留元素
+- `Header`、`Footer`、`ScrollToTopButton` 组件不变
+- highlight.js 代码高亮、代码复制按钮、`v-viewer` 图片灯箱保留
+- 深色模式（`useDark`）全程支持

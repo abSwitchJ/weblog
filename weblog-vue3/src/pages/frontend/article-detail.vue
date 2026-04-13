@@ -1,253 +1,157 @@
 <template>
     <Header></Header>
 
-    <!-- 文章标题、标签、Meta 信息 -->
-    <div class="bg-white dark:bg-gray-900">
-        <div class="max-w-screen-xl flex flex-col flex-wrap mx-auto px-4 md:px-6 pb-14 pt-10">
-            <!-- 标签集合 -->
-            <div v-if="article.tags && article.tags.length > 0" class="mb-5">
-                <span @click="goTagArticleListPage(tag.id, tag.name)" v-for="(tag, index) in article.tags" :key="index"
-                    class="inline-block mb-1 cursor-pointer bg-green-100 text-green-800 text-sm font-medium me-2 
-                    px-2.5 py-0.5 rounded-md hover:bg-green-200 hover:text-green-900 
-                    dark:bg-green-900 dark:hover:bg-green-950 dark:text-green-300">
-                    # {{ tag.name }}
-                </span>
-            </div>
-            
-            <!-- 文章标题 -->
-            <h1 class="font-bold text-4xl md:text-5xl mb-8 dark:text-white">{{ article.title }}</h1>
+    <!-- 报纸页面背景 -->
+    <div class="np-page" :class="{ 'dark': isDark }">
+        <div class="np-container">
 
-            <!-- Meta 信息 -->
-            <div class="flex gap-3 md:gap-6 text-gray-400 items-center text-sm">
-                <!-- 字数 -->
-                <div class="flex items-center" data-tooltip-target="word-tooltip-bottom" data-tooltip-placement="bottom">
-                    <svg t="1701512226243" class="w-4 h-4 mr-1 icon" viewBox="0 0 1024 1024" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" p-id="28617" width="48" height="48">
-                        <path
-                            d="M682.666667 85.333333l213.333333 213.333334v597.674666a42.368 42.368 0 0 1-42.368 42.325334H170.368A42.666667 42.666667 0 0 1 128 896.341333V127.658667C128 104.277333 146.986667 85.333333 170.368 85.333333H682.666667z m-85.333334 256v212.864L512 469.333333l-84.906667 85.333334L426.666667 341.333333H341.333333v341.333334h85.333334l85.333333-85.333334 85.333333 85.333334h85.333334V341.333333h-85.333334z"
-                            p-id="28618" fill="#8a8a8a"></path>
-                    </svg>
-                    {{ article.totalWords }}
-                </div>
-                <!-- 文章字数 Tooltip -->
-                <div id="word-tooltip-bottom" role="tooltip"
-                    class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-white bg-gray-900 rounded shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                    总字数
-                    <div class="tooltip-arrow" data-popper-arrow></div>
+            <!-- 报纸报头区域 -->
+            <header class="np-masthead">
+
+                <!-- 文章大标题 -->
+                <h1 class="np-title">{{ article.title }}</h1>
+
+                <!-- 发布信息行 -->
+                <div class="np-byline">
+                    <span class="np-byline-left">
+                        <span>{{ article.createDate }}</span>
+                        <span class="np-sep">&nbsp;·&nbsp;</span>
+                        <a class="np-cat-link" @click="goCategoryArticleListPage(article.categoryId, article.categoryName)">
+                            {{ article.categoryName }}
+                        </a>
+                    </span>
+                    <span class="np-byline-right">
+                        <span>{{ article.totalWords }} 字</span>
+                        <span class="np-sep">&nbsp;·&nbsp;</span>
+                        <span>{{ article.readTime }}</span>
+                    </span>
                 </div>
 
-                <!-- 阅读时长 -->
-                <div class="hidden md:block">
-                    <div class="flex items-center" data-tooltip-target="read-time-tooltip-bottom"
-                        data-tooltip-placement="bottom">
-                        <svg t="1701512553358" class="w-4 h-4 mr-1.5 icon" viewBox="0 0 1024 1024" version="1.1"
-                            xmlns="http://www.w3.org/2000/svg" p-id="37812" width="48" height="48">
-                            <path
-                                d="M513 33.22c-265.1 0-480 214.9-480 480s214.9 480 480 480 480-214.9 480-480-214.9-480-480-480z m208.9 652.59c-11.05 19.13-35.51 25.69-54.64 14.64L474.1 588.93c-13.06-7.54-20.26-21.34-19.99-35.42 0-0.17-0.01-0.34-0.01-0.51V329.95c0-22.09 17.91-40 40-40s40 17.91 40 40v201.23l173.17 99.98c19.12 11.05 25.68 35.51 14.63 54.65z"
-                                fill="#8a8a8a" p-id="37813"></path>
-                        </svg>
-                        {{ article.readTime }}
+                <!-- 双线分隔 -->
+                <div class="np-hrule-double"></div>
+
+
+            </header>
+
+            <!-- 主内容区：两列布局 -->
+            <div class="np-main">
+
+                <!-- 左侧：文章正文 -->
+                <main class="np-article">
+                    <div :class="{ 'dark': isDark }">
+                        <div ref="articleContentRef" class="article-content" v-viewer v-html="article.content"></div>
                     </div>
-                    <!-- 阅读时长 Tooltip -->
-                    <div id="read-time-tooltip-bottom" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-white bg-gray-900 rounded shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        阅读时长
-                        <div class="tooltip-arrow" data-popper-arrow></div>
+                </main>
+
+                <!-- 右侧：文章目录（可折叠） -->
+                <aside class="np-sidebar">
+                    <div class="np-toc-card">
+                        <div class="np-toc-header" @click="tocCollapsed = !tocCollapsed">
+                            <span>文章目录</span>
+                            <svg class="np-toc-arrow" :class="{ 'collapsed': tocCollapsed }"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+                        <div v-show="!tocCollapsed" class="np-toc-body">
+                            <Toc></Toc>
+                        </div>
                     </div>
-                </div>
-
-                <!-- 发布时间 -->
-                <div class="flex items-center" data-tooltip-target="publish-time-tooltip-bottom"
-                    data-tooltip-placement="bottom">
-                    <svg t="1701513012543" class="w-[18px] h-[18px] mr-1 icon" viewBox="0 0 1024 1024" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" p-id="41600" width="48" height="48">
-                        <path
-                            d="M725.333333 170.666667h74.709334C864.853333 170.666667 917.333333 223.189333 917.333333 288.096V799.893333C917.333333 864.757333 864.832 917.333333 800.042667 917.333333H223.957333C159.146667 917.333333 106.666667 864.810667 106.666667 799.904V288.106667C106.666667 223.242667 159.168 170.666667 223.957333 170.666667H298.666667v-32a32 32 0 0 1 64 0v32h298.666666v-32a32 32 0 0 1 64 0v32z m0 64v32a32 32 0 0 1-64 0v-32H362.666667v32a32 32 0 0 1-64 0v-32h-74.709334A53.354667 53.354667 0 0 0 170.666667 288.096V799.893333A53.301333 53.301333 0 0 0 223.957333 853.333333h576.085334A53.354667 53.354667 0 0 0 853.333333 799.904V288.106667A53.301333 53.301333 0 0 0 800.042667 234.666667H725.333333z m-10.666666 224a32 32 0 0 1 0 64H309.333333a32 32 0 0 1 0-64h405.333334zM586.666667 618.666667a32 32 0 0 1 0 64H309.333333a32 32 0 0 1 0-64h277.333334z"
-                            fill="#8a8a8a" p-id="41601"></path>
-                    </svg>
-                    {{ article.createTime }}
-                </div>
-                <!-- 发布时间 Tooltip -->
-                <div id="publish-time-tooltip-bottom" role="tooltip"
-                    class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-white bg-gray-900 rounded shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                    发布时间
-                    <div class="tooltip-arrow" data-popper-arrow></div>
-                </div>
-
-                <!-- 分类 -->
-                <div class="flex items-center" data-tooltip-target="category-tooltip-bottom"
-                    data-tooltip-placement="bottom">
-                    <svg t="1701513357854" class="w-4 h-4 mr-1.5 icon" viewBox="0 0 1024 1024" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" p-id="50560" width="48" height="48">
-                        <path
-                            d="M476.7232 112.503467L121.634133 279.825067a68.266667 68.266667 0 0 0 1.6896 124.279466l355.089067 155.648a68.266667 68.266667 0 0 0 54.818133 0l355.089067-155.6992a68.266667 68.266667 0 0 0 1.672533-124.279466l-355.089066-167.253334a68.266667 68.266667 0 0 0-58.197334 0zM150.7328 341.572267l355.089067-167.304534 355.072 167.253334-355.089067 155.6992-355.072-155.648zM860.842667 685.346133a34.133333 34.133333 0 0 1 28.962133 61.781334l-2.4064 1.1264-368.810667 155.682133a34.133333 34.133333 0 0 1-23.671466 1.0752l-2.8672-1.0752-368.7936-155.648a34.133333 34.133333 0 0 1 24.064-63.829333l2.491733 0.938666 355.498667 150.050134 355.5328-150.101334z"
-                            fill="#444444" p-id="50561"></path>
-                        <path
-                            d="M853.333333 512l-341.486933 153.634133L170.666667 512.341333v55.210667c0 13.4656 7.748267 25.6512 19.712 30.9248l286.190933 126.976a78.7968 78.7968 0 0 0 35.2768 8.3968c12.049067 0 24.081067-2.798933 35.293867-8.3968l286.498133-127.249067A33.7408 33.7408 0 0 0 853.333333 567.278933V512z"
-                            fill="#00B386" p-id="50562"></path>
-                    </svg>
-                    <a @click="goCategoryArticleListPage(article.categoryId, article.categoryName)"
-                        class="cursor-pointer mr-1 hover:underline">{{ article.categoryName }}</a>
-                </div>
-                <!-- 分类 Tooltip -->
-                <div id="category-tooltip-bottom" role="tooltip"
-                    class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-white bg-gray-900 rounded shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                    分类
-                    <div class="tooltip-arrow" data-popper-arrow></div>
-                </div>
-
-                <!-- 阅读量 -->
-                <div class="flex items-center" data-tooltip-target="read-num-tooltip-bottom"
-                    data-tooltip-placement="bottom">
-                    <svg t="1701513523793" class="w-[18px] h-[18px] mr-1 icon" viewBox="0 0 1024 1024" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" p-id="56112" width="48" height="48">
-                        <path
-                            d="M512 87.806c-234.721 0-424.194 189.474-424.194 424.194s189.474 424.194 424.194 424.194 424.194-189.474 424.194-424.194-189.474-424.194-424.194-424.194zM594.010 825.904c-18.382 12.725-25.452 8.484-12.725-4.242 11.312-12.725 83.425-103.22-29.694-168.263-36.763-21.21-49.49-72.113-49.49-83.425 0-12.725 2.829-18.382-7.069-14.141-8.484 2.829-195.13 91.908-41.007 265.828 9.899 11.312 5.655 14.141-12.725 5.655-419.953-224.822 137.155-579.732 145.639-583.974 8.484-5.655 5.655 2.829-1.414 16.967-12.725 25.452-45.248 164.022 41.007 220.582 87.668 56.56 213.509 172.507-32.522 345.012z"
-                            p-id="56113" fill="#8a8a8a"></path>
-                    </svg>
-                    {{ article.readNum }}
-                </div>
-                <!-- 阅读量 Tooltip -->
-                <div id="read-num-tooltip-bottom" role="tooltip"
-                    class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-white bg-gray-900 rounded shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                    阅读量
-                    <div class="tooltip-arrow" data-popper-arrow></div>
-                </div>
+                </aside>
             </div>
+
         </div>
     </div>
 
-    <!-- 主内容区域 -->
-    <main class="container max-w-screen-xl mx-auto px-4 md:px-6 py-4">
-        <!-- grid 表格布局，分为 4 列 -->
-        <div class="grid grid-cols-4 gap-7">
-            <!-- 左边栏，占用 3 列 -->
-            <div class="col-span-4 md:col-span-3 mb-3">
-                <!-- 文章卡片父容器 -->
-                <div
-                    class="w-full p-5 mb-3 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                    <!-- 文章 -->
-                    <article>
-                        <!-- 正文 -->
-                        <div :class="{ 'dark': isDark }">
-                            <div ref="articleContentRef" class="mt-5 article-content" v-viewer v-html="article.content"></div>
-                        </div>
-                        <!-- 评论区 -->
-                        <Giscus
-                          v-bind="config"
-                          mapping="pathname"
-                          strict="0"
-                          reactions-enabled="1"
-                          emit-metadata="1"
-                          input-position="top"
-                          theme="preferred_color_scheme"
-                          lang="zh-CN"
-                          loading="lazy"
-                          crossorigin="anonymous"
-                        />
-                        <!-- 上下篇 -->
-                        <nav class="flex flex-row mt-7">
-                            <!-- basis-1/2 用于占用 flex 布局的一半空间 -->
-                            <div class="basis-1/2">
-                                <!-- h-full 指定高度占满 -->
-                                <a v-if="article.preArticle"
-                                    @click="router.push('/article/' + article.preArticle.articleId)"
-                                    class="cursor-pointer flex flex-col h-full p-4 mr-3 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                                    <div>
-                                        <svg class="inline w-3.5 h-3.5 mr-2 mb-1" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"></path>
-                                        </svg>
-                                        上一篇
-                                    </div>
-                                    <div>{{ article.preArticle.articleTitle }}</div>
-                                </a>
-                            </div>
-
-                            <div class="basis-1/2">
-                                <!-- text-right 指定文字居右显示 -->
-                                <a v-if="article.nextArticle"
-                                    @click="router.push('/article/' + article.nextArticle.articleId)"
-                                    class="cursor-pointer flex flex-col h-full text-right p-4 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                                    <div>
-                                        下一篇
-                                        <svg class="inline w-3.5 h-3.5 ml-2 mb-1" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"></path>
-                                        </svg>
-                                    </div>
-                                    <div>{{ article.nextArticle.articleTitle }}</div>
-                                </a>
-                            </div>
-                        </nav>
-                    </article>
-
-
-
-                </div>
+    <!-- 上下篇导航（报纸组件外） -->
+    <div class="prevnext-container" :class="{ 'dark': isDark }">
+        <nav class="np-prevnext">
+            <div class="basis-1/2">
+                <a v-if="article.preArticle"
+                    @click="router.push('/article/' + article.preArticle.articleId)"
+                    class="cursor-pointer flex flex-col h-full p-4 mr-3 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    <div>
+                        <svg class="inline w-3.5 h-3.5 mr-2 mb-1" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"></path>
+                        </svg>
+                        上一篇
+                    </div>
+                    <div>{{ article.preArticle.articleTitle }}</div>
+                </a>
             </div>
-
-            <!-- 右边侧边栏，占用一列 -->
-            <aside class="col-span-4 md:col-span-1">
-                <div>
-                    <!-- 博主信息 -->
-                    <UserInfoCard></UserInfoCard>
-
-                    <!-- 分类 -->
-                    <CategoryListCard></CategoryListCard>
-
-                    <!-- 标签 -->
-                    <TagListCard></TagListCard>
-                </div>
-                
-                <!-- 文章目录 -->
-                <Toc></Toc>
-
-            </aside>
+    
+            <div class="basis-1/2">
+                <a v-if="article.nextArticle"
+                    @click="router.push('/article/' + article.nextArticle.articleId)"
+                    class="cursor-pointer flex flex-col h-full text-right p-4 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    <div>
+                        下一篇
+                        <svg class="inline w-3.5 h-3.5 ml-2 mb-1" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"></path>
+                        </svg>
+                    </div>
+                    <div>{{ article.nextArticle.articleTitle }}</div>
+                </a>
+            </div>
+        </nav>
+    </div>
+    <div class="giscus-container" :class="{ 'dark': isDark }">
+        <!-- 评论区（报纸组件外） -->
+        <div class="np-comments">
+            <Giscus
+                v-bind="config"
+                mapping="pathname"
+                strict="0"
+                reactions-enabled="1"
+                emit-metadata="1"
+                input-position="top"
+                :theme="giscusTheme"
+                lang="zh-CN"
+                loading="lazy"
+                crossorigin="anonymous"
+            />
         </div>
-    </main>
-
+    </div>
     <!-- 返回顶部 -->
     <ScrollToTopButton></ScrollToTopButton>
 
     <Footer></Footer>
-
-
 </template>
 
 <script setup>
 import Header from '@/layouts/frontend/components/Header.vue'
 import Footer from '@/layouts/frontend/components/Footer.vue'
-import UserInfoCard from '@/layouts/frontend/components/UserInfoCard.vue'
-import TagListCard from '@/layouts/frontend/components/TagListCard.vue'
-import CategoryListCard from '@/layouts/frontend/components/CategoryListCard.vue'
 import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
 import Toc from '@/layouts/frontend/components/Toc.vue'
 import { getArticleDetail } from '@/api/frontend/article'
 import { useRoute, useRouter } from 'vue-router'
-import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, watch, onBeforeUnmount, nextTick, reactive } from 'vue'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/tokyo-night-dark.css'
-import { initTooltips } from 'flowbite'
 
 import { useDark } from '@vueuse/core'
-import Giscus from '@giscus/vue';  
+import Giscus from '@giscus/vue';
 // @ts-ignore
 const config = __GISCUS_CONFIG__;
 // 是否是暗黑模式
 const isDark = useDark()
 
-// 初始化 Flowbit 组件
-onMounted(() => {
-    initTooltips();
-})
-
 const route = useRoute()
 const router = useRouter()
 // 路由传递过来的文章 ID
 console.log(route.params.id)
+
+// 侧边栏目录折叠状态
+const tocCollapsed = ref(false)
+
+// Giscus 主题：开发环境用内置 light（http 无法加载自定义 CSS），生产环境用自定义 CSS
+const giscusTheme = import.meta.env.DEV
+  ? 'light'
+  : `${window.location.origin}/css/comment.css`
 
 // 文章数据
 const article = ref({})
@@ -350,121 +254,403 @@ const handleMouseLeave = (event) => {
 </script>
 
 <style scoped>
-/* h1, h2, h3, h4, h5, h6 标题样式 */
+/* ===========================
+   报纸页面级布局样式
+   =========================== */
+
+.np-page {
+    background-color: #f5f5f0;
+    padding: 30px 20px;
+    min-height: 60vh;
+}
+
+.np-page.dark {
+    background-color: #111;
+}
+
+.np-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 50px 60px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.12);
+}
+.giscus-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 0 20px 40px;
+    border-radius: 12px; 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12); /* 更柔和的阴影 */
+    
+}
+.prevnext-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+
+.np-page.dark .np-container {
+    background: #1e1e1e;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+}
+
+/* 报头区域 */
+.np-masthead {
+    margin-bottom: 30px;
+}
+
+/* 标签栏目标注 */
+.np-section-label {
+    text-align: center;
+    margin-bottom: 14px;
+    font-size: 0.82em;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #888;
+}
+
+.np-page.dark .np-section-label {
+    color: #777;
+}
+
+.np-tag {
+    cursor: pointer;
+    margin: 0 8px;
+    color: #666;
+    transition: color 0.2s;
+}
+
+.np-tag:hover {
+    color: #1a1a1a;
+    text-decoration: underline;
+}
+
+.np-page.dark .np-tag {
+    color: #888;
+}
+
+.np-page.dark .np-tag:hover {
+    color: #ddd;
+}
+
+/* 文章大标题 */
+.np-title {
+    font-family: Georgia, 'Times New Roman', "Songti SC", "SimSun", "STSong", serif;
+    font-size: 2.6em;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.25;
+    letter-spacing: 1px;
+    color: #1a1a1a;
+    margin: 0 0 18px;
+}
+
+.np-page.dark .np-title {
+    color: #e8e8e8;
+}
+
+/* 双线分隔 */
+.np-hrule-double {
+    border: none;
+    border-top: 3px double #1a1a1a;
+    margin: 14px 0;
+}
+
+.np-page.dark .np-hrule-double {
+    border-top-color: #555;
+}
+
+/* 发布信息行（左右分栏） */
+.np-byline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.88em;
+    color: #777;
+    margin-bottom: 10px;
+    font-style: italic;
+}
+
+.np-page.dark .np-byline {
+    color: #aaa;
+}
+
+.np-byline-left,
+.np-byline-right {
+    display: inline-flex;
+    align-items: center;
+}
+
+.np-sep {
+    margin: 0 2px;
+    color: #bbb;
+}
+
+.np-cat-link {
+    cursor: pointer;
+    color: #555;
+    transition: color 0.2s;
+}
+
+.np-cat-link:hover {
+    color: #1a1a1a;
+    text-decoration: underline;
+}
+
+.np-page.dark .np-cat-link {
+    color: #aaa;
+}
+
+.np-page.dark .np-cat-link:hover {
+    color: #eee;
+}
+
+/* 主内容两列布局 */
+.np-main {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    align-items: start;
+    border-top: 1px solid #ddd;
+    padding-top: 30px;
+}
+
+.np-page.dark .np-main {
+    border-top-color: #3a3a3a;
+}
+
+/* 上下篇导航（报纸组件外，独立居中区块） */
+.np-prevnext {
+    display: flex;
+    flex-direction: row;
+    max-width: 1100px;
+    margin: 24px auto 0;
+    padding: 0 20px;
+}
+
+/* 评论区（报纸组件外，独立居中区块） */
+.np-comments {
+    max-width: 1100px;
+    margin: 32px auto 0;
+    padding: 0 20px 40px;
+}
+
+/* 侧边栏：可折叠目录卡片 */
+.np-toc-card {
+    background-color: #faf9f7;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    position: sticky;
+    top: 5.5rem;
+}
+
+.np-page.dark .np-toc-card {
+    background-color: #2a2a2a;
+    border-color: #444;
+}
+
+.np-toc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    font-weight: 700;
+    font-size: 0.9em;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #333;
+    cursor: pointer;
+    border-bottom: 2px solid #1a1a1a;
+    user-select: none;
+}
+
+.np-toc-header:hover {
+    background-color: #f0ede8;
+}
+
+.np-page.dark .np-toc-header {
+    color: #ddd;
+    border-bottom-color: #555;
+}
+
+.np-page.dark .np-toc-header:hover {
+    background-color: #333;
+}
+
+.np-toc-arrow {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.25s ease;
+    color: #666;
+    flex-shrink: 0;
+}
+
+.np-toc-arrow.collapsed {
+    transform: rotate(-90deg);
+}
+
+.np-page.dark .np-toc-arrow {
+    color: #aaa;
+}
+
+.np-toc-body {
+    padding: 8px 0;
+}
+
+/* 去掉 Toc 自身的卡片外壳，由 np-toc-card 统一管理 */
+::v-deep(.np-sidebar .sticky) {
+    position: static;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.np-page.dark ::v-deep(.np-sidebar .sticky) {
+    background: transparent;
+    border: none;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .np-main {
+        grid-template-columns: 1fr;
+    }
+
+    .np-container {
+        padding: 24px 20px;
+    }
+
+    .np-title {
+        font-size: 1.8em;
+    }
+}
+
+/* ===========================
+   文章内容样式（报纸排版）
+   =========================== */
+
+/* h1, h2, h3, h4, h5, h6 基础字族 */
 ::v-deep(.article-content h1,
 .article-content h2,
 .article-content h3,
 .article-content h4,
 .article-content h5,
 .article-content h6) {
-    color: #292525;
-    line-height: 150%;
-    font-family: PingFang SC, Helvetica Neue, Helvetica, Hiragino Sans GB, Microsoft YaHei, "\5FAE\8F6F\96C5\9ED1", Arial, sans-serif;
+    font-family: Georgia, 'Times New Roman', "Songti SC", "SimSun", serif;
+    line-height: 1.4;
+    color: #1a1a1a;
 }
 
+/* h2 报纸栏目标题风格 */
 ::v-deep(.article-content h2) {
-    line-height: 1.5;
+    font-size: 1.35em;
     font-weight: 700;
-    font-synthesis: style;
-    font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     margin-top: 40px;
-    margin-bottom: 26px;
-    line-height: 140%;
-    border-bottom: 1px solid rgb(241 245 249);
-    padding-bottom: 15px;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #1a1a1a;
+    color: #1a1a1a;
 }
 
 ::v-deep(.dark .article-content h2) {
-    --tw-text-opacity: 1;
-    color: rgb(226 232 240/var(--tw-text-opacity));
-    border-bottom: 1px solid;
-    border-color: rgb(55 65 81 / 1);
+    color: #e0e0e0;
+    border-bottom: 2px solid #555;
 }
 
+/* h3 副标题 */
 ::v-deep(.article-content h3) {
-    font-size: 20px;
-    margin-top: 40px;
-    margin-bottom: 16px;
-    font-weight: 600;
+    font-size: 1.15em;
+    font-weight: 700;
+    margin-top: 30px;
+    margin-bottom: 12px;
+    color: #1a1a1a;
 }
 
 ::v-deep(.dark .article-content h3) {
-    --tw-text-opacity: 1;
-    color: rgb(226 232 240/var(--tw-text-opacity));
+    color: #ddd;
 }
 
 ::v-deep(.article-content h4) {
-    font-size: 18px;
-    margin-top: 30px;
-    margin-bottom: 16px;
+    font-size: 1.05em;
+    margin-top: 24px;
+    margin-bottom: 10px;
     font-weight: 600;
+    color: #222;
 }
 
 ::v-deep(.dark .article-content h4) {
-    --tw-text-opacity: 1;
-    color: rgb(226 232 240/var(--tw-text-opacity));
+    color: rgb(226 232 240 / 1);
 }
 
 ::v-deep(.article-content h5) {
-    font-size: 16px;
-    margin-top: 30px;
-    margin-bottom: 14px;
+    font-size: 1em;
+    margin-top: 20px;
+    margin-bottom: 8px;
     font-weight: 600;
+    color: #222;
 }
 
 ::v-deep(.dark .article-content h5) {
-    --tw-text-opacity: 1;
-    color: rgb(226 232 240/var(--tw-text-opacity));
+    color: rgb(226 232 240 / 1);
 }
 
 ::v-deep(.article-content h6) {
-    font-size: 16px;
-    margin-top: 30px;
-    margin-bottom: 14px;
+    font-size: 1em;
+    margin-top: 20px;
+    margin-bottom: 8px;
     font-weight: 600;
+    color: #444;
 }
 
 ::v-deep(.dark .article-content h6) {
-    --tw-text-opacity: 1;
-    color: rgb(226 232 240/var(--tw-text-opacity));
+    color: rgb(226 232 240 / 1);
 }
 
-/* p 段落样式 */
+/* 段落：两端对齐，衬线字体 */
 ::v-deep(.article-content p) {
-    letter-spacing: .3px;
-    margin: 0 0 20px;
-    line-height: 30px;
-    color: #4c4e4d;
-    font-weight: 400;
+    text-align: justify;
+    font-family: Georgia, 'Times New Roman', "Songti SC", "SimSun", serif;
+    font-size: 1em;
+    line-height: 1.9;
+    letter-spacing: 0.2px;
+    color: #333;
+    margin: 0 0 18px;
     word-break: normal;
     word-wrap: break-word;
-    font-family: -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB, Microsoft Yahei, Arial, sans-serif;
 }
 
 ::v-deep(.dark .article-content p) {
     color: #9e9e9e;
 }
 
-/* blockquote 引用样式 */
+/* blockquote 报纸引语风格 */
 ::v-deep(.article-content blockquote) {
-    border-left: 2.3px solid rgb(52, 152, 219);
-    quotes: none;
-    background: rgb(236, 240, 241);
-    color: #777;
-    font-size: 16px;
+    background: #f8f7f4;
+    border-left: 4px solid #1a1a1a;
+    padding: 16px 20px;
+    font-style: italic;
+    color: #555;
+    font-size: 1em;
     margin-bottom: 20px;
-    padding: 24px;
+    quotes: none;
 }
 
 ::v-deep(.dark .article-content blockquote) {
-    quotes: none;
-    --tw-bg-opacity: 1;
-    background-color: rgb(31 41 55 / var(--tw-bg-opacity));
-    border-left: 2.3px solid #555;
-    color: #666;
-    font-size: 16px;
+    background-color: rgb(31 41 55 / 1);
+    border-left: 4px solid #555;
+    color: #888;
     margin-bottom: 20px;
-    padding: 0.25rem 0 0.25rem 1rem;
+    padding: 16px 20px;
 }
 
 /* 设置 blockquote 中最后一个 p 标签的 margin-bottom 为 0 */
@@ -504,11 +690,12 @@ const handleMouseLeave = (event) => {
     list-style-type: disc;
     padding-top: 5px;
     padding-bottom: 5px;
-    font-size: 16px;
+    font-size: 1em;
+    font-family: Georgia, 'Times New Roman', "Songti SC", serif;
 }
 
 ::v-deep(.article-content ul li p) {
-    margin-bottom: 0!important;
+    margin-bottom: 0 !important;
 }
 
 ::v-deep(.article-content ul ul li) {
@@ -531,7 +718,7 @@ const handleMouseLeave = (event) => {
     overflow: hidden;
     display: block;
     margin: 0 auto;
-    border-radius: 8px;
+    border-radius: 4px;
 }
 
 ::v-deep(.article-content img:hover,
@@ -659,6 +846,7 @@ img:focus) {
     border-color: rgb(55 65 81 / var(--tw-border-opacity));
 }
 
+/* 复制代码按钮 */
 ::v-deep(.copy-code-btn) {
     border-width: 0;
     cursor: pointer;
@@ -672,7 +860,7 @@ img:focus) {
     border-radius: 0.5rem;
     opacity: 0;
     transition: opacity .4s;
-    opacity: 1
+    opacity: 1;
 }
 
 ::v-deep(.copy-code-btn:hover) {

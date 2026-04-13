@@ -1,0 +1,326 @@
+/* =============================================
+   Giscus 自定义主题 — 报纸风格·简洁白
+   ============================================= */
+
+main {
+  /* Syntax highlighting */
+  --color-prettylights-syntax-comment: #6e7781;
+  --color-prettylights-syntax-constant: #0550ae;
+  --color-prettylights-syntax-entity: #8250df;
+  --color-prettylights-syntax-storage-modifier-import: #24292f;
+  --color-prettylights-syntax-entity-tag: #116329;
+  --color-prettylights-syntax-keyword: #cf222e;
+  --color-prettylights-syntax-string: #0a3069;
+  --color-prettylights-syntax-variable: #953800;
+  --color-prettylights-syntax-brackethighlighter-unmatched: #82071e;
+  --color-prettylights-syntax-invalid-illegal-text: #f6f8fa;
+  --color-prettylights-syntax-invalid-illegal-bg: #82071e;
+  --color-prettylights-syntax-carriage-return-text: #f6f8fa;
+  --color-prettylights-syntax-carriage-return-bg: #cf222e;
+  --color-prettylights-syntax-string-regexp: #116329;
+  --color-prettylights-syntax-markup-list: #3b2300;
+  --color-prettylights-syntax-markup-heading: #0550ae;
+  --color-prettylights-syntax-markup-italic: #24292f;
+  --color-prettylights-syntax-markup-bold: #24292f;
+  --color-prettylights-syntax-markup-deleted-text: #82071e;
+  --color-prettylights-syntax-markup-deleted-bg: #ffebe9;
+  --color-prettylights-syntax-markup-inserted-text: #116329;
+  --color-prettylights-syntax-markup-inserted-bg: #dafbe1;
+  --color-prettylights-syntax-markup-changed-text: #953800;
+  --color-prettylights-syntax-markup-changed-bg: #ffd8b5;
+  --color-prettylights-syntax-markup-ignored-text: #eaeef2;
+  --color-prettylights-syntax-markup-ignored-bg: #0550ae;
+  --color-prettylights-syntax-meta-diff-range: #8250df;
+  --color-prettylights-syntax-brackethighlighter-angle: #57606a;
+  --color-prettylights-syntax-sublimelinter-gutter-mark: #8c959f;
+  --color-prettylights-syntax-constant-other-reference-link: #0a3069;
+
+  /* 普通按钮 */
+  --color-btn-text: #24292f;
+  --color-btn-bg: #f6f8fa;
+  --color-btn-border: rgb(27 31 36 / 15%);
+  --color-btn-shadow: none;
+  --color-btn-inset-shadow: none;
+  --color-btn-hover-bg: #f3f4f6;
+  --color-btn-hover-border: rgb(27 31 36 / 15%);
+  --color-btn-active-bg: hsl(220deg 14% 93% / 100%);
+  --color-btn-active-border: rgb(27 31 36 / 15%);
+  --color-btn-selected-bg: hsl(220deg 14% 94% / 100%);
+
+  /* 主按钮（GitHub 登录）— 黑色 */
+  --color-btn-primary-text: #fff;
+  --color-btn-primary-bg: #1a1a1a;
+  --color-btn-primary-border: transparent;
+  --color-btn-primary-shadow: none;
+  --color-btn-primary-inset-shadow: none;
+  --color-btn-primary-hover-bg: #333;
+  --color-btn-primary-hover-border: transparent;
+  --color-btn-primary-selected-bg: #111;
+  --color-btn-primary-selected-shadow: none;
+  --color-btn-primary-disabled-text: rgb(255 255 255 / 60%);
+  --color-btn-primary-disabled-bg: #888;
+  --color-btn-primary-disabled-border: transparent;
+
+  /* 文字颜色 */
+  --color-fg-default: #1a1a1a;
+  --color-fg-muted: #57606a;
+  --color-fg-subtle: #6e7781;
+
+  /* 背景 */
+  --color-canvas-default: #fff;
+  --color-canvas-overlay: #fff;
+  --color-canvas-inset: #fafaf8;
+  --color-canvas-subtle: #fafaf8;
+
+  /* 边框 */
+  --color-border-default: #e8e4de;
+  --color-border-muted: #eeebe6;
+
+  /* 强调色 */
+  --color-neutral-muted: rgb(175 184 193 / 15%);
+  --color-accent-fg: #1a1a1a;
+  --color-accent-emphasis: #1a1a1a;
+  --color-accent-muted: #e8e4de;
+  --color-accent-subtle: #fafaf8;
+
+  --color-success-fg: #1a7f37;
+  --color-attention-fg: #9a6700;
+  --color-danger-fg: #cf222e;
+  --color-danger-muted: rgb(255 129 130 / 40%);
+  --color-danger-subtle: #ffebe9;
+  --color-primer-shadow-inset: none;
+  --color-primer-shadow-focus: 0 0 0 2px rgb(27 31 36 / 12%);
+  --color-scale-gray-1: #eaeef2;
+  --color-scale-blue-1: #f0ede8;
+  --color-social-reaction-bg-hover: #f0ede8;
+  --color-social-reaction-bg-reacted-hover: #f0ede8;
+
+  color-scheme: light;
+}
+
+/* 全局字体 — 与正文一致 */
+main {
+  font-family: Georgia, 'Times New Roman', "Songti SC", "SimSun", "STSong", serif;
+  letter-spacing: 0.3px;
+  background: #fff;
+}
+
+/* 加载图标 */
+main .pagination-loader-container {
+  background-image: url("https://gw.alipayobjects.com/zos/k/7c/progressive-disclosure-line.svg");
+}
+main .gsc-loading-image {
+  background-image: url("https://gw.alipayobjects.com/zos/k/xi/mona-loading-default.gif");
+}
+
+/* =============================================
+   顶部标题区 — 隐藏原始计数，显示自定义文案
+   ============================================= */
+
+/* 隐藏 gsc-header（"X Comments"、排序按钮等） */
+.gsc-header,
+main .gsc-left-header .color-text-secondary {
+  display: none;
+}
+
+/* 让 reactions 区成为块级居中容器 */
+.gsc-reactions {
+  text-align: center;
+  padding: 24px 0 16px;
+}
+
+/* 隐藏原始数字文字，用伪元素替换 */
+.gsc-reactions-count {
+  visibility: hidden;
+  display: block;
+  height: 0;
+  overflow: visible;
+  position: relative;
+}
+
+.gsc-reactions-count:before {
+  content: "欢迎一起交流~";
+  visibility: visible;
+  display: block;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-align: center;
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+
+html[lang="en"] .gsc-reactions-count:before {
+  content: "Feel free to discuss~";
+}
+
+/* 表情反应行居中 */
+.gsc-reactions-opaque {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.gsc-social-reaction-summary-item {
+  font-size: 14px;
+  border-radius: 20px;
+  line-height: 24px;
+  padding: 2px 10px;
+  border: 1px solid #e8e4de;
+  background: #fafaf8;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.gsc-social-reaction-summary-item:hover {
+  background: #f0ede8;
+}
+
+/* =============================================
+   评论列表
+   ============================================= */
+
+.gsc-comment {
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.gsc-comment-content {
+  font-size: 15px;
+}
+
+.gsc-tl-line {
+  width: 1px;
+  background: #e8e4de;
+}
+
+.gsc-reply-content {
+  padding-top: 12px;
+  padding-bottom: 10px;
+}
+
+.link-secondary.overflow-hidden.text-ellipsis {
+  text-decoration: none;
+  word-spacing: -2px;
+}
+
+/* =============================================
+   评论输入框
+   ============================================= */
+
+/* 整体输入框容器 */
+.gsc-comment-box {
+  border: 1px solid #e8e4de;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Tab 栏（撰入 / 预览 / Aa） */
+.gsc-comment-box-tabs {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e8e4de;
+  background: #fafaf8;
+  padding: 0 4px;
+}
+
+.gsc-comment-box-tabs .btn {
+  border: none;
+  border-radius: 6px 6px 0 0;
+  background: transparent;
+  font-size: 13px;
+  padding: 8px 12px;
+  color: #57606a;
+  font-family: Georgia, 'Times New Roman', "Songti SC", serif;
+}
+
+.gsc-comment-box-tabs .btn:hover {
+  color: #1a1a1a;
+  background: #f0ede8;
+}
+
+.gsc-comment-box-tabs .btn[aria-selected="true"],
+.gsc-comment-box-tabs .btn.selected {
+  color: #1a1a1a;
+  font-weight: 600;
+  background: #fff;
+  border-bottom: 2px solid #1a1a1a;
+}
+
+/* Aa 按钮 */
+.gsc-comment-box-md-toolbar {
+  margin-left: auto;
+  font-size: 13px;
+  color: #888;
+  padding: 0 10px;
+}
+
+/* 文本区域 */
+.gsc-comment-box-textarea,
+.form-control {
+  border: none !important;
+  border-radius: 0;
+  background: #fff;
+  font-family: Georgia, 'Times New Roman', "Songti SC", "SimSun", serif;
+  font-size: 15px;
+  line-height: 1.8;
+  padding: 12px 14px;
+  resize: vertical;
+  min-height: 120px;
+  width: 100%;
+  box-sizing: border-box;
+  color: #1a1a1a;
+}
+
+.gsc-comment-box-textarea::placeholder {
+  color: #aaa;
+}
+
+main .gsc-comment-box-textarea:focus,
+#__next .form-control:focus,
+textarea:focus,
+input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* 底部按钮栏 */
+.gsc-comment-box-bottom {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px 14px;
+  border-top: 1px solid #e8e4de;
+  background: #fafaf8;
+  gap: 8px;
+}
+
+/* GitHub 登录按钮 */
+.btn-primary,
+.btn.ml-1.rounded-md.border {
+  background: #1a1a1a !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 8px !important;
+  font-size: 14px;
+  padding: 7px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: Georgia, 'Times New Roman', "Songti SC", serif;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-primary:hover {
+  background: #333 !important;
+}
+
+/* 圆角控件 */
+#__next .rounded-md {
+  border-radius: 8px;
+}
