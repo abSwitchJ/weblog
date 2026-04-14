@@ -230,9 +230,10 @@ main .gsc-left-header .color-text-secondary,
 
 .gsc-comment-box-textarea-extras,
 .gsc-comment-box .text-xs {
-  padding: 2px 8px;
+  padding: 0 8px 2px;
   line-height: 1;
   font-size: 12px;
+  text-align: right;
 }
 
 /* 文本区域 */
@@ -251,7 +252,7 @@ main .gsc-left-header .color-text-secondary,
   width: 100%;
   box-sizing: border-box;
   color: #333;
-  border-bottom: 2px dashed #ddd !important;
+  border-bottom: 1px dotted #ccc !important;
   padding-bottom: 6px;
 }
 
@@ -273,7 +274,7 @@ input:focus {
   justify-content: flex-end;
   align-items: center;
   padding: 10px 14px;
-  border-top: 1px solid #eee;
+  border-top: none;
   background: #fff;
   gap: 8px;
 }
