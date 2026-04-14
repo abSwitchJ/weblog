@@ -2,8 +2,9 @@
    Giscus 自定义主题 — 简洁白
    ============================================= */
 
+/* 根变量定义 */
 :root {
-  /* Syntax highlighting */
+  /* 代码高亮配色（Syntax highlighting） */
   --color-prettylights-syntax-comment: #6e7781;
   --color-prettylights-syntax-constant: #0550ae;
   --color-prettylights-syntax-entity: #8250df;
@@ -35,7 +36,7 @@
   --color-prettylights-syntax-sublimelinter-gutter-mark: #8c959f;
   --color-prettylights-syntax-constant-other-reference-link: #0a3069;
 
-  /* 普通按钮 */
+  /* 普通按钮配色 */
   --color-btn-text: #222;
   --color-btn-bg: #f6f8fa;
   --color-btn-border: #eee;
@@ -47,7 +48,7 @@
   --color-btn-active-border: #ddd;
   --color-btn-selected-bg: #e8e8e8;
 
-  /* 主按钮（GitHub 登录）— 纯黑 */
+  /* 主按钮（GitHub 登录）— 纯黑风格 */
   --color-btn-primary-text: #fff;
   --color-btn-primary-bg: #222;
   --color-btn-primary-border: transparent;
@@ -66,64 +67,86 @@
   --color-fg-muted: #555;
   --color-fg-subtle: #777;
 
-  /* 背景 */
+  /* 背景色 */
   --color-canvas-default: #fff;
   --color-canvas-overlay: #fff;
   --color-canvas-inset: #fafafa;
   --color-canvas-subtle: #fafafa;
 
-  /* 边框 */
+  /* 边框色 */
   --color-border-default: #eee;
   --color-border-muted: #eee;
 
-  /* 强调色 */
+  /* 强调色 / 交互色 */
   --color-neutral-muted: rgb(0 0 0 / 8%);
   --color-accent-fg: #222;
   --color-accent-emphasis: #222;
   --color-accent-muted: #eee;
   --color-accent-subtle: #fafafa;
 
+  /* 状态色（成功 / 警告 / 危险） */
   --color-success-fg: #1a7f37;
   --color-attention-fg: #9a6700;
   --color-danger-fg: #cf222e;
   --color-danger-muted: rgb(255 129 130 / 40%);
   --color-danger-subtle: #ffebe9;
+
+  /* 阴影 / 焦点光圈 — 全部移除 */
   --color-primer-shadow-inset: none;
   --color-primer-shadow-focus: none;
+
+  /* 灰度 / 蓝度辅助色 */
   --color-scale-gray-1: #eee;
   --color-scale-blue-1: #f0f0f0;
+
+  /* 表情反应按钮悬停背景 */
   --color-social-reaction-bg-hover: #f0f0f0;
   --color-social-reaction-bg-reacted-hover: #f0f0f0;
 
+  /* 颜色方案声明 */
   color-scheme: light;
 }
 
-/* 全局字体 — 与正文一致 */
+/* =============================================
+   全局字体 — 衬线体，与正文风格统一
+   ============================================= */
 main {
   font-family: Georgia, 'Times New Roman', "Songti SC", "SimSun", "STSong", serif;
   letter-spacing: 0.3px;
   background: #fff;
 }
 
-/* 加载图标 */
+/* =============================================
+   加载图标 — 分页加载 & 初始加载动画
+   ============================================= */
+
+/* 分页加载器图标 */
 main .pagination-loader-container {
   background-image: url("https://gw.alipayobjects.com/zos/k/7c/progressive-disclosure-line.svg");
 }
+
+/* 初始加载动画 */
 main .gsc-loading-image {
   background-image: url("https://gw.alipayobjects.com/zos/k/xi/mona-loading-default.gif");
 }
 
 /* =============================================
-   顶部区域 — 隐藏 gsc-header 和 reactions 区域，显示欢迎语
+   顶部区域 — 隐藏原生标题栏，用伪元素显示欢迎语
    ============================================= */
+
+/* 隐藏原生标题文字和 header 容器 */
 main .gsc-left-header .color-text-secondary,
 .gsc-header {
   display: none;
   border-color: #eee;
 }
+
+/* 隐藏 reactions 计数数字 */
 .gsc-reactions-count {
   visibility: hidden;
 }
+
+/* 表情反应按钮样式 */
 .gsc-social-reaction-summary-item {
   font-size: 15px;
   border-radius: 8px;
@@ -132,6 +155,7 @@ main .gsc-left-header .color-text-secondary,
   padding: 0 6px;
 }
 
+/* 用 ::after 伪元素替换 reactions 区域为欢迎语 */
 .gsc-reactions-count:after {
   content: "欢迎一起交流~";
   visibility: visible;
@@ -142,30 +166,36 @@ main .gsc-left-header .color-text-secondary,
   margin-bottom: 16px;
   margin-left: 0;
 }
+
 /* =============================================
    评论列表
    ============================================= */
 
+/* 单条评论整体字号与行高 */
 .gsc-comment {
   font-size: 15px;
   line-height: 1.8;
 }
 
+/* 评论正文内容 */
 .gsc-comment-content {
   font-size: 15px;
   line-height: 1.8;
 }
 
+/* 时间线竖线 */
 .gsc-tl-line {
   width: 1px;
   background: #eee;
 }
 
+/* 回复内容区内边距 */
 .gsc-reply-content {
   padding-top: 12px;
   padding-bottom: 10px;
 }
 
+/* 用户名链接 — 去掉下划线 */
 .link-secondary.overflow-hidden.text-ellipsis {
   text-decoration: none;
 }
@@ -174,6 +204,7 @@ main .gsc-left-header .color-text-secondary,
    评论输入框
    ============================================= */
 
+/* 输入框外层容器 — 圆角边框卡片 */
 .gsc-comment-box {
   border: 1px solid #eee;
   border-radius: 8px;
@@ -181,7 +212,7 @@ main .gsc-left-header .color-text-secondary,
   background: #fff;
 }
 
-/* Tab 栏（输入 / 预览 / Aa） */
+/* Tab 栏容器（输入 / 预览 / Aa） */
 .gsc-comment-box-tabs {
   display: flex;
   align-items: center;
@@ -190,6 +221,7 @@ main .gsc-left-header .color-text-secondary,
   padding: 0 4px;
 }
 
+/* Tab 按钮默认样式 */
 .gsc-comment-box-tabs .btn {
   border: none;
   border-radius: 6px 6px 0 0;
@@ -200,11 +232,13 @@ main .gsc-left-header .color-text-secondary,
   font-family: Georgia, 'Times New Roman', "Songti SC", serif;
 }
 
+/* Tab 按钮悬停态 */
 .gsc-comment-box-tabs .btn:hover {
   color: #222;
   background: #fff;
 }
 
+/* Tab 按钮选中态 — 加粗 */
 .gsc-comment-box-tabs .btn[aria-selected="true"],
 .gsc-comment-box-tabs .btn.selected {
   color: #222;
@@ -213,7 +247,7 @@ main .gsc-left-header .color-text-secondary,
   border-bottom: 2px solid #eee;
 }
 
-/* Aa 按钮 */
+/* Aa 字体切换按钮 — 右对齐 */
 .gsc-comment-box-md-toolbar {
   margin-left: auto;
   font-size: 13px;
@@ -221,45 +255,47 @@ main .gsc-left-header .color-text-secondary,
   padding: 0 10px;
 }
 
-/* M↓ Markdown 标志栏 — 紧凑高度 */
+/* 输入区主容器 — flex 纵向布局 */
 .gsc-comment-box-write,
 .gsc-comment-box-main {
   display: flex;
   flex-direction: column;
 }
 
-.gsc-comment-box-textarea-extras,
+/* M↓ Markdown 标志栏 — 紧凑高度，右对齐 */
+/* .gsc-comment-box-textarea-extras,
 .gsc-comment-box .text-xs {
   padding: 0 8px 2px;
   line-height: 1;
   font-size: 12px;
   text-align: right;
-}
+} */
 
-/* 文本区域 */
+/* 文本输入区域（textarea） */
 .gsc-comment-box-textarea,
 .form-control {
   border: none !important;
   border-radius: 0;
   background: #fff;
   font-family: Georgia, 'Times New Roman', "Songti SC", "SimSun", serif;
-  font-size: 15px;
+  /* font-size: 15px;
   line-height: 1.8;
   padding: 12px 14px;
   resize: vertical;
   min-height: 80px;
   max-height: 400px;
   width: 100%;
-  box-sizing: border-box;
+  box-sizing: border-box; */
   color: #333;
-  border-bottom: 1px dotted #ccc !important;
-  padding-bottom: 6px;
+  border-bottom: #ccc !important;
 }
 
+/* 输入区占位文字颜色 */
 .gsc-comment-box-textarea::placeholder {
   color: #ccc;
 }
 
+/* 输入区聚焦态 — 去掉默认 outline 和阴影 */
 main .gsc-comment-box-textarea:focus,
 #__next .form-control:focus,
 textarea:focus,
@@ -268,18 +304,18 @@ input:focus {
   box-shadow: none;
 }
 
-/* 底部按钮栏 */
+/* 底部按钮栏（退出登录 / 评论按钮） */
 .gsc-comment-box-bottom {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   padding: 10px 14px;
-  border-top: none;
+  border-top: 1px solid #eee;
   background: #fff;
   gap: 8px;
 }
 
-/* GitHub 登录 / 提交按钮 — 纯黑，无阴影 */
+/* 主操作按钮（GitHub 登录 / 提交评论）— 纯黑无阴影 */
 .btn-primary,
 .btn.ml-1.rounded-md.border {
   background: #222 !important;
@@ -297,6 +333,7 @@ input:focus {
   transition: background 0.15s;
 }
 
+/* 主操作按钮悬停态 */
 .btn-primary:hover {
   background: #444 !important;
 }
