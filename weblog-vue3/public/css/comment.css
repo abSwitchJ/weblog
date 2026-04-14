@@ -221,6 +221,20 @@ main .gsc-left-header .color-text-secondary,
   padding: 0 10px;
 }
 
+/* M↓ Markdown 标志栏 — 紧凑高度 */
+.gsc-comment-box-write,
+.gsc-comment-box-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.gsc-comment-box-textarea-extras,
+.gsc-comment-box .text-xs {
+  padding: 2px 8px;
+  line-height: 1;
+  font-size: 12px;
+}
+
 /* 文本区域 */
 .gsc-comment-box-textarea,
 .form-control {
@@ -232,10 +246,13 @@ main .gsc-left-header .color-text-secondary,
   line-height: 1.8;
   padding: 12px 14px;
   resize: vertical;
-  min-height: 120px;
+  min-height: 80px;
+  max-height: 400px;
   width: 100%;
   box-sizing: border-box;
   color: #333;
+  border-bottom: 2px dashed #ddd !important;
+  padding-bottom: 6px;
 }
 
 .gsc-comment-box-textarea::placeholder {
