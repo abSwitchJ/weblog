@@ -42,7 +42,7 @@
                         <div ref="articleContentRef" class="article-content" v-viewer v-html="article.content"></div>
                     </div>
                 </main>
-
+                
                 <!-- 右侧：文章目录（可折叠） -->
                 <aside class="np-sidebar">
                     <div class="np-toc-card">
@@ -58,45 +58,46 @@
                         </div>
                     </div>
                 </aside>
-            </div>
-            <!-- 上下篇导航 -->
-            <nav class="np-prevnext">
-                <div class="basis-1/2">
-                    <a v-if="article.preArticle"
-                        @click="router.push('/article/' + article.preArticle.articleId)"
-                        class="cursor-pointer flex flex-col h-full p-4 mr-3 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                        <div>
-                            <svg class="inline w-3.5 h-3.5 mr-2 mb-1" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"></path>
-                            </svg>
-                            上一篇
-                        </div>
-                        <div>{{ article.preArticle.articleTitle }}</div>
-                    </a>
-                </div>
-            
-                <div class="basis-1/2">
-                    <a v-if="article.nextArticle"
-                        @click="router.push('/article/' + article.nextArticle.articleId)"
-                        class="cursor-pointer flex flex-col h-full text-right p-4 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                        <div>
-                            下一篇
-                            <svg class="inline w-3.5 h-3.5 ml-2 mb-1" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"></path>
-                            </svg>
-                        </div>
-                        <div>{{ article.nextArticle.articleTitle }}</div>
-                    </a>
-                </div>
-            </nav>
-        </div>
-    </div>
+                <div class="np-prevnext">   
+                    <!-- 上下篇导航 -->
+                    <div class="basis-1/2">
+                        <a v-if="article.preArticle"
+                            @click="router.push('/article/' + article.preArticle.articleId)"
+                            class="cursor-pointer flex flex-col h-full p-4 mr-3 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                            <div>
+                                <svg class="inline w-3.5 h-3.5 mr-2 mb-1" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"></path>
+                                </svg>
+                                上一篇
+                            </div>
+                            <div>{{ article.preArticle.articleTitle }}</div>
+                        </a>
+                    </div>
 
-    
+                    <div class="basis-1/2">
+                        <a v-if="article.nextArticle"
+                            @click="router.push('/article/' + article.nextArticle.articleId)"
+                            class="cursor-pointer flex flex-col h-full text-right p-4 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                            <div>
+                                下一篇
+                                <svg class="inline w-3.5 h-3.5 ml-2 mb-1" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"></path>
+                                </svg>
+                            </div>
+                            <div>{{ article.nextArticle.articleTitle }}</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+
+    </div>
 
     <div class="giscus-container" :class="{ 'dark': isDark }">
         <!-- 评论区（报纸组件外） -->
@@ -268,17 +269,17 @@ const handleMouseLeave = (event) => {
 }
 
 .np-container {
-    max-width: 1100px;
+    max-width: 1000px;
     margin: 0 auto;
     background: #fff;
     padding: 50px 60px;
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.12);
 }
 .giscus-container {
-    max-width: 1100px;
-    margin: 0 auto;
+    max-width: 1000px;
+    margin: -20px auto 30px;
     background: #fff;
-    padding: 24px 20px 40px;
+    padding: 14px 20px 10px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
 }
@@ -292,7 +293,7 @@ const handleMouseLeave = (event) => {
     letter-spacing: 0.5px;
 }
 .prevnext-container {
-  max-width: 1100px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 0 20px 40px;
   background-color: #fff;
@@ -307,7 +308,7 @@ const handleMouseLeave = (event) => {
 
 /* 报头区域 */
 .np-masthead {
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 
 /* 标签栏目标注 */
@@ -364,7 +365,7 @@ const handleMouseLeave = (event) => {
 .np-hrule-double {
     border: none;
     border-top: 3px double #1a1a1a;
-    margin: 14px 0;
+    margin: 10px 0;
 }
 
 .np-page.dark .np-hrule-double {
@@ -422,8 +423,7 @@ const handleMouseLeave = (event) => {
     grid-template-columns: 2fr 1fr;
     gap: 40px;
     align-items: start;
-    border-top: 1px solid #ddd;
-    padding-top: 30px;
+    padding-top: 10px;
 }
 
 .np-page.dark .np-main {
@@ -434,14 +434,15 @@ const handleMouseLeave = (event) => {
 .np-prevnext {
     display: flex;
     flex-direction: row;
-    max-width: 1100px;
-    margin: 24px auto 0;
-    padding: 0 20px;
+    max-width: 1000px;
+    margin: 0 0;
+    padding: 0 0;
+    grid-column: 1 / -1;
 }
 
 /* 评论区（报纸组件外，独立居中区块） */
 .np-comments {
-    max-width: 1100px;
+    max-width: 1000px;
     margin: 32px auto 0;
     padding: 0 20px 40px;
 }
@@ -450,7 +451,7 @@ const handleMouseLeave = (event) => {
 .np-toc-card {
     background-color: #faf9f7;
     border: 1px solid #ccc;
-    border-radius: 8px;
+    border-radius: 0px;
     overflow: hidden;
     position: sticky;
     top: 5.5rem;
@@ -470,9 +471,9 @@ const handleMouseLeave = (event) => {
     font-size: 0.9em;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    color: #333;
+    color: #716d6d;
     cursor: pointer;
-    border-bottom: 2px solid #1a1a1a;
+    border-bottom: 0px solid #fff;
     user-select: none;
 }
 
@@ -481,7 +482,7 @@ const handleMouseLeave = (event) => {
 }
 
 .np-page.dark .np-toc-header {
-    color: #ddd;
+    color: #faf9f7;
     border-bottom-color: #555;
 }
 
@@ -490,7 +491,7 @@ const handleMouseLeave = (event) => {
 }
 
 .np-toc-arrow {
-    width: 16px;
+    width: 12px;
     height: 16px;
     transition: transform 0.25s ease;
     color: #666;
@@ -506,7 +507,7 @@ const handleMouseLeave = (event) => {
 }
 
 .np-toc-body {
-    padding: 8px 0;
+    padding: 4px 0;
 }
 
 /* 去掉 Toc 自身的卡片外壳，由 np-toc-card 统一管理 */
