@@ -33,40 +33,46 @@
   --color-prettylights-syntax-brackethighlighter-angle: #57606a;
   --color-prettylights-syntax-sublimelinter-gutter-mark: #8c959f;
   --color-prettylights-syntax-constant-other-reference-link: #0a3069;
-  --color-btn-text: #222222;
-  --color-btn-bg: #fff;
+  /* 普通按钮 */
+  --color-btn-text: #fff;
+  --color-btn-bg: #222222;
   --color-btn-border: #eee;
   --color-btn-shadow: none;
   --color-btn-inset-shadow: none;
-  --color-btn-hover-bg: #fff;
+  --color-btn-hover-bg: #333333;
   --color-btn-hover-border: #eee;
-  --color-btn-active-bg: #fff;
+  --color-btn-active-bg: #111111;
   --color-btn-active-border: #eee;
-  --color-btn-selected-bg: #fff;
+  --color-btn-selected-bg: #111111;
+  /* 主按钮（GitHub 登录）— 纯黑 */
   --color-btn-primary-text: #fff;
   --color-btn-primary-bg: #222222;
   --color-btn-primary-border: #eee;
   --color-btn-primary-shadow: 0 1px 0 rgb(27 31 36 / 10%);
   --color-btn-primary-inset-shadow: inset 0 1px 0 rgb(255 255 255 / 3%);
-  --color-btn-primary-hover-bg: #fff;
+  --color-btn-primary-hover-bg: #222222;
   --color-btn-primary-hover-border: #eee;
   --color-btn-primary-selected-bg: hsl(137deg 55% 36% / 100%);
   --color-btn-primary-selected-shadow: inset 0 1px 0 rgb(0 45 17 / 20%);
   --color-btn-primary-disabled-text: rgb(255 255 255 / 80%);
   --color-btn-primary-disabled-bg: #c0b5ac;
   --color-btn-primary-disabled-border: #eee;
+  /* 文字颜色 */
   --color-fg-default: #24292f;
   --color-fg-muted: #57606a;
   --color-fg-subtle: #6e7781;
+  /* 背景 */
   --color-canvas-default: #fff;
   --color-canvas-overlay: #fff;
   --color-canvas-inset: #fff;
   --color-canvas-subtle: #fff;
+  /* 边框 */
   --color-border-default: #eee;
   --color-border-muted: #eee;
+  /* 强调色 */
   --color-neutral-muted: rgb(175 184 193 / 20%);
   --color-accent-fg: #222222;
-  --color-accent-emphasis: #222;
+  --color-accent-emphasis: #eee;
   --color-accent-muted: #eee;
   --color-accent-subtle: #fff;
   --color-success-fg: #1a7f37;
@@ -74,14 +80,14 @@
   --color-danger-fg: #cf222e;
   --color-danger-muted: rgb(255 129 130 / 40%);
   --color-danger-subtle: #ffebe9;
-  --color-primer-shadow-inset: none;
-  --color-primer-shadow-focus: none;
-  --color-scale-gray-1: #eee;
+  --color-primer-shadow-inset: inset 0 1px 0 rgb(208 215 222 / 20%);
+  --color-primer-shadow-focus: 0 0 0 3px rgb(9 105 218 / 30%);
+  --color-scale-gray-1: #eaeef2;
   --color-scale-blue-1: #eee;
 
   /*! Extensions from @primer/css/alerts/flash.scss */
-  --color-social-reaction-bg-hover: #eee;
-  --color-social-reaction-bg-reacted-hover: #eee;
+  --color-social-reaction-bg-hover: var(--color-scale-gray-1);
+  --color-social-reaction-bg-reacted-hover: var(--color-scale-blue-1);
 
   color-scheme: light;
 }
@@ -104,39 +110,35 @@ main .gsc-left-header .color-text-secondary,
 .gsc-header {
   display: none;
   border-color: #eee;
+}
 
+/* 表情图标 */
+.gsc-reactions-count {
+  visibility: hidden;
 }
-main .gsc-comment-box-textarea {
-  border-color: #eee;
-}
-.form-control {
-  padding-top: 6px;
-  padding-bottom: 6px;
+
+.gsc-social-reaction-summary-item {
   font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  line-height: 26px;
+  padding: 0 6px;
 }
-main .gsc-comment-box-textarea:focus,
-textarea:focus,
-input:focus {
-  outline: none;
-  box-shadow: none;
+
+.gsc-reactions-count:after {
+  content: "欢迎一起交流~";
+  visibility: visible;
+  font-size: 26px;
+  font-weight: 600;
+  display: block;
+  text-align: center;
+  margin-bottom: 16px;
+  margin-left: 0;
 }
-/* GitHub 登录 / 提交按钮 — 纯黑，无阴影 */
-.btn-primary,
-.btn.ml-1.rounded-md.border {
-  background: #222 !important;
-  color: #fff !important;
-  border: none !important;
-  box-shadow: none !important;
-  border-radius: 8px !important;
-  font-size: 14px;
-  padding: 7px 16px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: Georgia, 'Times New Roman', "Songti SC", serif;
-  cursor: pointer;
-  transition: background 0.15s;
-}
+
+/* =============================================
+   评论列表
+   ============================================= */
 .gsc-tl-line {
   width: 1px;
 }
@@ -149,91 +151,55 @@ input:focus {
 .gsc-comment-content {
   font-size: 16px;
 }
-
-.gsc-reactions-count {
-  visibility: hidden;
-}
-
-.gsc-reactions-count:after {
-  content: "欢迎一起交流~";
-  visibility: visible;
-  font-size: 22px;
-  display: inline-block;
-  margin-bottom: 15px;
-  margin-left: -60px;
-}
-
 .gsc-reply-content {
   padding-top: 14px;
   padding-bottom: 12px;
-}
-
-textarea:focus,
-input:focus {
-  outline: none;
-}
-.gsc-social-reaction-summary-item {
-  font-size: 15px;
-  border-radius: 8px;
-  line-height: 26px;
-  padding: 0 6px;
-  border-color: #eee;
-
 }
 
 .link-secondary.overflow-hidden.text-ellipsis {
   text-decoration: none;
   word-spacing: -2px;
 }
+
 /* =============================================
    评论输入框
    ============================================= */
-
-main .gsc-comment-box {
-  border-color: #eee;
+/* 输入框外框 */
+.gsc-comment-box {
+  border: 1px solid #eee;
   border-radius: 8px;
   overflow: hidden;
-  background: #fff;
 }
-main .gsc-comment-box-tabs {
-  display: flex;
-  align-items: center;
+
+/* 文本区域 */
+main .gsc-comment-box-textarea {
   border-color: #eee;
-  background: #fafafa;
-  padding: 0 4px;
 }
-
-.gsc-comment-box-tabs .btn {
+.form-control {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  font-size: 15px;
+}
+main .gsc-comment-box-textarea:focus,
+#__next .form-control:focus {
+  outline: none;
+  box-shadow: none;
+}
+textarea:focus,
+input:focus {
+  outline: none;
+}
+/* GitHub 登录 / 提交按钮 — 纯黑，药丸形，无阴影，去边框 */
+.btn-primary,
+.btn.ml-1.rounded-md.border {
+  box-shadow: none;
   border: none;
-  border-radius: 6px 6px 0 0;
-  background: transparent;
-  font-size: 13px;
-  padding: 8px 12px;
-  color: #555;
-  font-family: Georgia, 'Times New Roman', "Songti SC", serif;
-}
-
-.gsc-comment-box-tabs .btn:hover {
-  color: #222;
-  background: #fff;
-}
-.gsc-comment-box-tabs .btn[aria-selected="true"],
-.gsc-comment-box-tabs .btn.selected {
-  color: #222;
-  font-weight: 600;
-  background: #fff;
-  border-bottom: 2px solid #eee;
-}
-
-/* Aa 按钮 */
-.gsc-comment-box-md-toolbar {
-  margin-left: auto;
-  font-size: 13px;
-  color: #999;
-  padding: 0 10px;
+  border-radius: 20px;
 }
 
 /* 圆角控件统一 8px */
 #__next .rounded-md {
   border-radius: 8px;
 }
+
+
