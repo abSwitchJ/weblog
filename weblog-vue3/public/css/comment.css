@@ -274,8 +274,10 @@ main .gsc-left-header .color-text-secondary,
 /* 文本输入区域（textarea） */
 main .gsc-comment-box-textarea {
   border-color: #eee;
+  background: #fff;
 }
 .form-control {
+  background: #fff;
   padding-top: 6px;
   padding-bottom: 6px;
   font-size: 15px;
