@@ -33,16 +33,17 @@
   --color-prettylights-syntax-brackethighlighter-angle: #57606a;
   --color-prettylights-syntax-sublimelinter-gutter-mark: #8c959f;
   --color-prettylights-syntax-constant-other-reference-link: #0a3069;
+  /* 普通按钮 */
   --color-btn-text: #24292f;
-  --color-btn-bg: #f6f8fa;
+  --color-btn-bg: #fff;
   --color-btn-border: rgb(27 31 36 / 15%);
   --color-btn-shadow: 0 1px 0 rgb(27 31 36 / 4%);
   --color-btn-inset-shadow: inset 0 1px 0 rgb(255 255 255 / 25%);
-  --color-btn-hover-bg: #f3f4f6;
+  --color-btn-hover-bg: #fff;
   --color-btn-hover-border: rgb(27 31 36 / 15%);
-  --color-btn-active-bg: hsl(220deg 14% 93% / 100%);
+  --color-btn-active-bg: #fff;
   --color-btn-active-border: rgb(27 31 36 / 15%);
-  --color-btn-selected-bg: hsl(220deg 14% 94% / 100%);
+  --color-btn-selected-bg: #fff;
   /* 主按钮（GitHub 登录）— 纯黑 */
   --color-btn-primary-text: #fff;
   --color-btn-primary-bg: #222222;
@@ -60,17 +61,21 @@
   --color-fg-default: #24292f;
   --color-fg-muted: #57606a;
   --color-fg-subtle: #6e7781;
+  /* 背景 */
   --color-canvas-default: #fff;
   --color-canvas-overlay: #fff;
   --color-canvas-inset: #fff;
   --color-canvas-subtle: #fff;
+  /* 边框 */
   --color-border-default: #eee;
   --color-border-muted: #eee;
+  /* 强调色 */
   --color-neutral-muted: rgb(175 184 193 / 20%);
   --color-accent-fg: #222222;
-  --color-accent-emphasis: #eee;
+  --color-accent-emphasis: #222222;
   --color-accent-muted: #eee;
   --color-accent-subtle: #fff;
+
   --color-success-fg: #1a7f37;
   --color-attention-fg: #9a6700;
   --color-danger-fg: #cf222e;
@@ -78,12 +83,12 @@
   --color-danger-subtle: #ffebe9;
   --color-primer-shadow-inset: inset 0 1px 0 rgb(208 215 222 / 20%);
   --color-primer-shadow-focus: 0 0 0 3px rgb(9 105 218 / 30%);
-  --color-scale-gray-1: #eaeef2;
+  --color-scale-gray-1: #eee;
   --color-scale-blue-1: #eee;
 
   /*! Extensions from @primer/css/alerts/flash.scss */
-  --color-social-reaction-bg-hover: var(--color-scale-gray-1);
-  --color-social-reaction-bg-reacted-hover: var(--color-scale-blue-1);
+  --color-social-reaction-bg-hover: #eee;
+  --color-social-reaction-bg-reacted-hover: #eee;
 
   color-scheme: light;
 }
@@ -197,9 +202,7 @@ input:focus {
 main .gsc-comment-box {
   border-color: #eee;
 }
-main .gsc-comment-box-tabs {
-  border-color: #eee;
-}
+
 /* 表情反应行居中 */
 .gsc-reactions-opaque {
   display: flex;
@@ -207,6 +210,8 @@ main .gsc-comment-box-tabs {
   flex-wrap: wrap;
   gap: 6px;
   margin-bottom: 4px;
+  background:fixed;
+  border-color: #eee;
 }
 
 .gsc-social-reaction-summary-item {
@@ -245,7 +250,7 @@ main .gsc-comment-box-tabs {
 
 .gsc-comment-box-tabs .btn:hover {
   color: #1a1a1a;
-  background: #f0ede8;
+  background: #fff;
 }
 .gsc-comment-box-tabs .btn[aria-selected="true"],
 .gsc-comment-box-tabs .btn.selected {
