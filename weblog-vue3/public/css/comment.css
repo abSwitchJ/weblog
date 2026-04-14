@@ -272,23 +272,31 @@ main .gsc-left-header .color-text-secondary,
 } */
 
 /* 文本输入区域（textarea） */
-.gsc-comment-box-textarea,
+main .gsc-comment-box-textarea {
+  border-color: #eee;
+}
+.form-control {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  font-size: 15px;
+}
+/* .gsc-comment-box-textarea,
 .form-control {
   border: none !important;
   border-radius: 0;
   background: #fff;
   font-family: Georgia, 'Times New Roman', "Songti SC", "SimSun", serif;
-  /* font-size: 15px;
+  font-size: 15px;
   line-height: 1.8;
   padding: 12px 14px;
   resize: vertical;
   min-height: 80px;
   max-height: 400px;
   width: 100%;
-  box-sizing: border-box; */
+  box-sizing: border-box;
   color: #333;
   border-bottom: #ccc !important;
-}
+} */
 
 /* 输入区占位文字颜色 */
 .gsc-comment-box-textarea::placeholder {
@@ -310,7 +318,7 @@ input:focus {
   justify-content: flex-end;
   align-items: center;
   padding: 10px 14px;
-  border-top: 1px solid #eee;
+  /* border-top: 1px solid #eee; */
   background: #fff;
   gap: 8px;
 }
