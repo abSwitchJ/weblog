@@ -260,7 +260,7 @@ const handleMouseLeave = (event) => {
 
 .np-page {
     background-color: #f5f5f0;
-    padding: 30px 20px;
+    padding: 30px 20px 10px;
     min-height: 60vh;
 }
 
@@ -272,17 +272,20 @@ const handleMouseLeave = (event) => {
     max-width: 1000px;
     margin: 0 auto;
     background: #fff;
-    padding: 50px 60px;
+    padding: 50px 60px 20px;
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.12);
 }
 .giscus-container {
     max-width: 1000px;
-    margin: -20px auto 30px;
+    margin: 0 auto 30px;
     background: #fff;
     padding: 14px 20px 10px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
 }
+/* .giscus-container.dark {
+    background-color: #111;
+} */
 .comment-welcome {
     text-align: center;
     font-size: 22px;
