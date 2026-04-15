@@ -319,7 +319,7 @@ input:focus {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  padding: 10px 14px;
+  /* padding: 10px 14px; */
   /* border-top: 1px solid #eee; */
   background: #fff;
   gap: 8px;
