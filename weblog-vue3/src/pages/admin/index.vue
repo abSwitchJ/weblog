@@ -212,7 +212,7 @@ getPublishArticleStatisticsInfo().then((res) => {
         articlePublishInfo.value = res.data
     }
 })
-
+console.log(articlePublishInfo)
 // 近一周文章 PV 数据
 const articlePVInfo = ref({})
 getArticlePVStatisticsInfo().then((res) => {
