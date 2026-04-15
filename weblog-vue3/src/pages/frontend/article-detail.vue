@@ -96,26 +96,26 @@
             
         </div>
         
-
-    </div>
-
-    <div class="giscus-container" :class="{ 'dark': isDark }">
-        <!-- 评论区（报纸组件外） -->
-        <div class="np-comments">
-            <Giscus
-                v-bind="config"
-                mapping="pathname"
-                strict="0"
-                reactions-enabled="1"
-                emit-metadata="1"
-                input-position="top"
-                :theme="giscusTheme"
-                lang="zh-CN"
-                loading="lazy"
-                crossorigin="anonymous"
-            />
+        <div class="giscus-container" :class="{ 'dark': isDark }">
+            <!-- 评论区（报纸组件外） -->
+            <div class="np-comments">
+                <Giscus
+                    v-bind="config"
+                    mapping="pathname"
+                    strict="0"
+                    reactions-enabled="1"
+                    emit-metadata="1"
+                    input-position="top"
+                    :theme="giscusTheme"
+                    lang="zh-CN"
+                    loading="lazy"
+                    crossorigin="anonymous"
+                />
+            </div>
         </div>
     </div>
+
+
     <!-- 返回顶部 -->
     <ScrollToTopButton></ScrollToTopButton>
 
@@ -270,15 +270,15 @@ const handleMouseLeave = (event) => {
 
 .np-container {
     max-width: 1000px;
-    margin: 0 auto;
+    margin: 0 auto 30px;
     background: #fff;
-    padding: 50px 60px 20px;
+    padding: 30px 60px 30px;
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.12);
 }
 .giscus-container {
     max-width: 1000px;
     margin: 0 auto 30px;
-    background: #fff;
+    background-color: #fff;
     padding: 14px 20px 10px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
