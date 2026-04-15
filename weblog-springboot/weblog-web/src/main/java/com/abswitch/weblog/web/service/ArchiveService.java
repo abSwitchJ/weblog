@@ -1,7 +1,6 @@
 package com.abswitch.weblog.web.service;
 
 import com.abswitch.weblog.common.utils.Response;
-import com.abswitch.weblog.web.model.vo.FindIndexArticleOrArchivePageListReqVO;
 
 /**
  * @Author：abSwitch
@@ -10,5 +9,5 @@ import com.abswitch.weblog.web.model.vo.FindIndexArticleOrArchivePageListReqVO;
  * @Description：
  */
 public interface ArchiveService {
-    Response findArchivePageList(FindIndexArticleOrArchivePageListReqVO findArchiveArticlePageListReqVO);
+    Response findArchiveList();
 }

@@ -2,14 +2,11 @@ package com.abswitch.weblog.web.controller;
 
 import com.abswitch.weblog.common.aspect.ApiOperationLog;
 import com.abswitch.weblog.common.utils.Response;
-import com.abswitch.weblog.web.model.vo.FindIndexArticleOrArchivePageListReqVO;
 import com.abswitch.weblog.web.service.ArchiveService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -26,10 +23,9 @@ public class ArchiveController {
     private ArchiveService archiveService;
 
     @PostMapping("/archive/list")
-    @ApiOperationLog(description = "获取文章归档分页数据")
-    @Operation(summary = "获取文章归档分页数据")
-    public Response findArchivePageList(@RequestBody FindIndexArticleOrArchivePageListReqVO findArchiveArticlePageListReqVO){
-
-        return archiveService.findArchivePageList(findArchiveArticlePageListReqVO);
+    @ApiOperationLog(description = "获取文章归档数据")
+    @Operation(summary = "获取文章归档数据")
+    public Response findArchiveList() {
+        return archiveService.findArchiveList();
     }
 }

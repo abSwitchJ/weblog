@@ -23,11 +23,9 @@ public interface ArticleConvert {
      */
     ArticleConvert INSTANCE = Mappers.getMapper(ArticleConvert.class);
     //DO转VO
-    @Mapping(target = "isTop", expression = "java(articleDO.getWeight()>0)")
     @Mapping(target = "createDate", expression = "java(java.time.LocalDate.from(articleDO.getCreateTime()))")
     FindIndexArticlePageListRspVO convertDO2VO(ArticleDO articleDO);
 
-    @Mapping(target = "createMonth", expression = "java(java.time.YearMonth.from(articleDO.getCreateTime()))")
     @Mapping(target = "createDate", expression = "java(java.time.LocalDate.from(articleDO.getCreateTime()))")
     FindArchiveArticleRspVO convertDO2ArchiveVO(ArticleDO articleDO);
 

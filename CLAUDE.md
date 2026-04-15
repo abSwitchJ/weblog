@@ -2,6 +2,8 @@
 
 本文件为 Claude Code (claude.ai/code) 在该仓库中工作时提供指导。
 
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 ## 仓库结构
 
 这是一个包含两个子项目的 monorepo：
@@ -22,6 +24,20 @@ npm run preview   # 预览生产构建
 
 本项目未配置测试运行器。
 
+### Vite 配置要点
+
+- `@` 别名指向 `src/`
+- Element Plus 通过 `unplugin-auto-import` 和 `unplugin-vue-components` 自动导入，组件无需手动 import
+- ECharts 通过 `vite-plugin-cdn-import` 从 CDN（bootcdn）加载，在构建时排除打包——不要在代码中 `import echarts`，直接使用全局变量 `echarts`
+- `__GISCUS_CONFIG__` 在 `vite.config.js` 的 `define` 中全局定义，包含 Giscus 仓库配置（repo、repoId、category、categoryId）
+- 生产构建通过 `vite-plugin-compression` 启用 gzip 压缩（JS/CSS 文件 >1KB）
+
+### 环境变量
+
+- `.env.development`：`VITE_APP_BASE_API='/api'`（Vite 代理到 `localhost:8080`，去掉 `/api` 前缀后转发）
+- `.env.production`：`VITE_APP_BASE_API='https://www.abswitchj.com/api'`
+- `src/axios.js` 中通过 `import.meta.env.VITE_APP_BASE_API` 读取作为 Axios 的 `baseURL`
+
 ### 架构概览
 
 **入口**：`src/main.js` → 挂载 Vue 应用，注册插件（Pinia、Router、Element Plus 等）
@@ -39,9 +55,21 @@ npm run preview   # 预览生产构建
 - `blogsettings.js` — 博客配置，获取一次后缓存
 - `menu.js` — 管理后台侧边栏宽度状态
 
+**Composables**（`src/composables/`）：
+- `cookie.js` — `getToken()` / `setToken()` / `removeToken()` 管理 JWT cookie（key 为 `Authorization`）；`getTabList()` / `setTabList()` 管理后台标签页 cookie
+- `util.js` — `showMessage()` 封装 ElMessage；`showModel()` 封装 ElMessageBox 确认弹窗；`showPageLoading()` / `hidePageLoading()` 封装 nprogress
+- `useTabList.js` — 后台标签页导航 hook，管理标签页的打开、关闭、切换，始终保留 `/admin/index` 仪表盘标签
+
 **API 层**（`src/api/`）：分为 `admin/`（需认证）和 `frontend/`（公开）。所有调用均使用 POST，包括读取操作。
 
-**页面**（`src/pages/frontend/` 和 `src/pages/admin/`）：每个页面一个 Vue SFC 文件。管理页面使用 `src/layouts/admin/admin.vue` 共享布局。
+**页面布局**：
+- **后台页面**（`src/pages/admin/`）：嵌套在 `/admin` 路由下，由 `src/layouts/admin/admin.vue` 统一包裹，包含 AdminMenu、AdminHeader、AdminFooter、AdminTagList 四个子组件，KeepAlive 最多缓存 10 个页面实例
+- **前台页面**（`src/pages/frontend/`）：无统一布局包裹组件，各页面手动引入 `src/layouts/frontend/components/` 下的布局组件：
+  - 所有前台页面引入 Header、Footer
+  - 列表类页面（index、archive-list、category-list、tag-list、category-article-list、tag-article-list）额外引入 UserInfoCard、CategoryListCard、TagListCard、ScrollToTopButton
+  - article-detail 引入 ScrollToTopButton、Toc（目录组件）
+
+**深色模式**：使用 VueUse 的 `useDark()` composable，配合 Tailwind 的 class 策略，切换 `<html>` 元素上的 `dark` class。Element Plus 暗色主题通过 `main.js` 中引入 `element-plus/theme-chalk/dark/css-vars.css` 实现。
 
 **主要依赖**：Element Plus（UI）、md-editor-v3（Markdown 编辑器/渲染器）、ECharts（Dashboard 图表）、Giscus（文章评论）、Tailwind CSS、GSAP（动画）、highlight.js、v-viewer（图片灯箱）。
 
@@ -51,7 +79,15 @@ npm run preview   # 预览生产构建
 { "success": true, "data": { ... }, "message": "" }
 ```
 
-错误通过 `src/composables/util.js` 中的 Element Plus `ElMessage` 展示。
+错误通过 `src/composables/util.js` 的 `showMessage()` 展示（封装 Element Plus ElMessage）。
+
+### 关键注意事项
+
+- 博客设置在**每次**非管理端路由切换时都会调用 `getBlogSettings()` 重新请求（在 `src/permission.js` 的 `beforeEach` 守卫中），非一次性缓存
+- 登录状态仅依赖 cookie 中 token 的存在与否（通过 `getToken()` 判断），无响应式认证状态，token 过期只在收到 401 响应时才被清除并刷新页面
+- 每个路由必须定义 `meta.title`，`permission.js` 的 `afterEach` 将其拼接为 `{meta.title} - Weblog` 作为页面标题
+- 天爱验证码 SDK 通过 `<script>` 标签从后端 `/tac/js/tac.min.js` 加载，不是 npm 包，相关组件为 `src/components/Captcha.vue`
+- 分页参数模式（`current`、`size`、`total`）在各列表页面重复实现，无共享分页组件
 
 ---
 
@@ -98,47 +134,66 @@ MapStruct 转换器（`*Convert.java`）负责 web 模块和 admin 模块中的 
 
 **文件**：`src/pages/frontend/article-detail.vue`
 
-文章详情页采用**复古报纸排版风格**，具体规则如下：
+文章详情页采用**复古报纸排版风格**：Georgia 衬线字体、米黄色页面背景、白色报纸容器（最大宽度 1100px）、`2fr 1fr` 两列 grid（文章正文 + 右侧 Toc 目录）、双线分隔报头、两端对齐正文排版。移动端折叠为单列。具体 CSS 规格（颜色值、字号、边框粗细）参见组件文件内的 `<style>` 部分。
 
-### 布局结构
-- 页面背景：米黄色 `#f5f5f0`（深色模式 `#111`）
-- 报纸容器：白色背景 + `box-shadow`，最大宽度 `1100px`，居中显示
-- 主内容区：`2fr 1fr` 两列 grid（文章正文 + 右侧目录）
-- 移动端：两列折叠为单列
+Giscus 评论区位于报纸容器外部独立渲染，自定义样式在 `public/css/comment.css` 中定义。
 
-### 报头（Masthead）
-- 文章标题：居中，Georgia/衬线字体，2.6em，letter-spacing
-- 双线分隔：`border-top: 3px double #1a1a1a`
-- 发布信息行（byline）：斜体，格式为 `日期 · 分类   `左对齐， ` 字数 · 阅读时长 `右对齐
+深色模式（`useDark`）全程支持，highlight.js 代码高亮、代码复制按钮、`v-viewer` 图片灯箱保留。
 
-### 文章内容排版
-- 正文段落：`text-align: justify`（两端对齐）+ Georgia 衬线字体
-- `h2` 标题：全大写 + `text-transform: uppercase` + 2px 粗实线底边
-- `h3` 标题：衬线粗体，无下划线
-- `blockquote`：浅米黄背景 `#f8f7f4` + 4px 左实线边框
+## 前台index页设计规范
 
-### 侧边栏
-- **文章目录（`Toc` 组件）**，可折叠
-- `Toc` 使用 `::v-deep` 覆盖背景色以匹配报纸风格（浅米黄 `#faf9f7`）
+**文件**：`src/pages/frontend/index.vue`
 
-### 上下篇导航
+首页采用卡片式文章列表、 居中单列布局：米黄色\#f7f7f4页面背景、每一篇文章都是一个 独立卡片（最大宽度 1100px、高度适应显示的标题和摘要、白色背景）每个卡片内部是：
 
-- 在文章内容结尾下方
+标题（  color: #1a1a1a;font-family: Georgia, 'Times New Roman', "Songti SC", "SimSun", "STSong", serif;）
 
-### Giscus 评论区
+日期（格式：yyyy-MM-dd，灰色小号字体，由【】包围）摘要（正文黑色）
 
-**样式文件**：`public/css/comment.css`
+标题日期正摘要对齐，日期后面接摘要
 
-位于上下篇导航下方、报纸容器组件之外，独立渲染。样式分四个区域：
+每页含十个卡片，卡片间间隔10px，不需要显示页码
 
-- **顶部**：隐藏原生标题栏，用 `::after` 伪元素将 reaction 计数替换为”欢迎一起交流~”欢迎语
-- **评论列表**：字号 15px，行高 1.8，时间线细线
-- **输入框**：带边框圆角外框，Tab 选中态有黑色底线，去掉 focus 光晕
-- **按钮**：纯黑背景，无阴影无边框，圆角
+当没有上一页或下一页时不需要出现上一页或下一页的组件
 
-整体配色：白色背景，浅灰边框（`#eee`），黑色主色调（`#222`），字体与正文一致。
+下一页组件胶囊状黑色背景置于页尾，、字体为白色，和卡片式文章列表右对齐
 
-### 保留元素
-- `Header`、`Footer`、`ScrollToTopButton` 组件不变
-- highlight.js 代码高亮、代码复制按钮、`v-viewer` 图片灯箱保留
-- 深色模式（`useDark`）全程支持
+上一页组件胶囊状黑色背景置于页尾，、字体为白色，和卡片式文章列表左对齐
+
+## 前台归档页设计规范
+
+**文件**：`src/pages/frontend/archive.vue`
+
+archive采用时间节点居中单列纵向布局：米黄色\#f7f7f4页面背景
+
+（color: #1a1a1a;font-family: Georgia, 'Times New Roman', "Songti SC", "SimSun", "STSong", serif;）
+
+下面这个设计的最大宽度为 600px
+
+```
+yyyy
+mm  
+    dd 文章标题
+```
+
+所有文章都要全部显示在归档页，不可分页
+
+## 前台页脚
+
+**文件**：`src\layouts\frontend\components\Footer.vue`
+
+不需要页脚组件，把页脚的内容© 2026 [abSwitchJ](https://www.abswitchj.com) · 备案号：[赣ICP备2026006527号]([ICP/IP地址/域名信息备案管理系统](https://beian.miit.gov.cn/#/Integrated/index))
+
+放到最底部居中
+
+## 前台导航栏
+
+**文件**：`src\layouts\frontend\components\Header.vue`
+
+水平flex布局：白色背景#fff，最大宽度为 1100px，两端对齐
+
+左侧分别是：abSwitchJ：跳转主页、Archive：跳转归档页：https://abswitchj.com/archive、GitHub：跳转https://github.com/abSwitchJ、Twitter：跳转https://x.com/AbswitchJ、About：跳转https://abswitchj.com/about（自我介绍页面）
+
+右侧是分别是：搜索符号（一个放大镜）、中英文转换按钮（当前页面为中文时显示En/当前为英文时显示中）
+
+向下滚动时导航栏自动收起（隐藏），向上滚动时自动出现（展开）。

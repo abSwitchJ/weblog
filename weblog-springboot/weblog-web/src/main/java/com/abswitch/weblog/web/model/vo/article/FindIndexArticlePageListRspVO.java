@@ -1,13 +1,11 @@
 package com.abswitch.weblog.web.model.vo.article;
 
-import com.abswitch.weblog.web.model.vo.FindCategoryOrTagListRspVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
 
 /**
  * @Author：abSwitch
@@ -28,11 +26,6 @@ public class FindIndexArticlePageListRspVO {
     private Long id;
 
     /**
-     * 文章封面
-     */
-    private String cover;
-
-    /**
      * 文章标题
      */
     private String title;
@@ -46,20 +39,5 @@ public class FindIndexArticlePageListRspVO {
      * 文章摘要
      */
     private String summary;
-
-    /**
-     * 文章标签
-     */
-    private List<FindCategoryOrTagListRspVO> tags;
-
-    /**
-     * 文章分类
-     */
-    private FindCategoryOrTagListRspVO category;
-
-    /**
-     * 文章置顶
-     */
-    private Boolean isTop;
 
 }

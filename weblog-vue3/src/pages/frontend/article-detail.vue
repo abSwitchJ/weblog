@@ -259,7 +259,7 @@ const handleMouseLeave = (event) => {
    =========================== */
 
 .np-page {
-    background-color: #f5f5f0;
+    background-color: #f7f7f4;
     padding: 30px 20px 10px;
     min-height: 60vh;
 }
@@ -367,7 +367,7 @@ const handleMouseLeave = (event) => {
 /* 双线分隔 */
 .np-hrule-double {
     border: none;
-    border-top: 3px double #1a1a1a;
+    border-top: 2px double #1a1a1a;
     margin: 10px 0;
 }
 

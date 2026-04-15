@@ -1,153 +1,208 @@
 <template>
     <Header></Header>
 
-    <!-- 主内容区域 -->
-    <main class="container max-w-screen-xl mx-auto px-4 md:px-6 py-4">
-        <!-- grid 表格布局，分为 4 列 -->
-        <div class="grid grid-cols-4 gap-7">
-            <!-- 左边栏，占用 3 列 -->
-            <div class="col-span-4 md:col-span-3 mb-3">
-                <!-- 归档列表 -->
-                <div v-for="(archive, index) in archives" :key="index" class="p-5 mb-4 border border-gray-200 rounded-lg bg-white dark:bg-gray-800 dark:border-gray-700">
-                    <time class="text-lg font-semibold text-gray-900 dark:text-white">{{ archive.month }}</time>
-                    <ol class="mt-3 divide-y divider-gray-200 dark:divide-gray-700">
-                        <li v-for="(article, index2) in archive.articles" :key="index2">
-                            <a @click="goArticleDetailPage(article.id)" class="items-center block p-3 sm:flex hover:bg-gray-100 
-                            hover:rounded-lg dark:hover:bg-gray-700">
-                                <img class="w-24 h-12 mb-3 mr-3 rounded-lg sm:mb-0"
-                                    :src="article.cover"/>
-                                <div class="text-gray-600 dark:text-gray-400">
-                                    <h2 class="text-base font-normal text-gray-900 dark:text-white">
-                                        {{ article.title }}
-                                    </h2>
-                                    <span
-                                        class="inline-flex items-center text-xs font-normal text-gray-500 dark:text-gray-400">
-                                        <svg class="inline w-2.5 h-2.5 mr-2 text-gray-400"
-                                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                            viewBox="0 0 20 20">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M5 1v3m5-3v3m5-3v3M1 7h18M5 11h10M2 3h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" />
-                                        </svg>
-                                        {{ article.createDate }}
-                                    </span>
-                                </div>
-                            </a>
-                        </li>
-                    </ol>
+    <div class="np-archive-page" :class="{ 'dark': isDark }">
+        <div class="np-archive-container">
+
+            <div v-for="yearGroup in archives" :key="yearGroup.year" class="np-archive-year-group">
+                <h2 class="np-archive-year" :id="'year-' + yearGroup.year" @click="scrollTo('year-' + yearGroup.year)">
+                    {{ yearGroup.year }}
+                </h2>
+
+                <div v-for="(monthArticles, month) in groupByMonth(yearGroup.articles)" :key="month"
+                     class="np-archive-month-group">
+                    <h3 class="np-archive-month" :id="'month-' + yearGroup.year + '-' + month" @click="scrollTo('month-' + yearGroup.year + '-' + month)">
+                        {{ month }}
+                    </h3>
+
+                    <div v-for="(dayArticles, day) in groupByDay(monthArticles)" :key="day"
+                         class="np-archive-day-group">
+                        <span class="np-archive-day">{{ day }}</span>
+                        <div class="np-archive-titles">
+                            <div v-for="article in dayArticles" :key="article.id" class="np-archive-item">
+                                <a class="np-archive-title" @click="goArticleDetailPage(article.id)">{{ article.title }}</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <!-- 分页 -->
-                <nav aria-label="Page navigation example" class="mt-10 flex justify-center" v-if="pages > 1">
-                    <ul class="flex items-center -space-x-px h-10 text-base">
-                        <!-- 上一页 -->
-                        <li>
-                            <a @click="getArchives(current - 1)"
-                                class="flex items-center justify-center px-4 h-10 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                                :class="[current > 1 ? '' : 'cursor-not-allowed']"
-                                >
-
-                                <span class="sr-only">上一页</span>
-                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 6 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M5 1 1 5l4 4" />
-                                </svg>
-                            </a>
-                        </li>
-                        <!-- 页码 -->
-                        <li v-for="(pageNo, index) in pages" :key="index">
-                            <a @click="getArchives(pageNo)"
-                                class="flex items-center justify-center px-4 h-10 leading-tight border  dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                                :class="[pageNo == current ? 'text-blue-600  bg-blue-50 border-blue-300 hover:bg-blue-100 hover:text-blue-700' : 'text-gray-500 border-gray-300 bg-white hover:bg-gray-100 hover:text-gray-700']"
-                                >
-                                {{ index + 1 }}
-                            </a>
-                        </li>
-                        <!-- 下一页 -->
-                        <li>
-                            <a @click="getArchives(current + 1)"
-                                class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                                :class="[current < pages ? '' : 'cursor-not-allowed']"
-                                >
-                                <span class="sr-only">下一页</span>
-                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 6 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m1 9 4-4-4-4" />
-                                </svg>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-
             </div>
 
-            <!-- 右边侧边栏，占用一列 -->
-            <aside class="col-span-4 md:col-span-1">
-                <div class="sticky top-[5.5rem]">
-                    <!-- 博主信息 -->
-                    <UserInfoCard></UserInfoCard>
-
-                    <!-- 分类 -->
-                    <CategoryListCard></CategoryListCard>
-
-                    <!-- 标签 -->
-                    <TagListCard></TagListCard>
-                </div>
-            </aside>
         </div>
+    </div>
 
-    </main>
-
-    <!-- 返回顶部 -->
     <ScrollToTopButton></ScrollToTopButton>
-
     <Footer></Footer>
 </template>
 
 <script setup>
 import Header from '@/layouts/frontend/components/Header.vue'
 import Footer from '@/layouts/frontend/components/Footer.vue'
-import UserInfoCard from '@/layouts/frontend/components/UserInfoCard.vue'
-import TagListCard from '@/layouts/frontend/components/TagListCard.vue'
-import CategoryListCard from '@/layouts/frontend/components/CategoryListCard.vue'
 import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
-import { getArchivePageList } from '@/api/frontend/archive'
+import { getArchiveList } from '@/api/frontend/archive'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useDark } from '@vueuse/core'
 
 const router = useRouter()
+const isDark = useDark()
 
-// 文章归档
 const archives = ref([])
-// 当前页码
-const current = ref(1)
-// 每页显示的文章数
-const size = ref(10)
-// 总文章数
-const total = ref(0)
-// 总共多少页
-const pages = ref(0)
 
-function getArchives(currentNo) {
-    // 上下页是否能点击判断，当要跳转上一页且页码小于 1 时，则不允许跳转；当要跳转下一页且页码大于总页数时，则不允许跳转
-    if (currentNo < 1 || (pages.value > 0 && currentNo > pages.value)) return
-    // 调用分页接口渲染数据
-    getArchivePageList({current: currentNo, size: size.value}).then((res) => {
-        if (res.success) {
-            archives.value = res.data
-            current.value = res.current
-            size.value = res.size
-            total.value = res.total
-            pages.value = res.pages
-        }
-    })
+getArchiveList().then((res) => {
+    if (res.success) {
+        archives.value = res.data
+    }
+})
+
+function groupByMonth(articles) {
+    const map = {}
+    for (const article of articles) {
+        const month = article.createDate.substring(5, 7)
+        if (!map[month]) map[month] = []
+        map[month].push(article)
+    }
+    const sorted = {}
+    Object.keys(map).sort((a, b) => b.localeCompare(a)).forEach(k => sorted[k] = map[k])
+    return sorted
 }
-getArchives(current.value)
 
-// 跳转文章详情页
+// 按天分组，返回按天倒序的对象
+function groupByDay(articles) {
+    const map = {}
+    for (const article of articles) {
+        const day = article.createDate.substring(8, 10)
+        if (!map[day]) map[day] = []
+        map[day].push(article)
+    }
+    const sorted = {}
+    Object.keys(map).sort((a, b) => b.localeCompare(a)).forEach(k => sorted[k] = map[k])
+    return sorted
+}
+
 const goArticleDetailPage = (id) => {
     router.push('/article/' + id)
 }
+
+const scrollTo = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'instant' })
+}
 </script>
+
+<style scoped>
+.np-archive-page {
+    background-color: #f7f7f4;
+    padding: 30px 20px 40px;
+    min-height: 60vh;
+}
+
+.np-archive-page.dark {
+    background-color: #111;
+}
+
+.np-archive-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* 年份：左对齐，无缩进 */
+.np-archive-year {
+    color: #1a1a1a;
+    font-size: 2em;
+    font-weight: 700;
+    margin: 0 0 8px;
+    padding-top: 24px;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+.np-archive-year-group:first-child .np-archive-year {
+    padding-top: 0;
+}
+
+.np-archive-page.dark .np-archive-year {
+    color: #e8e8e8;
+}
+
+/* 月份：左对齐，无缩进 */
+.np-archive-month {
+    color: #333;
+    font-size: 1.1em;
+    font-weight: 600;
+    margin: 14px 0 6px;
+    cursor: pointer;
+}
+
+.np-archive-page.dark .np-archive-month {
+    color: #bbb;
+}
+
+/* 日+标题行：flex 布局，日左边缩进对齐年份右边（约 4em） */
+.np-archive-day-group {
+    display: flex;
+    align-items: flex-start;
+    padding-left: 6em;
+    line-height: 2;
+}
+
+/* 日：固定宽度，每行左对齐 */
+.np-archive-day {
+    min-width: 1em;
+    flex-shrink: 0;
+    color: #999;
+    font-size: 0.95em;
+}
+
+.np-archive-page.dark .np-archive-day {
+    color: #666;
+}
+
+/* 标题容器：tab 间距 */
+.np-archive-titles {
+    padding-left: 2em;
+}
+
+/* 同一天多篇文章各占一行，标题左对齐 */
+.np-archive-item {
+    line-height: 2;
+}
+
+.np-archive-title {
+    color: #1a1a1a;
+    font-size: 1em;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.15s;
+    padding-left: 0em;  /* 调大/调小 */
+}
+
+.np-archive-title:hover {
+    text-decoration: underline;
+    color: #555;
+}
+
+.np-archive-page.dark .np-archive-title {
+    color: #ccc;
+}
+
+.np-archive-page.dark .np-archive-title:hover {
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .np-archive-page {
+        padding: 16px 10px 30px;
+    }
+
+    .np-archive-year {
+        font-size: 1.6em;
+    }
+
+    .np-archive-month {
+        font-size: 1em;
+    }
+
+    .np-archive-day-group {
+        padding-left: 2.5em;
+    }
+}
+</style>

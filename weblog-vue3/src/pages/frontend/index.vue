@@ -2,129 +2,41 @@
     <Header></Header>
 
     <!-- 主内容区域 -->
-    <main class="container max-w-screen-xl mx-auto px-4 md:px-6 py-4">
-        <!-- grid 表格布局，分为 4 列 -->
-        <div class="grid grid-cols-4 gap-7">
-            <!-- 左边栏，占用 3 列 -->
-            <div class="col-span-4 md:col-span-3 mb-3">
-                <!-- 文章列表，grid 表格布局，分为 2 列 -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div v-for="(article, index) in articles" :key="index" class="col-span-2 md:col-span-1 animate__animated animate__fadeInUp">
-                        <div class="relative bg-white hover:scale-[1.03] h-full border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                            <!-- 文章封面 -->
-                            <a @click="goArticleDetailPage(article.id)" class="cursor-pointer">
-                                <img class="rounded-t-lg h-48 w-full"
-                                    :src="article.cover" />
-                            </a>
-                            <div class="p-5">
-                                <!-- 标签 -->
-                                <div class="mb-3">
-                                    <span v-for="(tag, tagIndex) in article.tags" :key="tagIndex" @click="goTagArticleListPage(tag.id, tag.name)"
-                                        class="cursor-pointer bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 
-                                        rounded hover:bg-green-200 hover:text-green-900 dark:bg-green-900 
-                                        dark:hover:bg-green-950
-                                        dark:text-green-300">
-                                        {{ tag.name }}
-                                    </span>
-                                </div>
-                                <!-- 文章标题 -->
-                                <a @click="goArticleDetailPage(article.id)" class="cursor-pointer">
-                                    <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                        <span class="hover:border-gray-600 hover:border-b-2 dark:hover:border-gray-400">{{ article.title }}</span>
-                                    </h2>
-                                </a>
-                                <!-- 文章摘要 -->
-                                <p v-if="article.summary" class="mb-3 font-normal text-gray-500 dark:text-gray-400">{{ article.summary }}</p>
-                                <!-- 文章发布时间、所属分类 -->
-                                <p class="flex items-center font-normal text-gray-400 text-sm dark:text-gray-400">
-                                    <!-- 发布时间 -->
-                                    <svg class="inline w-3 h-3 mr-2 text-gray-400" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M5 1v3m5-3v3m5-3v3M1 7h18M5 11h10M2 3h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" />
-                                    </svg>
-                                    {{ article.createDate }}
+    <div class="np-index-page" :class="{ 'dark': isDark }">
+        <div class="np-index-container">
 
-                                    <!-- 所属分类 -->
-                                    <svg class="inline w-3 h-3 ml-5 mr-2 text-gray-400" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M1 5v11a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H1Zm0 0V2a1 1 0 0 1 1-1h5.443a1 1 0 0 1 .8.4l2.7 3.6H1Z" />
-                                    </svg>
-                                    <a @click="goCategoryArticleListPage(article.category.id, article.category.name)" class="cursor-pointer text-gray-400 hover:underline">{{ article.category.name }}</a>
-                                </p>
-                            </div>
-                            <!-- 是否置顶 -->
-                            <div v-if="article.isTop" class="absolute inline-flex items-center justify-center w-14 h-7 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">
-                                置顶
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- 分页 -->
-                <nav aria-label="Page navigation example" class="mt-10 flex justify-center">
-                    <ul class="flex items-center -space-x-px h-10 text-base">
-                        <!-- 上一页 -->
-                        <li>
-                            <a @click="getArticles(current - 1)"
-                                class="flex items-center justify-center px-4 h-10 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                                :class="[current > 1 ? '' : 'cursor-not-allowed']"
-                                >
+            <!-- 文章卡片列表 -->
+            <div v-for="(article, index) in articles" :key="index"
+                 class="np-index-card"
+                 @click="goArticleDetailPage(article.id)">
 
-                                <span class="sr-only">上一页</span>
-                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 6 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M5 1 1 5l4 4" />
-                                </svg>
-                            </a>
-                        </li>
-                        <!-- 页码 -->
-                        <li v-for="(pageNo, index) in pages" :key="index">
-                            <a @click="getArticles(pageNo)"
-                                class="flex items-center justify-center px-4 h-10 leading-tight border  dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                                :class="[pageNo == current ? 'text-sky-600  bg-sky-50 border-sky-500 hover:bg-sky-100 hover:text-sky-700' : 'text-gray-500 border-gray-300 bg-white hover:bg-gray-100 hover:text-gray-700']"
-                                >
-                                {{ index + 1 }}
-                            </a>
-                        </li>
-                        <!-- 下一页 -->
-                        <li>
-                            <a @click="getArticles(current + 1)"
-                                class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                                :class="[current < pages ? '' : 'cursor-not-allowed']"
-                                >
-                                <span class="sr-only">下一页</span>
-                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 6 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m1 9 4-4-4-4" />
-                                </svg>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                <!-- 文章标题 -->
+                <h2 class="np-index-card-title">{{ article.title }}</h2>
+
+                <!-- 日期 + 摘要同行 -->
+                <p class="np-index-card-line2">
+                    <span class="np-index-card-date">【{{ article.createDate }}】</span>
+                    <span v-if="article.summary" class="np-index-card-summary">{{ article.summary }}</span>
+                </p>
+
             </div>
 
+            <!-- 分页 -->
+            <nav v-if="pages > 1" class="np-index-pagination">
+                <a @click="getArticles(current - 1)"
+                   class="np-index-page-btn"
+                   :class="{ 'hidden': current <= 1 }">
+                    上一页
+                </a>
+                <a @click="getArticles(current + 1)"
+                   class="np-index-page-btn"
+                   :class="{ 'hidden': current >= pages }">
+                    下一页
+                </a>
+            </nav>
 
-            <!-- 右边侧边栏，占用一列 -->
-            <aside class="col-span-4 md:col-span-1 animate__animated animate__fadeInUp">
-                <div class="sticky top-[5.5rem]">
-                    <!-- 博主信息 -->
-                    <UserInfoCard></UserInfoCard>
-
-                    <!-- 分类 -->
-                    <CategoryListCard></CategoryListCard>
-
-                    <!-- 标签 -->
-                    <TagListCard></TagListCard>
-                </div>
-            </aside>
+        </div>
     </div>
-
-    </main>
 
     <!-- 返回顶部 -->
     <ScrollToTopButton></ScrollToTopButton>
@@ -135,28 +47,14 @@
 <script setup>
 import Header from '@/layouts/frontend/components/Header.vue'
 import Footer from '@/layouts/frontend/components/Footer.vue'
-import UserInfoCard from '@/layouts/frontend/components/UserInfoCard.vue'
-import CategoryListCard from '@/layouts/frontend/components/CategoryListCard.vue'
-import TagListCard from '@/layouts/frontend/components/TagListCard.vue'
 import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
-import { initTooltips } from 'flowbite'
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { getArticlePageList } from '@/api/frontend/article'
 import { useRouter } from 'vue-router'
+import { useDark } from '@vueuse/core'
 
 const router = useRouter()
-
-// 跳转分类文章列表页
-const goCategoryArticleListPage = (id, name) => {
-    // 跳转时通过 query 携带参数（分类 ID、分类名称）
-    router.push({path: '/category/article/list', query: {id, name}})
-}
-
-
-// initialize components based on data attribute selectors
-onMounted(() => {
-    initTooltips();
-})
+const isDark = useDark()
 
 // 文章集合
 const articles = ref([])
@@ -169,16 +67,11 @@ const total = ref(0)
 // 总共多少页
 const pages = ref(0)
 
-
 function getArticles(currentNo) {
-    // 上下页是否能点击判断，当要跳转上一页且页码小于 1 时，则不允许跳转；当要跳转下一页且页码大于总页数时，则不允许跳转
     if (currentNo < 1 || (pages.value > 0 && currentNo > pages.value)) return
-    // 调用分页接口渲染数据
     getArticlePageList({current: currentNo, size: size.value}).then((res) => {
-        console.log('API响应:', res);
         if (res.success) {
             articles.value = res.data
-            console.log('赋值后的 articles.value:', articles.value);
             current.value = res.current
             size.value = res.size
             total.value = res.total
@@ -192,10 +85,151 @@ getArticles(current.value)
 const goArticleDetailPage = (id) => {
     router.push('/article/' + id)
 }
-
-// 跳转标签文章列表页
-const goTagArticleListPage = (id, name) => {
-    // 跳转时通过 query 携带参数（标签 ID、标签名称）
-    router.push({path: '/tag/article/list', query: {id, name}})
-}
 </script>
+
+<style scoped>
+/* 页面背景 */
+.np-index-page {
+    background-color: #f7f7f4;
+    padding: 30px 20px 40px;
+    min-height: 60vh;
+}
+
+.np-index-page.dark {
+    background-color: #111;
+}
+
+/* 居中容器 */
+.np-index-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* 文章卡片 */
+.np-index-card {
+    background: #fff;
+    padding: 28px 36px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+    border-radius: 8px;
+
+    transition: box-shadow 0.2s ease;
+}
+
+.np-index-card:hover {
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
+}
+
+.np-index-page.dark .np-index-card {
+    background: #1e1e1e;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+}
+
+.np-index-page.dark .np-index-card:hover {
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* 卡片标题 */
+.np-index-card-title {
+    font-family: Georgia, 'Times New Roman', "Songti SC", "SimSun", "STSong", serif;
+    color: #1a1a1a;
+    font-size: 1.5em;
+    font-weight: 700;
+    line-height: 1.35;
+    margin: 0 0 8px;
+    letter-spacing: 0.5px;
+}
+
+.np-index-page.dark .np-index-card-title {
+    color: #e8e8e8;
+}
+
+/* 第二行：日期 + 摘要 */
+.np-index-card-line2 {
+    margin: 0;
+    padding: 0;
+    text-indent: 0;
+    font-size: 0.95em;
+    line-height: 1.7;
+}
+
+/* 日期 */
+.np-index-card-date {
+    color: #999;
+    font-size: 0.88em;
+    letter-spacing: 0.5px;
+    margin-left: -0.35em;
+}
+
+.np-index-page.dark .np-index-card-date {
+    color: #777;
+}
+
+/* 摘要 */
+.np-index-card-summary {
+    color: #333;
+}
+
+.np-index-page.dark .np-index-card-summary {
+    color: #9e9e9e;
+}
+
+/* 分页容器 */
+.np-index-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* 翻页胶囊按钮 */
+.np-index-page-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 0.88em;
+    padding: 8px 20px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    user-select: none;
+}
+
+
+.np-index-page-btn.hidden {
+    visibility: hidden;      /* 隐藏内容但保留占位 */
+    pointer-events: none;    /* 禁止点击 */
+}
+
+.np-index-page.dark .np-index-page-btn {
+    background: #333;
+}
+
+.np-index-page.dark .np-index-page-btn:hover:not(.np-index-page-btn.hidden) {
+    background: #444;
+}
+
+/* 按钮箭头图标 */
+.np-btn-arrow {
+    width: 10px;
+    height: 10px;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .np-index-page {
+        padding: 16px 10px 30px;
+    }
+
+    .np-index-card {
+        padding: 20px 20px;
+    }
+
+    .np-index-card-title {
+        font-size: 1.25em;
+    }
+}
+</style>

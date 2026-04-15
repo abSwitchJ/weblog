@@ -92,6 +92,16 @@ public interface ArticleMapper extends BaseMapper<ArticleDO> {
             @Param("endDate") LocalDate endDate
     );
     /**
+     * 查询所有文章（仅归档所需字段），按创建时间倒序
+     * @return
+     */
+    default List<ArticleDO> selectAllForArchive() {
+        return selectList(Wrappers.<ArticleDO>lambdaQuery()
+                .select(ArticleDO::getId, ArticleDO::getTitle, ArticleDO::getCreateTime)
+                .orderByDesc(ArticleDO::getCreateTime));
+    }
+
+    /**
      * 查询最大权重值记录
      * @return
      */

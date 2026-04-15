@@ -1,14 +1,10 @@
 package com.abswitch.weblog.web.model.vo.archive;
 
-import com.abswitch.weblog.common.model.BasePageQuery;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.List;
 
 /**
@@ -23,7 +19,7 @@ import java.util.List;
 @Builder
 public class FindArchiveArticlePageListRspVO {
 
-    private YearMonth month;
+    private Integer year;
 
     private List<FindArchiveArticleRspVO> articles;
 }

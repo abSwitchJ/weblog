@@ -72,74 +72,11 @@ public class ArticleImpl implements ArticleService {
             return PageResponse.ok(page, Collections.emptyList());
         }
 
-        List<FindIndexArticlePageListRspVO> vos = null;
-
-        // 文章 DO 转 VO
-        vos = articleDOS.stream()
+        // 文章 DO 转 VO（仅 id, title, createDate, summary）
+        List<FindIndexArticlePageListRspVO> vos = articleDOS.stream()
                 .map(ArticleConvert.INSTANCE::convertDO2VO)
                 .collect(Collectors.toList());
 
-        List<Long> articleIds = articleDOS.stream().map(ArticleDO::getId).collect(Collectors.toList());
-
-        // 第二步：设置文章所属分类
-        // 查询所有分类
-        List<CategoryDO> categoryDOS = categoryMapper.selectList(Wrappers.emptyWrapper());
-        // 转 Map, 方便后续根据分类 ID 拿到对应的分类名称
-        Map<Long, String> categoryIdNameMap = categoryDOS.stream().collect(Collectors.toMap(CategoryDO::getId, CategoryDO::getName));
-
-        // 第三步：设置文章标签
-        // 查询所有标签
-        List<TagDO> tagDOS = tagMapper.selectList(Wrappers.emptyWrapper());
-        // 转 Map, 方便后续根据标签 ID 拿到对应的标签名称
-        Map<Long, String> tagIdNameMap = tagDOS.stream().collect(Collectors.toMap(TagDO::getId, TagDO::getName));
-
-        // 文章-分类关联关系按 articleId 分组
-        List<ArticleCategoryRelDO> articleCategoryRelDOS = articleCategoryRelMapper.selectByArticleIds(articleIds);
-        Map<Long, List<ArticleCategoryRelDO>> categoryRelMap = articleCategoryRelDOS.stream()
-                .collect(Collectors.groupingBy(ArticleCategoryRelDO::getArticleId));
-
-        // 文章-标签关联关系按 articleId 分组
-        List<ArticleTagRelDO> articleTagRelDOS = articleTagRelMapper.selectByArticleIds(articleIds);
-        Map<Long, List<ArticleTagRelDO>> tagRelMap = articleTagRelDOS.stream()
-                .collect(Collectors.groupingBy(ArticleTagRelDO::getArticleId));
-
-        vos.forEach(vo -> {
-            Long articleId = vo.getId();
-
-            List<ArticleCategoryRelDO> categoryRelDOS = categoryRelMap.get(articleId);
-
-            List<ArticleTagRelDO> tagRelDOS = tagRelMap.get(articleId);
-
-            if (categoryRelDOS != null && !categoryRelDOS.isEmpty()) {
-                // 一篇文章最多对应一个分类（假设业务如此）
-                ArticleCategoryRelDO categoryRelDO = categoryRelDOS.getFirst();
-                Long categoryId = categoryRelDO.getCategoryId();
-                String categoryName = categoryIdNameMap.get(categoryId);
-                if (categoryName != null) {
-                    FindCategoryOrTagListRspVO categoryVO = FindCategoryOrTagListRspVO.builder()
-                            .id(categoryId)
-                            .name(categoryName)
-                            .build();
-                    vo.setCategory(categoryVO);
-                }
-            }
-            if (tagRelDOS != null && !tagRelDOS.isEmpty()) {
-                List<FindCategoryOrTagListRspVO> tagVOs = tagRelDOS.stream()
-                        .map(tagRelDO -> {
-                            Long tagId = tagRelDO.getTagId();
-                            String tagName = tagIdNameMap.get(tagId);
-                            return FindCategoryOrTagListRspVO.builder()
-                                    .id(tagId)
-                                    .name(tagName)
-                                    .build();
-                        })
-                        .collect(Collectors.toList());
-                vo.setTags(tagVOs);
-            } else {
-                // 没有标签时设置空列表（避免前端 NPE）
-                vo.setTags(Collections.emptyList());
-            }
-        });
         return PageResponse.ok(page, vos);
     }
 
