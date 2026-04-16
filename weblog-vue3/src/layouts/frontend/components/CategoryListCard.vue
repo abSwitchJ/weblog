@@ -67,8 +67,7 @@ const router = useRouter()
 
 // 跳转分类文章列表页
 const goCategoryArticleListPage = (id, name) => {
-    // 跳转时通过 query 携带参数（分类 ID、分类名称）
-    router.push({ path: '/category/article/list', query: { id, name } })
+    router.push('/category/' + encodeURIComponent(name))
 }
 
 // 所有分类

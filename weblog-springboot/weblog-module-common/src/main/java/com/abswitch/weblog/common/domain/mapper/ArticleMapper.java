@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -41,27 +42,29 @@ public interface ArticleMapper extends BaseMapper<ArticleDO> {
     }
 
     /**
-     * 查询上一篇文章
-     * @param articleId
+     * 查询上一篇文章（按发布时间晚于当前文章的最近一篇）
+     * @param createTime 当前文章创建时间
      * @return
      */
-    default ArticleDO selectPreArticle(Long articleId) {
+    default ArticleDO selectPreArticle(LocalDateTime createTime) {
         return selectOne(Wrappers.<ArticleDO>lambdaQuery()
-                .orderByAsc(ArticleDO::getId) // 按文章 ID 升序排列
-                .gt(ArticleDO::getId, articleId) // 查询比当前文章 ID 大的
-                .last("limit 1")); // 第一条记录即为上一篇文章
+                .gt(ArticleDO::getCreateTime, createTime)
+                .orderByAsc(ArticleDO::getCreateTime)
+                .orderByAsc(ArticleDO::getId) // 同秒发布时用 id 稳定排序
+                .last("limit 1"));
     }
 
     /**
-     * 查询下一篇文章
-     * @param articleId
+     * 查询下一篇文章（按发布时间早于当前文章的最近一篇）
+     * @param createTime 当前文章创建时间
      * @return
      */
-    default ArticleDO selectNextArticle(Long articleId) {
+    default ArticleDO selectNextArticle(LocalDateTime createTime) {
         return selectOne(Wrappers.<ArticleDO>lambdaQuery()
-                .orderByDesc(ArticleDO::getId) // 按文章 ID 倒序排列
-                .lt(ArticleDO::getId, articleId) // 查询比当前文章 ID 小的
-                .last("limit 1")); // 第一条记录即为下一篇文章
+                .lt(ArticleDO::getCreateTime, createTime)
+                .orderByDesc(ArticleDO::getCreateTime)
+                .orderByDesc(ArticleDO::getId)
+                .last("limit 1"));
     }
 
     /**

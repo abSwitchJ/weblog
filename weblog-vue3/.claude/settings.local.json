@@ -7,7 +7,8 @@
       "Bash(npm run *)",
       "Bash(npx vite *)",
       "Bash(mvn compile *)",
-      "Bash(mysql --version)"
+      "Bash(mysql --version)",
+      "Bash(grep -n \"中\\\\|英\\\\|搜索\\\\|上一页\\\\|下一页\\\\|返回\\\\|此分类\\\\|飞到月球\\\\|分类\\\\|标签\\\\|文章目录\\\\|文章\\\\|总访问量\\\\|我的\" src/pages/frontend/*.vue src/layouts/frontend/components/*.vue)"
     ]
   }
 }

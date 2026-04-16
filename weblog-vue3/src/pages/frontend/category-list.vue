@@ -1,101 +1,258 @@
 <template>
     <Header></Header>
 
-    <!-- 主内容区域 -->
-    <main class="container max-w-screen-xl mx-auto px-4 md:px-6 py-4">
-        <!-- grid 表格布局，分为 4 列 -->
-        <div class="grid grid-cols-4 gap-7">
-            <!-- 左边栏，占用 3 列 -->
-            <div class="col-span-4 md:col-span-3 mb-3">
-                <!-- 分类列表 -->
-                <!-- <CategoryListCard></CategoryListCard> -->
-                <div class="w-full p-5 pb-7 mb-3 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                    <!-- 分类标题 -->
-                    <h2 class="flex items-center mb-5 font-bold text-gray-900 uppercase dark:text-white">
-                        <!-- 文件夹图标 -->
-                        <svg t="1698998570037" class="inline icon w-5 h-5 mr-2" viewBox="0 0 1024 1024" version="1.1"
-                            xmlns="http://www.w3.org/2000/svg" p-id="21572" width="200" height="200">
-                            <path
-                                d="M938.666667 464.592593h-853.333334v-265.481482c0-62.577778 51.2-113.777778 113.777778-113.777778h128.948148c15.17037 0 28.444444 3.792593 41.718519 11.377778l98.607407 64.474074h356.503704c62.577778 0 113.777778 51.2 113.777778 113.777778v189.62963z"
-                                fill="#3A69DD" p-id="21573"></path>
-                            <path
-                                d="M805.925926 398.222222h-587.851852v-125.155555c0-24.651852 20.859259-45.511111 45.511111-45.511111h496.82963c24.651852 0 45.511111 20.859259 45.511111 45.511111V398.222222z"
-                                fill="#D9E3FF" p-id="21574"></path>
-                            <path
-                                d="M843.851852 417.185185h-663.703704v-98.607407c0-28.444444 22.755556-53.096296 53.096296-53.096297h559.407408c28.444444 0 53.096296 22.755556 53.096296 53.096297V417.185185z"
-                                fill="#FFFFFF" p-id="21575"></path>
-                            <path
-                                d="M786.962963 938.666667h-549.925926c-83.437037 0-151.703704-68.266667-151.703704-151.703704V341.333333s316.681481 37.925926 430.45926 37.925926c189.62963 0 422.874074-37.925926 422.874074-37.925926v445.62963c0 83.437037-68.266667 151.703704-151.703704 151.703704z"
-                                fill="#5F7CF9" p-id="21576"></path>
-                            <path
-                                d="M559.407407 512h-75.851851c-20.859259 0-37.925926-17.066667-37.925926-37.925926s17.066667-37.925926 37.925926-37.925926h75.851851c20.859259 0 37.925926 17.066667 37.925926 37.925926s-17.066667 37.925926-37.925926 37.925926z"
-                                fill="#F9D523" p-id="21577"></path>
-                        </svg>
-                        分类
-                        <span v-if="categories && categories.length > 0"
-                            class="ml-2 text-gray-600 font-normal dark:text-gray-300">( {{ categories.length }} )</span>
-                    </h2>
-                    <!-- 分类列表 -->
-                    <div class="text-sm flex flex-wrap gap-3 font-medium text-gray-600 rounded-lg dark:border-gray-600 dark:text-white">
-                        <a @click="goCategoryArticleListPage(category.id, category.name)"
-                            v-for="(category, index) in categories" :key="index"
-                            class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium text-center border rounded-lg 
-            hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-300 
-            dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-gray-800 dark:border-gray-700 dark:hover:text-white">
-                            {{ category.name }}
-                            <span
-                                class="inline-flex items-center justify-center w-4 h-4 ms-2 text-xs font-semibold text-sky-800 bg-sky-200 rounded-full">
-                                {{ category.articlesTotal }}
-                            </span>
-                        </a>
+    <div class="np-archive-page" :class="{ 'dark': isDark }">
+        <div class="np-archive-container">
+
+            <div v-for="category in categories" :key="category.id"
+                 :id="'cat-' + category.id" class="np-cat-row">
+
+                <div class="np-cat-name-wrap">
+                    <h2 class="np-cat-name" @click="scrollToCat(category.id)">{{ category.name }}</h2>
+                    <span class="np-cat-badge">{{ category.articlesTotal }}</span>
+                </div>
+
+                <div class="np-cat-cards">
+                    <div v-for="(article, idx) in getArticles(category.id)" :key="idx"
+                         class="np-index-card"
+                         @click="goArticleDetailPage(article.slug)">
+                        <h3 class="np-index-card-title">{{ article.title }}</h3>
+                        <p class="np-index-card-line2">
+                            <span class="np-index-card-date">【{{ article.createDate }}】</span>
+                            <span v-if="article.summary" class="np-index-card-summary">{{ article.summary }}</span>
+                        </p>
                     </div>
                 </div>
             </div>
 
-            <!-- 右边侧边栏，占用一列 -->
-            <aside class="col-span-4 md:col-span-1">
-                <div class="sticky top-[5.5rem]">
-                    <!-- 博主信息 -->
-                    <UserInfoCard></UserInfoCard>
-
-                    <!-- 标签 -->
-                    <TagListCard></TagListCard>
-                </div>
-            </aside>
         </div>
+    </div>
 
-    </main>
-
-    <!-- 返回顶部 -->
     <ScrollToTopButton></ScrollToTopButton>
-
     <Footer></Footer>
 </template>
 
 <script setup>
 import Header from '@/layouts/frontend/components/Header.vue'
 import Footer from '@/layouts/frontend/components/Footer.vue'
-import UserInfoCard from '@/layouts/frontend/components/UserInfoCard.vue'
-import TagListCard from '@/layouts/frontend/components/TagListCard.vue'
-import CategoryListCard from '@/layouts/frontend/components/CategoryListCard.vue'
 import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
-import { getCategoryList } from '@/api/frontend/category'
-import { ref } from 'vue'
+import { getCategoryList, getCategoryArticlePageList } from '@/api/frontend/category'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useDark } from '@vueuse/core'
 
 const router = useRouter()
+const isDark = useDark()
 
-// 跳转分类文章列表页
-const goCategoryArticleListPage = (id, name) => {
-    // 跳转时通过 query 携带参数（分类 ID、分类名称）
-    router.push({ path: '/category/article/list', query: { id, name } })
+const categories = ref([])
+const articlesMap = reactive({})
+
+getCategoryList({}).then((res) => {
+    if (!res.success) return
+    categories.value = res.data
+    categories.value.forEach((cat) => {
+        if (!cat.articlesTotal || cat.articlesTotal <= 0) {
+            articlesMap[cat.id] = []
+            return
+        }
+        getCategoryArticlePageList({
+            current: 1,
+            size: cat.articlesTotal,
+            name: cat.name,
+        }).then((r) => {
+            if (r.success) articlesMap[cat.id] = r.data || []
+        })
+    })
+})
+
+function getArticles(id) {
+    return articlesMap[id] || []
 }
 
-// 所有分类
-const categories = ref([])
-getCategoryList({}).then((res) => {
-    if (res.success) {
-        categories.value = res.data
-    }
-})
+function scrollToCat(id) {
+    document.getElementById('cat-' + id)?.scrollIntoView({ behavior: 'instant' })
+}
+
+const goArticleDetailPage = (slug) => {
+    router.push('/article/' + slug + '.html')
+}
 </script>
+
+<style scoped>
+.np-archive-page {
+    background-color: #f7f7f4;
+    padding: 30px 20px 40px;
+    min-height: 60vh;
+}
+
+.np-archive-page.dark {
+    background-color: #111;
+}
+
+.np-archive-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* 每个分类：并排布局 */
+.np-cat-row {
+    display: flex;
+    align-items: flex-start;
+    padding-top: 28px;
+    scroll-margin-top: 80px;
+}
+
+.np-cat-row:first-child {
+    padding-top: 0;
+}
+
+/* 分类名 + 角标 */
+.np-cat-name-wrap {
+    position: relative;
+    flex-shrink: 0;
+    padding-right: 18px;
+}
+
+.np-cat-name {
+    margin: 0;
+    color: #1a1a1a;
+    font-size: 1.5em;
+    font-weight: 700;
+    line-height: 1.2;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: color 0.15s;
+}
+
+.np-cat-name:hover {
+    color: #555;
+}
+
+.np-archive-page.dark .np-cat-name {
+    color: #e8e8e8;
+}
+
+.np-archive-page.dark .np-cat-name:hover {
+    color: #fff;
+}
+
+/* 右上角角标 */
+.np-cat-badge {
+    position: absolute;
+    top: -6px;
+    left: 100%;
+    margin-left: -2px;
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 0.62em;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 2px 7px;
+    border-radius: 999px;
+    min-width: 18px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.np-archive-page.dark .np-cat-badge {
+    background: #333;
+    color: #e8e8e8;
+}
+
+/* 卡片列 */
+.np-cat-cards {
+    flex: 1;
+    max-width: 500px;
+    margin-left: 24px;
+}
+
+/* 文章卡片 */
+.np-index-card {
+    background: #fff;
+    padding: 20px 26px;
+    margin-bottom: 14px;
+    border-radius: 8px;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+}
+
+.np-index-card:first-child {
+    margin-top: 0;
+}
+
+.np-index-card:hover {
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
+}
+
+.np-archive-page.dark .np-index-card {
+    background: #1e1e1e;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+}
+
+.np-archive-page.dark .np-index-card:hover {
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+}
+
+.np-index-card-title {
+    font-family: Georgia, 'Times New Roman', "Songti SC", "SimSun", "STSong", serif;
+    color: #1a1a1a;
+    font-size: 1.2em;
+    font-weight: 700;
+    line-height: 1.35;
+    margin: 0 0 6px;
+    letter-spacing: 0.5px;
+}
+
+.np-archive-page.dark .np-index-card-title {
+    color: #e8e8e8;
+}
+
+.np-index-card-line2 {
+    margin: 0;
+    padding: 0;
+    text-indent: 0;
+    font-size: 0.92em;
+    line-height: 1.7;
+}
+
+.np-index-card-date {
+    color: #999;
+    font-size: 0.88em;
+    letter-spacing: 0.5px;
+    margin-left: -0.35em;
+}
+
+.np-archive-page.dark .np-index-card-date {
+    color: #777;
+}
+
+.np-index-card-summary {
+    color: #333;
+}
+
+.np-archive-page.dark .np-index-card-summary {
+    color: #9e9e9e;
+}
+
+/* 响应式 */
+@media (max-width: 640px) {
+    .np-cat-row {
+        flex-direction: column;
+    }
+
+    .np-cat-cards {
+        margin-left: 0;
+        margin-top: 12px;
+        max-width: 100%;
+    }
+
+    .np-archive-page {
+        padding: 16px 10px 30px;
+    }
+
+    .np-cat-name {
+        font-size: 1.3em;
+    }
+}
+</style>

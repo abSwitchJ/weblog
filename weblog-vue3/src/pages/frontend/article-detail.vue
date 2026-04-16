@@ -63,7 +63,7 @@
                     <div class="basis-1/2">
                         <a v-if="article.preArticle"
                             @click="router.push('/article/' + article.preArticle.articleSlug + '.html')"
-                            class="cursor-pointer flex flex-col h-full p-4 mr-3 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                            class="cursor-pointer flex flex-col h-full p-4 mr-3 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-[#1e1e1e] dark:border-gray-700 dark:text-gray-400 dark:hover:bg-[#1a1a1a] dark:hover:text-white">
                             <div>
                                 <svg class="inline w-3.5 h-3.5 mr-2 mb-1" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
@@ -79,7 +79,7 @@
                     <div class="basis-1/2">
                         <a v-if="article.nextArticle"
                             @click="router.push('/article/' + article.nextArticle.articleSlug + '.html')"
-                            class="cursor-pointer flex flex-col h-full text-right p-4 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                            class="cursor-pointer flex flex-col h-full text-right p-4 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-[#1e1e1e] dark:border-gray-700 dark:text-gray-400 dark:hover:bg-[#1a1a1a] dark:hover:text-white">
                             <div>
                                 下一篇
                                 <svg class="inline w-3.5 h-3.5 ml-2 mb-1" aria-hidden="true"
@@ -209,8 +209,7 @@ refreshArticleDetail(route.params.slug)
 
 // 跳转分类文章列表页
 const goCategoryArticleListPage = (id, name) => {
-    // 跳转时通过 query 携带参数（分类 ID、分类名称）
-    router.push({ path: '/category/article/list', query: { id, name } })
+    router.push('/category/' + encodeURIComponent(name))
 }
 
 // 跳转标签文章列表页

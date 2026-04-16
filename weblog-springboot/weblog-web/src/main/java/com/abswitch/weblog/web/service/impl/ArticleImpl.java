@@ -130,14 +130,14 @@ public class ArticleImpl implements ArticleService {
                 .readTime(readTime)
                 .build();
 
-        ArticleDO preArticleDO = articleMapper.selectPreArticle(articleId);
+        ArticleDO preArticleDO = articleMapper.selectPreArticle(articleDO.getCreateTime());
         if (Objects.nonNull(preArticleDO)) {
 
             ArticleRspVO preArticle = ArticleConvert.INSTANCE.convertDO2ArticleVO(preArticleDO);
             findArticleDetailRspVO.setPreArticle(preArticle);
         }
 
-        ArticleDO nextArticleDO = articleMapper.selectNextArticle(articleId);
+        ArticleDO nextArticleDO = articleMapper.selectNextArticle(articleDO.getCreateTime());
         if (Objects.nonNull(nextArticleDO)) {
 
             ArticleRspVO nextArticle = ArticleConvert.INSTANCE.convertDO2ArticleVO(nextArticleDO);

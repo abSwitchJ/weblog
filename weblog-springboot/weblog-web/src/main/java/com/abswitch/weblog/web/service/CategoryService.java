@@ -1,6 +1,7 @@
 package com.abswitch.weblog.web.service;
 
 import com.abswitch.weblog.common.utils.Response;
+import com.abswitch.weblog.web.model.vo.FindCategoryArticleByNameReqVO;
 import com.abswitch.weblog.web.model.vo.FindCategoryOrTagOrArticlePageListReqVO;
 import com.abswitch.weblog.web.model.vo.FindCategoryOrTagListReqVO;
 
@@ -14,5 +15,7 @@ public interface CategoryService {
     Response findCategoryList(FindCategoryOrTagListReqVO findCategoryListReqVO);
 
     Response findCategoryArticlePageList(FindCategoryOrTagOrArticlePageListReqVO findCategoryArticlePageListReqVO);
+
+    Response findCategoryArticlePageListByName(FindCategoryArticleByNameReqVO reqVO);
 
 }

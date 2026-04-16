@@ -22,6 +22,7 @@ public class FindCategoryOrTagArticlePageListRspVO {
     private String cover;
     private String title;
     private String slug;
+    private String summary;
     /**
      * 发布日期
      */

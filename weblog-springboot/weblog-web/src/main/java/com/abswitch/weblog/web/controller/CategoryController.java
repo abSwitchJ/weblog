@@ -2,6 +2,7 @@ package com.abswitch.weblog.web.controller;
 
 import com.abswitch.weblog.common.aspect.ApiOperationLog;
 import com.abswitch.weblog.common.utils.Response;
+import com.abswitch.weblog.web.model.vo.FindCategoryArticleByNameReqVO;
 import com.abswitch.weblog.web.model.vo.FindCategoryOrTagOrArticlePageListReqVO;
 import com.abswitch.weblog.web.model.vo.FindCategoryOrTagListReqVO;
 import com.abswitch.weblog.web.service.CategoryService;
@@ -40,5 +41,12 @@ public class CategoryController {
     @Operation(summary = "前台获取分类下文章分页数据")
     public Response findCategoryArticlePageList(@RequestBody @Validated FindCategoryOrTagOrArticlePageListReqVO findCategoryArticlePageListReqVO) {
         return categoryService.findCategoryArticlePageList(findCategoryArticlePageListReqVO);
+    }
+
+    @PostMapping("/article/list/by-name")
+    @ApiOperationLog(description = "前台按分类名获取文章分页数据")
+    @Operation(summary = "前台按分类名获取文章分页数据")
+    public Response findCategoryArticlePageListByName(@RequestBody @Validated FindCategoryArticleByNameReqVO reqVO) {
+        return categoryService.findCategoryArticlePageListByName(reqVO);
     }
 }

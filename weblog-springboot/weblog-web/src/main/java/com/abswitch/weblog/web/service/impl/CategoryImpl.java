@@ -12,6 +12,7 @@ import com.abswitch.weblog.common.domain.mapper.ArticleMapper;
 import com.abswitch.weblog.common.domain.mapper.CategoryMapper;
 import com.abswitch.weblog.common.utils.Response;
 import com.abswitch.weblog.web.convert.CategoryConvert;
+import com.abswitch.weblog.web.model.vo.FindCategoryArticleByNameReqVO;
 import com.abswitch.weblog.web.model.vo.FindCategoryOrTagOrArticlePageListReqVO;
 import com.abswitch.weblog.web.model.vo.FindCategoryOrTagArticlePageListRspVO;
 import com.abswitch.weblog.web.model.vo.FindCategoryOrTagListReqVO;
@@ -62,8 +63,6 @@ public class CategoryImpl implements CategoryService {
         List<FindCategoryOrTagListRspVO> findCategoryOrTagListRspVOS = categoryDOS.stream()
                 .map(CategoryConvert.INSTANCE::convertDO2VO).toList();
 
-
-
         return Response.ok(findCategoryOrTagListRspVOS);
     }
 
@@ -82,6 +81,26 @@ public class CategoryImpl implements CategoryService {
             throw new BizException(ResponseCodeEnum.CATEGORY_NOT_EXISTED);
         }
 
+        return doFindArticlePageByCategoryId(categoryId, current, size);
+    }
+
+    @Override
+    public Response findCategoryArticlePageListByName(FindCategoryArticleByNameReqVO reqVO) {
+        String name = reqVO.getName();
+        Long current = reqVO.getCurrent();
+        Long size = reqVO.getSize();
+
+        CategoryDO categoryDO = categoryMapper.selectByName(name);
+
+        if (Objects.isNull(categoryDO)) {
+            log.warn("==> 该分类不存在, categoryName: {}", name);
+            throw new BizException(ResponseCodeEnum.CATEGORY_NOT_EXISTED);
+        }
+
+        return doFindArticlePageByCategoryId(categoryDO.getId(), current, size);
+    }
+
+    private Response doFindArticlePageByCategoryId(Long categoryId, Long current, Long size) {
         List<ArticleCategoryRelDO> categoryRelDOS = articleCategoryRelMapper.selectListByCategoryId(categoryId);
 
         if (categoryRelDOS.isEmpty()) {
