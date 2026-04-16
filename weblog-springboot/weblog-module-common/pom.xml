@@ -87,6 +87,12 @@
             <groupId>com.rometools</groupId>
             <artifactId>rome</artifactId>
         </dependency>
+
+        <!-- 汉字转拼音（翻译失败兜底） -->
+        <dependency>
+            <groupId>com.belerweb</groupId>
+            <artifactId>pinyin4j</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

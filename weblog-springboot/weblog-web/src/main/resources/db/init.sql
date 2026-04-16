@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS `t_article`;
 CREATE TABLE `t_article`  (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '文章id',
   `title` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '文章标题',
+  `slug` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '文章 slug（URL 友好标识）',
   `cover` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '文章封面',
   `summary` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '文章摘要',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -31,7 +32,8 @@ CREATE TABLE `t_article`  (
   `is_deleted` tinyint NOT NULL DEFAULT 0 COMMENT '删除标志位：0：未删除 1：已删除',
   `read_num` int UNSIGNED NOT NULL DEFAULT 1 COMMENT '被阅读次数',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
+  INDEX `idx_create_time`(`create_time` ASC) USING BTREE,
+  UNIQUE INDEX `uk_slug`(`slug`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 30 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '文章表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -87,6 +89,7 @@ CREATE TABLE `t_blog_settings`  (
   `csdn_homepage` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT 'CSDN 主页访问地址',
   `gitee_homepage` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT 'Gitee 主页访问地址',
   `zhihu_homepage` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '知乎主页访问地址',
+  `twitter_homepage` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT 'Twitter/X 主页访问地址',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '博客设置表' ROW_FORMAT = DYNAMIC;
 
@@ -169,4 +172,4 @@ INSERT INTO `weblog`.`t_user` (`id`, `username`, `password`, `is_deleted`) VALUE
 INSERT INTO `weblog`.`t_user` (`id`, `username`, `password`, `is_deleted`) VALUES (2, 'test', '$2a$10$Kt4rAqyGJ1aayNIj0aTVleNdXyLop7JqE685b2b793EW2OgEA7rCC', 0);
 INSERT INTO `weblog`.`t_user_role` (`id`, `username`, `role`) VALUES (1, 'admin', 'ROLE_ADMIN');
 INSERT INTO `weblog`.`t_user_role` (`id`, `username`, `role`) VALUES (2, 'test', 'ROLE_VISITOR');
-INSERT INTO `weblog`.`t_blog_settings` (`id`, `logo`, `name`, `author`, `introduction`, `avatar`, `github_homepage`, `csdn_homepage`, `gitee_homepage`, `zhihu_homepage`) VALUES (1, 'https://img.abswitch.com/abswitch/IMG_20260327_160706.jpg', 'abSwitch的博客', 'abSwitch', 'hhh', 'https://img.abswitch.com/abswitch/IMG_20260327_160706.jpg', 'https://github.com/abSwitchJ', 'https://blog.csdn.net/H__4002', 'https://gitee.com/abSwitch', '');
+INSERT INTO `weblog`.`t_blog_settings` (`id`, `logo`, `name`, `author`, `introduction`, `avatar`, `github_homepage`, `csdn_homepage`, `gitee_homepage`, `zhihu_homepage`, `twitter_homepage`) VALUES (1, 'https://img.abswitch.com/abswitch/IMG_20260327_160706.jpg', 'abSwitch的博客', 'abSwitch', 'hhh', 'https://img.abswitch.com/abswitch/IMG_20260327_160706.jpg', 'https://github.com/abSwitchJ', 'https://blog.csdn.net/H__4002', 'https://gitee.com/abSwitch', '', 'https://x.com/AbswitchJ');

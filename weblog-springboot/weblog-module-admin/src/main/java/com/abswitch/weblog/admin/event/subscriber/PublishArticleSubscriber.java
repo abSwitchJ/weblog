@@ -12,6 +12,7 @@ import com.abswitch.weblog.search.index.ArticleIndex;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -64,6 +65,7 @@ public class PublishArticleSubscriber {
         document.add(new TextField(ArticleIndex.COLUMN_SUMMARY, articleDO.getSummary(), Field.Store.YES));
         document.add(new TextField(ArticleIndex.COLUMN_CONTENT, articleContentDO.getContent(), Field.Store.YES));
         document.add(new TextField(ArticleIndex.COLUMN_CREATE_TIME, Constants.DATE_TIME_FORMATTER.format(articleDO.getCreateTime()), Field.Store.YES));
+        document.add(new StringField(ArticleIndex.COLUMN_SLUG, articleDO.getSlug() != null ? articleDO.getSlug() : "", Field.Store.YES));
 
         // 添加文档
         long count = luceneHelper.addDocument(ArticleIndex.NAME, document);

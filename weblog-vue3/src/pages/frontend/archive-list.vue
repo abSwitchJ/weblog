@@ -20,7 +20,7 @@
                         <span class="np-archive-day">{{ day }}</span>
                         <div class="np-archive-titles">
                             <div v-for="article in dayArticles" :key="article.id" class="np-archive-item">
-                                <a class="np-archive-title" @click="goArticleDetailPage(article.id)">{{ article.title }}</a>
+                                <a class="np-archive-title" @click="goArticleDetailPage(article.slug)">{{ article.title }}</a>
                             </div>
                         </div>
                     </div>
@@ -79,8 +79,8 @@ function groupByDay(articles) {
     return sorted
 }
 
-const goArticleDetailPage = (id) => {
-    router.push('/article/' + id)
+const goArticleDetailPage = (slug) => {
+    router.push('/article/' + slug + '.html')
 }
 
 const scrollTo = (id) => {

@@ -9,6 +9,20 @@ import ViteCompressionPlugin from 'vite-plugin-compression'
 import { visualizer } from 'rollup-plugin-visualizer'
 import importToCDN from 'vite-plugin-cdn-import'
 // https://vitejs.dev/config/
+// Vite dev 的 SPA 回退默认把含 `.` 的路径视为静态资源，会让 /article/xxx.html 刷新时 404
+// 这里自定义中间件：匹配前台 SPA 路由时，强制重写到 /index.html 让 Vue Router 接管
+const spaHtmlFallback = () => ({
+  name: 'spa-html-fallback',
+  configureServer(server) {
+    server.middlewares.use((req, _res, next) => {
+      if (req.method === 'GET' && req.url && /^\/article\/[\w-]+\.html(\?.*)?$/.test(req.url.split('#')[0])) {
+        req.url = '/index.html'
+      }
+      next()
+    })
+  }
+})
+
 export default defineConfig({
   server: {
     host: '127.0.0.1',
@@ -21,6 +35,7 @@ export default defineConfig({
     }
   },
   plugins: [
+    spaHtmlFallback(),
     vue(),
     AutoImport({
       resolvers: [ElementPlusResolver()],

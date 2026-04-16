@@ -92,12 +92,32 @@ public interface ArticleMapper extends BaseMapper<ArticleDO> {
             @Param("endDate") LocalDate endDate
     );
     /**
+     * 根据 slug 查询文章
+     * @param slug
+     * @return
+     */
+    default ArticleDO selectBySlug(String slug) {
+        return selectOne(Wrappers.<ArticleDO>lambdaQuery()
+                .eq(ArticleDO::getSlug, slug));
+    }
+
+    /**
+     * 判断 slug 是否已存在
+     * @param slug
+     * @return
+     */
+    default boolean existsBySlug(String slug) {
+        return selectCount(Wrappers.<ArticleDO>lambdaQuery()
+                .eq(ArticleDO::getSlug, slug)) > 0;
+    }
+
+    /**
      * 查询所有文章（仅归档所需字段），按创建时间倒序
      * @return
      */
     default List<ArticleDO> selectAllForArchive() {
         return selectList(Wrappers.<ArticleDO>lambdaQuery()
-                .select(ArticleDO::getId, ArticleDO::getTitle, ArticleDO::getCreateTime)
+                .select(ArticleDO::getId, ArticleDO::getTitle, ArticleDO::getSlug, ArticleDO::getCreateTime)
                 .orderByDesc(ArticleDO::getCreateTime));
     }
 

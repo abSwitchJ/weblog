@@ -22,6 +22,10 @@ public class SearchArticlePageListRspVO {
      */
     private Long id;
     /**
+     * 文章 slug
+     */
+    private String slug;
+    /**
      * 封面
      */
     private String cover;
@@ -33,6 +37,10 @@ public class SearchArticlePageListRspVO {
      * 摘要
      */
     private String summary;
+    /**
+     * 正文片段（关键词附近最多200字）
+     */
+    private String content;
     /**
      * 发布日期
      */

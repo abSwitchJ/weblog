@@ -6,8 +6,8 @@ export function getArticlePageList(data) {
 }
 
 // 获取文章详情
-export function getArticleDetail(id) {
-    return axios.post("/article/detail", {id})
+export function getArticleDetail(slug) {
+    return axios.post("/article/detail", {slug})
 }
 
 

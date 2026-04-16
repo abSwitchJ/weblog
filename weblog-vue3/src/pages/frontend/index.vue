@@ -8,7 +8,7 @@
             <!-- 文章卡片列表 -->
             <div v-for="(article, index) in articles" :key="index"
                  class="np-index-card"
-                 @click="goArticleDetailPage(article.id)">
+                 @click="goArticleDetailPage(article.slug)">
 
                 <!-- 文章标题 -->
                 <h2 class="np-index-card-title">{{ article.title }}</h2>
@@ -82,8 +82,8 @@ function getArticles(currentNo) {
 getArticles(current.value)
 
 // 跳转文章详情页
-const goArticleDetailPage = (id) => {
-    router.push('/article/' + id)
+const goArticleDetailPage = (slug) => {
+    router.push('/article/' + slug + '.html')
 }
 </script>
 
@@ -101,7 +101,7 @@ const goArticleDetailPage = (id) => {
 
 /* 居中容器 */
 .np-index-container {
-    max-width: 1100px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 

@@ -51,8 +51,8 @@ public class SearchImpl implements SearchService {
 
 
         String word = searchArticlePageListReqVO.getWord();
-        // 想要搜索的文档字段（这里指定对文章标题、摘要进行检索，任何一个字段包含该关键词，都会被搜索到）
-        String[] columns = {ArticleIndex.COLUMN_TITLE, ArticleIndex.COLUMN_SUMMARY};
+        // 搜索字段：标题、摘要、正文、日期
+        String[] columns = {ArticleIndex.COLUMN_TITLE, ArticleIndex.COLUMN_SUMMARY, ArticleIndex.COLUMN_CONTENT, ArticleIndex.COLUMN_CREATE_TIME};
         // 查询总记录数
         long total = luceneHelper.searchTotal(ArticleIndex.NAME, word, columns);
         List<Document> documents = luceneHelper.search(ArticleIndex.NAME, word, columns, current, size);
@@ -80,23 +80,28 @@ public class SearchImpl implements SearchService {
             try {
                 // 文章标题
                 String title = document.get(ArticleIndex.COLUMN_TITLE);
-
                 String summary = document.get(ArticleIndex.COLUMN_SUMMARY);
+                String content = document.get(ArticleIndex.COLUMN_CONTENT);
 
                 // 高亮标题
                 String highlightedTitle = getHighlightedText(title, ArticleIndex.COLUMN_TITLE, word);
                 // 高亮摘要
                 String highlightedSummary = getHighlightedText(summary, ArticleIndex.COLUMN_SUMMARY, word);
+                // 高亮正文片段（最多200字）
+                String highlightedContent = getHighlightedContent(content, ArticleIndex.COLUMN_CONTENT, word, 200);
 
                 String id = document.get(ArticleIndex.COLUMN_ID);
                 String cover = document.get(ArticleIndex.COLUMN_COVER);
                 String createTime = document.get(ArticleIndex.COLUMN_CREATE_TIME);
+                String slug = document.get(ArticleIndex.COLUMN_SLUG);
 
                 // 组装 VO
                 SearchArticlePageListRspVO vo = SearchArticlePageListRspVO.builder()
                         .id(Long.valueOf(id))
+                        .slug(slug)
                         .title(highlightedTitle)
                         .summary(highlightedSummary)
+                        .content(highlightedContent)
                         .cover(cover)
                         .createDate(createTime)
                         .build();
@@ -108,6 +113,33 @@ public class SearchImpl implements SearchService {
         });
 
         return PageResponse.ok(total, current, size, vos);
+    }
+
+    /**
+     * 获取正文高亮片段，限制最大长度
+     */
+    private String getHighlightedContent(String content, String field, String keyword, int maxLen) {
+        if (StringUtils.isBlank(content)) return null;
+        // 先去除 HTML/Markdown 标签，只保留纯文本
+        String plainText = content.replaceAll("<[^>]+>", "").replaceAll("\\s+", " ").trim();
+        try {
+            Analyzer analyzer = new SmartChineseAnalyzer();
+            QueryParser parser = new QueryParser(field, analyzer);
+            Query query = parser.parse(keyword);
+            SimpleHTMLFormatter formatter = new SimpleHTMLFormatter("<span style=\"color: #f73131\">", "</span>");
+            Highlighter highlighter = new Highlighter(formatter, new QueryScorer(query));
+            highlighter.setTextFragmenter(new org.apache.lucene.search.highlight.SimpleFragmenter(maxLen));
+            TokenStream tokenStream = analyzer.tokenStream(field, new StringReader(plainText));
+            String fragment = highlighter.getBestFragment(tokenStream, plainText);
+            if (StringUtils.isNotBlank(fragment)) {
+                return fragment.length() > maxLen + 100 ? fragment.substring(0, maxLen + 100) + "..." : fragment;
+            }
+            // 未匹配到关键词，返回前 maxLen 字符
+            return plainText.length() > maxLen ? plainText.substring(0, maxLen) + "..." : plainText;
+        } catch (Exception e) {
+            log.error("正文高亮失败", e);
+            return plainText.length() > maxLen ? plainText.substring(0, maxLen) + "..." : plainText;
+        }
     }
 
     private String getHighlightedText(String columnValue, String field, String keyword) {

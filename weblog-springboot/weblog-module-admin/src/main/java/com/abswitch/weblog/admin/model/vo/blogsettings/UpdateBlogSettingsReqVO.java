@@ -42,4 +42,6 @@ public class UpdateBlogSettingsReqVO {
     private String giteeHomepage;
 
     private String zhihuHomepage;
+
+    private String twitterHomepage;
 }

@@ -31,6 +31,11 @@ public class FindIndexArticlePageListRspVO {
     private String title;
 
     /**
+     * 文章 slug
+     */
+    private String slug;
+
+    /**
      * 发布时间
      */
     private LocalDate createDate;

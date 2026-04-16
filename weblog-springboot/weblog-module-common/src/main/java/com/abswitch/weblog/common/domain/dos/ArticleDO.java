@@ -28,6 +28,8 @@ public class ArticleDO {
 
     private String title;
 
+    private String slug;
+
     private String cover;
 
     private String summary;

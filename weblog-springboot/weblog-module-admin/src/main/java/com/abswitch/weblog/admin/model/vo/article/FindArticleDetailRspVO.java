@@ -24,6 +24,7 @@ public class FindArticleDetailRspVO {
     private Long id;
 
     private String title;
+    private String slug;
     private String cover;
     private String content;
     private String summary;

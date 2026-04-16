@@ -12,7 +12,7 @@ import AdminArticleList from '@/pages/admin/article-list.vue'
 import AdminCategoryList from '@/pages/admin/category-list.vue'
 import AdminTagList from '@/pages/admin/tag-list.vue'
 import AdminBlogSettings from '@/pages/admin/blog-settings.vue'
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import Admin from '@/layouts/admin/admin.vue'
 
 // 统一在这里声明所有路由
@@ -60,7 +60,7 @@ const routes = [
         }
     },
     {
-        path: '/article/:id', // 文章详情页
+        path: '/article/:slug([\\w-]+)\\.html', // 文章详情页
         component: ArticleDetail,
         meta: { // meta 信息
             title: 'Weblog 详情页'
@@ -129,7 +129,7 @@ const routes = [
 // 创建路由
 const router = createRouter({
     // 指定路由的历史管理方式，hash 模式指的是 URL 的路径是通过 hash 符号（#）进行标识
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     // routes: routes 的缩写
     routes, 
     // 每次切换路后，页面滚动到顶部

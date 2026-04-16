@@ -1,8 +1,8 @@
 package com.abswitch.weblog.web.service;
 
 import com.abswitch.weblog.common.utils.Response;
-import com.abswitch.weblog.web.model.vo.FindCategoryOrTagOrArticlePageListReqVO;
 import com.abswitch.weblog.web.model.vo.FindIndexArticleOrArchivePageListReqVO;
+import com.abswitch.weblog.web.model.vo.article.FindArticleDetailBySlugReqVO;
 
 /**
  * @Author：abSwitch
@@ -13,6 +13,6 @@ import com.abswitch.weblog.web.model.vo.FindIndexArticleOrArchivePageListReqVO;
 public interface ArticleService {
     Response findArticlePageList(FindIndexArticleOrArchivePageListReqVO findIndexArticlePageListReqVO);
 
-    Response findArticleDetail(FindCategoryOrTagOrArticlePageListReqVO findArticleDetailReqVO);
+    Response findArticleDetailBySlug(FindArticleDetailBySlugReqVO findArticleDetailBySlugReqVO);
 
 }

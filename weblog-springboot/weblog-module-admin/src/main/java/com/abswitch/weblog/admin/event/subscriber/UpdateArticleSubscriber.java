@@ -12,6 +12,7 @@ import com.abswitch.weblog.search.index.ArticleIndex;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.Term;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,7 @@ public class UpdateArticleSubscriber implements ApplicationListener<UpdateArticl
         document.add(new TextField(ArticleIndex.COLUMN_SUMMARY, articleDO.getSummary(), Field.Store.YES));
         document.add(new TextField(ArticleIndex.COLUMN_CONTENT, articleContentDO.getContent(), Field.Store.YES));
         document.add(new TextField(ArticleIndex.COLUMN_CREATE_TIME, Constants.DATE_TIME_FORMATTER.format(articleDO.getCreateTime()), Field.Store.YES));
+        document.add(new StringField(ArticleIndex.COLUMN_SLUG, articleDO.getSlug() != null ? articleDO.getSlug() : "", Field.Store.YES));
 
         // 更新条件（通过文章 ID 来更新）
         Term condition = new Term(ArticleIndex.COLUMN_ID, String.valueOf(articleId));

@@ -57,7 +57,7 @@
                                 <Edit />
                             </el-icon>
                             编辑</el-button>
-                            <el-button size="small" @click="goArticleDetailPage(scope.row.id)">
+                            <el-button size="small" @click="goArticleDetailPage(scope.row.slug)">
                             <el-icon class="mr-1">
                                 <View />
                             </el-icon>
@@ -565,8 +565,8 @@ const updateSubmit = () => {
 
 
 // 跳转文章详情页
-const goArticleDetailPage = (id) => {
-    router.push('/article/' + id)
+const goArticleDetailPage = (slug) => {
+    router.push('/article/' + slug + '.html')
 }
 // 点击置顶事件
 const handleIsTopChange = (row) => {

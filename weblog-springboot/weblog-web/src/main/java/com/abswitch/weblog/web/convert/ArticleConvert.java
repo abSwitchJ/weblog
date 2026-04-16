@@ -37,5 +37,6 @@ public interface ArticleConvert {
 
     @Mapping(target = "articleId", expression = "java(articleDO.getId())")
     @Mapping(target = "articleTitle", expression = "java(articleDO.getTitle())")
+    @Mapping(target = "articleSlug", expression = "java(articleDO.getSlug())")
     ArticleRspVO convertDO2ArticleVO(ArticleDO articleDO);
 }

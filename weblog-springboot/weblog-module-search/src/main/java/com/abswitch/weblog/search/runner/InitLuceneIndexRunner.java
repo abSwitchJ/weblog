@@ -13,6 +13,7 @@ import com.google.common.collect.Lists;
 import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -67,6 +68,13 @@ public class InitLuceneIndexRunner implements CommandLineRunner {
 
             // 查询文章正文
             ArticleContentDO articleContentDO = articleContentMapper.selectByArticleId(articleId);
+
+            // 跳过没有正文内容的文章
+            if (articleContentDO == null) {
+                log.warn("==> 文章 ID: {} 没有对应的正文内容，跳过索引创建", articleId);
+                return;
+            }
+
             // 构建文档
             Document document = new Document();
             // 设置文档字段 Field
@@ -76,6 +84,7 @@ public class InitLuceneIndexRunner implements CommandLineRunner {
             document.add(new TextField(ArticleIndex.COLUMN_SUMMARY, articleDO.getSummary(), Field.Store.YES));
             document.add(new TextField(ArticleIndex.COLUMN_CONTENT, articleContentDO.getContent(), Field.Store.YES));
             document.add(new TextField(ArticleIndex.COLUMN_CREATE_TIME, Constants.DATE_TIME_FORMATTER.format(articleDO.getCreateTime()), Field.Store.YES));
+            document.add(new StringField(ArticleIndex.COLUMN_SLUG, articleDO.getSlug() != null ? articleDO.getSlug() : "", Field.Store.YES));
             documents.add(document);
         });
 

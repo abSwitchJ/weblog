@@ -65,6 +65,15 @@
                 <el-form-item label="CSDN 主页访问地址" v-if="isCSDNChecked">
                     <el-input v-model="form.csdnHomepage" clearable placeholder="请输入 CSDN 主页访问的 URL" />
                 </el-form-item>
+
+                <!-- 开启 Twitter/X 访问 -->
+                <el-form-item label="开启 Twitter/X 访问">
+                    <el-switch v-model="isTwitterChecked" inline-prompt :active-icon="Check" :inactive-icon="Close"
+                        @change="twitterSwitchChange" />
+                </el-form-item>
+                <el-form-item label="Twitter/X 主页访问地址" v-if="isTwitterChecked">
+                    <el-input v-model="form.twitterHomepage" clearable placeholder="请输入 Twitter/X 主页访问的 URL" />
+                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" :loading="btnLoading" @click="onSubmit">保存</el-button>
                 </el-form-item>
@@ -88,6 +97,8 @@ const isGiteeChecked = ref(false)
 const isZhihuChecked = ref(false)
 // 是否开启 CSDN
 const isCSDNChecked = ref(false)
+// 是否开启 Twitter/X
+const isTwitterChecked = ref(false)
 // 是否显示保存按钮的 loading 状态，默认为 false
 const btnLoading = ref(false)
 
@@ -104,6 +115,7 @@ const form = reactive({
     giteeHomepage: '',
     zhihuHomepage: '',
     csdnHomepage: '',
+    twitterHomepage: '',
 })
 
 // 规则校验
@@ -143,6 +155,13 @@ const csdnSwitchChange = (checked) => {
     }
 }
 
+// 监听 Twitter/X Switch 改变事件
+const twitterSwitchChange = (checked) => {
+    if (checked == false) {
+        form.twitterHomepage = ''
+    }
+}
+
 // 初始化博客设置数据，并渲染到页面上
 function initBlogSettings() {
     getBlogSettingsDetail().then((e) => {
@@ -173,6 +192,11 @@ function initBlogSettings() {
             if (e.data.csdnHomepage) {
                 isCSDNChecked.value = true
                 form.csdnHomepage = e.data.csdnHomepage
+            }
+
+            if (e.data.twitterHomepage) {
+                isTwitterChecked.value = true
+                form.twitterHomepage = e.data.twitterHomepage
             }
         }
     })

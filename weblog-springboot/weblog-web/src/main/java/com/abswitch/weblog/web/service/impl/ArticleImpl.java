@@ -10,9 +10,9 @@ import com.abswitch.weblog.common.utils.Response;
 import com.abswitch.weblog.web.convert.ArticleConvert;
 import com.abswitch.weblog.web.markdown.MarkdownHelper;
 import com.abswitch.weblog.web.model.vo.FindIndexArticleOrArchivePageListReqVO;
-import com.abswitch.weblog.web.model.vo.FindCategoryOrTagOrArticlePageListReqVO;
 import com.abswitch.weblog.web.model.vo.FindCategoryOrTagListRspVO;
 import com.abswitch.weblog.web.model.vo.article.ArticleRspVO;
+import com.abswitch.weblog.web.model.vo.article.FindArticleDetailBySlugReqVO;
 import com.abswitch.weblog.web.model.vo.article.FindArticleDetailRspVO;
 import com.abswitch.weblog.web.model.vo.article.FindIndexArticlePageListRspVO;
 import com.abswitch.weblog.web.service.ArticleService;
@@ -81,15 +81,16 @@ public class ArticleImpl implements ArticleService {
     }
 
     @Override
-    public Response findArticleDetail(FindCategoryOrTagOrArticlePageListReqVO findArticleDetailReqVO) {
+    public Response findArticleDetailBySlug(FindArticleDetailBySlugReqVO findArticleDetailBySlugReqVO) {
 
-        Long articleId = findArticleDetailReqVO.getId();
+        String slug = findArticleDetailBySlugReqVO.getSlug();
 
-        ArticleDO articleDO = articleMapper.selectById(articleId);
+        ArticleDO articleDO = articleMapper.selectBySlug(slug);
+        Long articleId = articleDO != null ? articleDO.getId() : null;
 
         // 判断文章是否存在
         if (Objects.isNull(articleDO)) {
-            log.warn("==> 该文章不存在, articleId: {}", articleId);
+            log.warn("==> 该文章不存在, slug: {}", slug);
             throw new BizException(ResponseCodeEnum.ARTICLE_NOT_FOUND);
         }
 

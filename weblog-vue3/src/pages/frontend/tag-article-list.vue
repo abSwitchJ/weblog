@@ -52,7 +52,7 @@
                 <div class="p-5 mb-4 border border-gray-200 rounded-lg bg-white dark:bg-gray-800 dark:border-gray-700">
                     <ol v-if="articles && articles.length > 0" class="divide-y divider-gray-200 dark:divide-gray-700">
                         <li v-for="(article, index) in articles" :key="index">
-                            <a @click="goArticleDetailPage(article.id)" class="cursor-pointer items-center block p-3 sm:flex hover:bg-gray-100 hover:rounded-lg dark:hover:bg-gray-700">
+                            <a @click="goArticleDetailPage(article.slug)" class="cursor-pointer items-center block p-3 sm:flex hover:bg-gray-100 hover:rounded-lg dark:hover:bg-gray-700">
                                 <img class="w-24 h-12 mb-3 mr-3 rounded-lg sm:mb-0" :src="article.cover" />
                                 <div class="text-gray-600 dark:text-gray-400">
                                     <h2 class="text-base font-normal text-gray-900 dark:text-white">
@@ -369,8 +369,8 @@ function getTagArticles(currentNo) {
 getTagArticles(current.value)
 
 // 跳转文章详情页
-const goArticleDetailPage = (id) => {
-    router.push('/article/' + id)
+const goArticleDetailPage = (slug) => {
+    router.push('/article/' + slug + '.html')
 }
 
 // 所有标签

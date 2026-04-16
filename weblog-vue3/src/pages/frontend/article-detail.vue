@@ -62,7 +62,7 @@
                     <!-- 上下篇导航 -->
                     <div class="basis-1/2">
                         <a v-if="article.preArticle"
-                            @click="router.push('/article/' + article.preArticle.articleId)"
+                            @click="router.push('/article/' + article.preArticle.articleSlug + '.html')"
                             class="cursor-pointer flex flex-col h-full p-4 mr-3 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                             <div>
                                 <svg class="inline w-3.5 h-3.5 mr-2 mb-1" aria-hidden="true"
@@ -78,7 +78,7 @@
 
                     <div class="basis-1/2">
                         <a v-if="article.nextArticle"
-                            @click="router.push('/article/' + article.nextArticle.articleId)"
+                            @click="router.push('/article/' + article.nextArticle.articleSlug + '.html')"
                             class="cursor-pointer flex flex-col h-full text-right p-4 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                             <div>
                                 下一篇
@@ -142,8 +142,8 @@ const isDark = useDark()
 
 const route = useRoute()
 const router = useRouter()
-// 路由传递过来的文章 ID
-console.log(route.params.id)
+// 路由传递过来的文章 slug
+console.log(route.params.slug)
 
 // 侧边栏目录折叠状态
 const tocCollapsed = ref(false)
@@ -157,8 +157,8 @@ const giscusTheme = import.meta.env.DEV
 const article = ref({})
 
 // 获取文章详情
-function refreshArticleDetail(id) {
-    getArticleDetail(route.params.id).then((res) => {
+function refreshArticleDetail(slug) {
+    getArticleDetail(slug).then((res) => {
         // 该文章不存在(错误码为 20010)
         if (!res.success && res.errorCode == '20010') {
             // 手动跳转 404 页面
@@ -205,7 +205,7 @@ function refreshArticleDetail(id) {
         })
     })
 }
-refreshArticleDetail(route.params.id)
+refreshArticleDetail(route.params.slug)
 
 // 跳转分类文章列表页
 const goCategoryArticleListPage = (id, name) => {
@@ -222,7 +222,7 @@ const goTagArticleListPage = (id, name) => {
 // 监听路由
 watch(route, (newRoute, oldRoute) => {
     // 重新渲染文章详情
-    refreshArticleDetail(newRoute.params.id)
+    refreshArticleDetail(newRoute.params.slug)
 })
 
 // 复制内容到剪切板

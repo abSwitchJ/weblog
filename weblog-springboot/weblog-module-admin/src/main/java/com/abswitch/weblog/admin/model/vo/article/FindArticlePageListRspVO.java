@@ -30,6 +30,11 @@ public class FindArticlePageListRspVO  {
     private String title;
 
     /**
+     * 文章 slug
+     */
+    private String slug;
+
+    /**
      * 文章封面
      */
     private String cover;

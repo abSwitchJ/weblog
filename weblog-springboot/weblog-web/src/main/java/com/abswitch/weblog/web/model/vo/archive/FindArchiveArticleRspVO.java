@@ -20,6 +20,7 @@ import java.time.LocalDate;
 public class FindArchiveArticleRspVO {
     private Long id;
     private String title;
+    private String slug;
     /**
      * 发布日期
      */

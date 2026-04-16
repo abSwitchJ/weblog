@@ -25,5 +25,6 @@ public class FindBlogSettingsDetailRspVO {
     private String csdnHomepage;
     private String giteeHomepage;
     private String zhihuHomepage;
+    private String twitterHomepage;
 }
 

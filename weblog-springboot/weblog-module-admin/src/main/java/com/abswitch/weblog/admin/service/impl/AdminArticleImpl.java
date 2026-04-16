@@ -10,14 +10,17 @@ import com.abswitch.weblog.common.domain.dos.*;
 import com.abswitch.weblog.common.domain.mapper.*;
 import com.abswitch.weblog.common.emuns.ResponseCodeEnum;
 import com.abswitch.weblog.common.exception.BizException;
+import com.abswitch.weblog.common.config.BaiduTranslateProperties;
 import com.abswitch.weblog.common.utils.PageResponse;
 import com.abswitch.weblog.common.utils.Response;
+import com.abswitch.weblog.common.utils.SlugUtil;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +55,8 @@ public class AdminArticleImpl implements AdminArticleService {
     private ArticleConvert articleConvert;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+    @Autowired
+    private BaiduTranslateProperties baiduTranslateProperties;
     /**
      * 发布文章
      *
@@ -63,7 +68,25 @@ public class AdminArticleImpl implements AdminArticleService {
     public Response publishArticle(PublishArticleReqVO publishArticleReqVO) {
         // 1. VO 转 ArticleDO, 并保存
         ArticleDO articleDO = articleConvert.convertVO2DO(publishArticleReqVO);
-        articleMapper.insert(articleDO);
+
+        // 根据标题生成 slug
+        String baseSlug = SlugUtil.generateSlug(publishArticleReqVO.getTitle(),
+                baiduTranslateProperties.getAppId(), baiduTranslateProperties.getSecretKey());
+        int maxRetry = 5;
+        for (int i = 0; i < maxRetry; i++) {
+            String slug = SlugUtil.ensureUnique(baseSlug, articleMapper::existsBySlug);
+            articleDO.setSlug(slug);
+            try {
+                articleMapper.insert(articleDO);
+                break;
+            } catch (DuplicateKeyException e) {
+                if (i == maxRetry - 1) {
+                    log.error("slug [{}] 并发冲突重试 {} 次后仍失败", slug, maxRetry, e);
+                    throw new BizException(ResponseCodeEnum.SYSTEM_ERROR);
+                }
+                log.warn("slug [{}] 并发冲突，重试第 {} 次", slug, i + 1);
+            }
+        }
 
         // 拿到插入记录的主键 ID
         Long articleId = articleDO.getId();
@@ -183,7 +206,35 @@ public class AdminArticleImpl implements AdminArticleService {
         ArticleDO articleDO = articleConvert.convertUpdateVO2DO(updateArticleReqVO);
         articleDO.setUpdateTime(LocalDateTime.now());
 
-        int count = articleMapper.updateById(articleDO);
+        // 如果标题变更，重新生成 slug 并重试冲突
+        ArticleDO existingArticle = articleMapper.selectById(articleId);
+        boolean titleChanged = existingArticle != null
+                && !existingArticle.getTitle().equals(updateArticleReqVO.getTitle());
+
+        int count;
+        if (titleChanged) {
+            String baseSlug = SlugUtil.generateSlug(updateArticleReqVO.getTitle(),
+                    baiduTranslateProperties.getAppId(), baiduTranslateProperties.getSecretKey());
+            int maxRetry = 5;
+            int updated = 0;
+            for (int i = 0; i < maxRetry; i++) {
+                String slug = SlugUtil.ensureUnique(baseSlug, articleMapper::existsBySlug);
+                articleDO.setSlug(slug);
+                try {
+                    updated = articleMapper.updateById(articleDO);
+                    break;
+                } catch (DuplicateKeyException e) {
+                    if (i == maxRetry - 1) {
+                        log.error("slug [{}] 并发冲突重试 {} 次后仍失败", slug, maxRetry, e);
+                        throw new BizException(ResponseCodeEnum.SYSTEM_ERROR);
+                    }
+                    log.warn("slug [{}] 并发冲突，重试第 {} 次", slug, i + 1);
+                }
+            }
+            count = updated;
+        } else {
+            count = articleMapper.updateById(articleDO);
+        }
 
         // 根据更新是否成功，来判断该文章是否存在
         if (count == 0) {

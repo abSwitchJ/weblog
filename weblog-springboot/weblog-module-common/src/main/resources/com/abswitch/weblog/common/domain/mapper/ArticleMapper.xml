@@ -5,7 +5,7 @@
     <!-- 分页查询文章列表 -->
     <select id="selectPageList" resultType="com.abswitch.weblog.common.domain.dos.ArticleDO">
         SELECT
-        id, title, cover, summary, create_time, update_time, is_deleted, weight
+        id, title, cover, summary, slug, create_time, update_time, is_deleted, weight
         FROM t_article
         <where>
             <if test="title != null and title != ''">

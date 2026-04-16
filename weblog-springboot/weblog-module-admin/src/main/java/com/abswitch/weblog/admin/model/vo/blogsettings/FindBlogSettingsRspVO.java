@@ -36,4 +36,6 @@ public class FindBlogSettingsRspVO {
     private String giteeHomepage;
 
     private String zhihuHomepage;
+
+    private String twitterHomepage;
 }
