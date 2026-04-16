@@ -43,5 +43,5 @@ lucene:
 #=================================================================
 baidu:
   translate:
-    app-id: YOUR_APP_ID
-    secret-key: YOUR_SECRET_KEY
+    app-id: "20260416002595564"
+    secret-key: "U1Hzc4Ib2EXSp5QkIsNd"
