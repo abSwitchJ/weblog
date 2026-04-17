@@ -658,7 +658,7 @@ const handleMouseLeave = (event) => {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-top: 40px;
+    margin-top: 10px;
     margin-bottom: 14px;
     padding-bottom: 8px;
     border-bottom: 2px solid #1a1a1a;
@@ -674,7 +674,7 @@ const handleMouseLeave = (event) => {
 ::v-deep(.article-content h3) {
     font-size: 1.15em;
     font-weight: 700;
-    margin-top: 30px;
+    margin-top: 10px;
     margin-bottom: 12px;
     color: #1a1a1a;
 }
@@ -685,7 +685,7 @@ const handleMouseLeave = (event) => {
 
 ::v-deep(.article-content h4) {
     font-size: 1.05em;
-    margin-top: 24px;
+    margin-top: 10px;
     margin-bottom: 10px;
     font-weight: 600;
     color: #222;
@@ -697,7 +697,7 @@ const handleMouseLeave = (event) => {
 
 ::v-deep(.article-content h5) {
     font-size: 1em;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-bottom: 8px;
     font-weight: 600;
     color: #222;
@@ -709,7 +709,7 @@ const handleMouseLeave = (event) => {
 
 ::v-deep(.article-content h6) {
     font-size: 1em;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-bottom: 8px;
     font-weight: 600;
     color: #444;
