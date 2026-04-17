@@ -62,8 +62,7 @@ public class TranslationServiceImpl implements TranslationService {
                 translated = translateLongText(sourceText, sourceLang, targetLang);
             }
         } catch (Exception e) {
-            log.error("[Translation] 翻译失败 lang={}->{} len={} err={}",
-                    sourceLang, targetLang, sourceText.length(), e.getMessage());
+            log.error("百度翻译API异常: {}", e.getMessage());
             return null;
         }
 

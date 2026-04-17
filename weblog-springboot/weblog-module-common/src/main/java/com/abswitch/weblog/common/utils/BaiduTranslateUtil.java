@@ -84,7 +84,12 @@ public class BaiduTranslateUtil {
             JsonNode errorCode = root.get("error_code");
             if (errorCode != null) {
                 String errorMsg = root.has("error_msg") ? root.get("error_msg").asText() : "unknown";
-                throw new RuntimeException("百度翻译 API 错误 " + errorCode.asText() + ": " + errorMsg);
+                String clientIp = root.has("client_ip") ? root.get("client_ip").asText() : "N/A";
+                String appIdTail = appId == null ? "null"
+                        : appId.substring(Math.max(0, appId.length() - 4));
+                throw new RuntimeException("百度翻译 API 错误 " + errorCode.asText() + ": " + errorMsg
+                        + "，client_ip=" + clientIp + "，appIdTail=" + appIdTail
+                        + "，resp=" + response);
             }
 
             JsonNode transResult = root.get("trans_result");
