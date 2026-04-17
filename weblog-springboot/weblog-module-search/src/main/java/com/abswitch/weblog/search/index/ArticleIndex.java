@@ -26,4 +26,10 @@ public interface ArticleIndex {
     String COLUMN_CREATE_TIME = "createTime";
 
     String COLUMN_SLUG = "slug";
+
+    String COLUMN_TITLE_EN = "titleEn";
+
+    String COLUMN_SUMMARY_EN = "summaryEn";
+
+    String COLUMN_CONTENT_EN = "contentEn";
 }

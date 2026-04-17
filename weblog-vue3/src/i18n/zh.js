@@ -39,5 +39,14 @@ export default {
   notFound: {
     message: '您要找的页面飞到月球去啦~',
     backHome: '返回首页'
+  },
+  title: {
+    archive: '归档',
+    categoryList: '分类',
+    tagList: '标签',
+    about: '关于',
+    search: '搜索',
+    login: '登录',
+    notFound: '这个页面好像不存在'
   }
 }

@@ -10,4 +10,9 @@ export function getCategoryArticlePageList(data) {
     return axios.post("/category/article/list/by-name", data)
 }
 
+// 按分类名解析出中英文名称对
+export function resolveCategoryName(data) {
+    return axios.post("/category/name/resolve", data)
+}
+
 

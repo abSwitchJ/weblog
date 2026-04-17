@@ -25,7 +25,7 @@
             </div>
 
             <!-- 空态提示 -->
-            <p v-if="articles.length === 0" class="np-category-empty">{{ t('category.empty') }}</p>
+            <p v-if="!loading && articles.length === 0" class="np-category-empty">{{ t('category.empty') }}</p>
 
             <!-- 分页 -->
             <nav v-if="pages > 1" class="np-index-pagination">
@@ -54,10 +54,10 @@
 import Header from '@/layouts/frontend/components/Header.vue'
 import Footer from '@/layouts/frontend/components/Footer.vue'
 import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
-import { ref, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { getCategoryArticlePageList } from '@/api/frontend/category'
+import { getCategoryArticlePageList, resolveCategoryName } from '@/api/frontend/category'
 import { useDark } from '@vueuse/core'
 import { useLocaleStore } from '@/stores/locale'
 
@@ -67,17 +67,27 @@ const router = useRouter()
 const isDark = useDark()
 const localeStore = useLocaleStore()
 
-const categoryName = ref(decodeURIComponent(route.params.name || ''))
+const zhName = ref('')
+const enName = ref('')
+const categoryName = computed(() => localeStore.locale === 'en' ? enName.value : zhName.value)
 
 const articles = ref([])
 const current = ref(1)
 const size = ref(10)
 const total = ref(0)
 const pages = ref(0)
+const loading = ref(true)
+
+let suppressNextNameWatch = false
 
 function getCategoryArticles(currentNo) {
     if (currentNo < 1 || (pages.value > 0 && currentNo > pages.value)) return
-    getCategoryArticlePageList({ current: currentNo, size: size.value, name: categoryName.value }).then((res) => {
+    loading.value = true
+    return getCategoryArticlePageList({ current: currentNo, size: size.value, name: zhName.value }).then((res) => {
+        if (!res.success && res.errorCode == '20009') {
+            router.replace({ name: 'NotFound' })
+            return
+        }
         if (res.success) {
             articles.value = res.data || []
             current.value = res.current
@@ -85,19 +95,50 @@ function getCategoryArticles(currentNo) {
             total.value = res.total
             pages.value = res.pages
         }
+    }).finally(() => {
+        loading.value = false
     })
 }
-getCategoryArticles(current.value)
 
-watch(() => route.params.name, (newName) => {
-    if (!newName) return
-    categoryName.value = decodeURIComponent(newName)
+async function initCategory(rawName) {
+    const res = await resolveCategoryName({ name: rawName })
+    if (!res.success && res.errorCode == '20009') {
+        router.replace({ name: 'NotFound' })
+        return
+    }
+    if (!res.success) return
+    zhName.value = res.data.zhName
+    enName.value = res.data.enName
+    document.title = categoryName.value
+    const expected = categoryName.value
+    if (decodeURIComponent(rawName) !== expected) {
+        suppressNextNameWatch = true
+        router.replace('/category/' + encodeURIComponent(expected))
+    }
     current.value = 1
-    getCategoryArticles(1)
-})
+    await getCategoryArticles(1)
+}
+initCategory(route.params.name)
 
-// 语言切换时重新加载
-watch(() => localeStore.locale, () => getCategoryArticles(current.value))
+watch(
+    [() => route.params.name, () => localeStore.locale],
+    async ([newName, newLocale], [oldName, oldLocale]) => {
+        if (suppressNextNameWatch) { suppressNextNameWatch = false; return }
+        if (!newName) return
+        if (newName !== oldName) {
+            current.value = 1
+            await initCategory(newName)
+        } else if (newLocale !== oldLocale) {
+            document.title = categoryName.value
+            const target = categoryName.value
+            if (decodeURIComponent(newName) !== target) {
+                suppressNextNameWatch = true
+                router.replace('/category/' + encodeURIComponent(target))
+            }
+            await getCategoryArticles(current.value)
+        }
+    }
+)
 
 const goArticleDetailPage = (slug) => {
     router.push('/article/' + slug + '.html')

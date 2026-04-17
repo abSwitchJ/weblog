@@ -99,6 +99,15 @@ public class TranslationServiceImpl implements TranslationService {
     }
 
     @Override
+    public String getSourceByTranslated(String translatedText, String sourceLang, String targetLang) {
+        if (translatedText == null || translatedText.isBlank() || sourceLang.equals(targetLang)) {
+            return translatedText;
+        }
+        TranslationCacheDO row = translationCacheMapper.selectByTranslated(translatedText, sourceLang, targetLang);
+        return row != null ? row.getSourceText() : null;
+    }
+
+    @Override
     public Map<String, String> getTranslations(List<String> sourceTexts, String sourceLang, String targetLang) {
         if (sourceTexts == null || sourceTexts.isEmpty() || sourceLang.equals(targetLang)) {
             return Collections.emptyMap();

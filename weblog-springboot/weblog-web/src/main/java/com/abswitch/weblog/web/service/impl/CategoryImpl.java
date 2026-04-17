@@ -14,6 +14,7 @@ import com.abswitch.weblog.common.domain.mapper.CategoryMapper;
 import com.abswitch.weblog.common.utils.Response;
 import com.abswitch.weblog.web.convert.CategoryConvert;
 import com.abswitch.weblog.web.model.vo.FindCategoryArticleByNameReqVO;
+import com.abswitch.weblog.web.model.vo.FindCategoryNameReqVO;
 import com.abswitch.weblog.web.model.vo.FindCategoryOrTagOrArticlePageListReqVO;
 import com.abswitch.weblog.web.model.vo.FindCategoryOrTagArticlePageListRspVO;
 import com.abswitch.weblog.web.model.vo.FindCategoryOrTagListReqVO;
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -84,18 +86,34 @@ public class CategoryImpl implements CategoryService {
 
     @Override
     public Response findCategoryArticlePageListByName(FindCategoryArticleByNameReqVO reqVO) {
-        String name = reqVO.getName();
-        Long current = reqVO.getCurrent();
-        Long size = reqVO.getSize();
+        CategoryDO categoryDO = resolveCategoryDO(reqVO.getName());
+        return doFindArticlePageByCategoryId(categoryDO.getId(), reqVO.getCurrent(), reqVO.getSize(), reqVO.getLang());
+    }
 
+    @Override
+    public Response resolveCategoryName(FindCategoryNameReqVO reqVO) {
+        CategoryDO categoryDO = resolveCategoryDO(reqVO.getName());
+        String zh = categoryDO.getName();
+        String en = translationService.translateAndCache(zh, "zh", "en");
+        Map<String, String> result = new HashMap<>();
+        result.put("zhName", zh);
+        result.put("enName", en != null ? en : zh);
+        return Response.ok(result);
+    }
+
+    private CategoryDO resolveCategoryDO(String name) {
         CategoryDO categoryDO = categoryMapper.selectByName(name);
-
+        if (Objects.isNull(categoryDO)) {
+            String zhName = translationService.getSourceByTranslated(name, "zh", "en");
+            if (zhName != null) {
+                categoryDO = categoryMapper.selectByName(zhName);
+            }
+        }
         if (Objects.isNull(categoryDO)) {
             log.warn("==> 该分类不存在, categoryName: {}", name);
             throw new BizException(ResponseCodeEnum.CATEGORY_NOT_EXISTED);
         }
-
-        return doFindArticlePageByCategoryId(categoryDO.getId(), current, size, reqVO.getLang());
+        return categoryDO;
     }
 
     private Response doFindArticlePageByCategoryId(Long categoryId, Long current, Long size, String lang) {

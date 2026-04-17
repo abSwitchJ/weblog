@@ -16,6 +16,7 @@ import com.abswitch.weblog.web.model.vo.article.ArticleRspVO;
 import com.abswitch.weblog.web.model.vo.article.FindArticleDetailBySlugReqVO;
 import com.abswitch.weblog.web.model.vo.article.FindArticleDetailRspVO;
 import com.abswitch.weblog.web.model.vo.article.FindIndexArticlePageListRspVO;
+import com.abswitch.weblog.web.model.vo.article.TocItemVO;
 import com.abswitch.weblog.web.service.ArticleService;
 import com.abswitch.weblog.web.utils.MarkdownStatsUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -106,17 +107,41 @@ public class ArticleImpl implements ArticleService {
         }
 
         String content = articleContentMapper.selectByArticleId(articleId).getContent();
+        String originalContent = content;
         String title = articleDO.getTitle();
 
         if (isEn) {
             String translatedContent = translationService.getCachedOrNull(content, "zh", "en");
-            if (translatedContent != null) content = translatedContent;
+            if (translatedContent != null) content = MarkdownHelper.normalizeHeadings(translatedContent);
             String translatedTitle = translationService.getCachedOrNull(title, "zh", "en");
             if (translatedTitle != null) title = translatedTitle;
         }
 
         int totalWords = MarkdownStatsUtil.calculateWordCount(content);
         String contentHtml = MarkdownHelper.convertMarkdown2Html(content);
+        List<TocItemVO> toc = MarkdownHelper.extractToc(contentHtml);
+
+        if (isEn) {
+            if (toc.isEmpty() && !content.equals(originalContent)) {
+                String originalHtml = MarkdownHelper.convertMarkdown2Html(originalContent);
+                toc = MarkdownHelper.extractToc(originalHtml);
+            }
+            if (!toc.isEmpty()) {
+                List<String> texts = toc.stream().map(TocItemVO::getText).collect(Collectors.toList());
+                Map<String, String> translationMap = translationService.getTranslations(texts, "zh", "en");
+                toc.forEach(item -> {
+                    String cached = translationMap.get(item.getText());
+                    if (cached != null) {
+                        item.setText(cached);
+                    } else {
+                        // 缓存未命中时实时翻译并写入缓存，避免目录保持中文
+                        String tr = translationService.translateAndCache(item.getText(), "zh", "en");
+                        if (tr != null) item.setText(tr);
+                    }
+                });
+            }
+        }
+
         String readTime = MarkdownStatsUtil.calculateReadingTime(totalWords, isEn ? "en" : "zh");
 
         Long categoryId = articleCategoryRelMapper.selectByArticleId(articleId).getCategoryId();
@@ -157,6 +182,7 @@ public class ArticleImpl implements ArticleService {
                 .tags(tagListRspVOS)
                 .totalWords(totalWords)
                 .readTime(readTime)
+                .toc(toc)
                 .build();
 
         ArticleDO preArticleDO = articleMapper.selectPreArticle(articleDO.getCreateTime());

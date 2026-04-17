@@ -20,57 +20,51 @@ const routes = [
     {
         path: '/', // 路由地址，首页
         component: Index, // 对应组件
-        meta: { // meta 信息
-            title: 'abSwitchJ' // 主页
+        meta: {
+            titleKey: 'home'
         }
     },
     {
         path: '/archive/list', // 归档页
         component: ArchiveList,
-        meta: { // meta 信息
-            title: 'Archive | abSwitchJ'
+        meta: {
+            titleKey: 'archive'
         }
     },
     {
         path: '/category/list', // 分类列表页
         component: CategoryList,
-        meta: { // meta 信息
-            title: 'Category | abSwitchJ'
+        meta: {
+            titleKey: 'categoryList'
         }
     },
     {
         path: '/category/:name', // 分类文章页
         component: CategoryArticleList,
-        meta: { // meta 信息
-            title: '分类 | abSwitchJ'
-        }
+        meta: {}
     },
     {
         path: '/tag/list', // 标签列表页
         component: TagList,
-        meta: { // meta 信息
-            title: 'Tag | abSwitchJ'
+        meta: {
+            titleKey: 'tagList'
         }
     },
     {
-        path: '/tag/article/list', // 标签列表页
+        path: '/tag/article/list', // 标签文章列表页
         component: TagArticleList,
-        meta: { // meta 信息
-            title: 'Tag Article | abSwitchJ'
-        }
+        meta: {}
     },
     {
         path: '/article/:slug([\\w-]+).html', // 文章详情页
         component: ArticleDetail,
-        meta: { // meta 信息
-            title: 'Article | abSwitchJ'
-        }
+        meta: {}
     },
     {
         path: '/login', // 登录页
         component: Login,
         meta: {
-            title: '登录'
+            titleKey: 'login'
         }
     },
     {
@@ -78,7 +72,7 @@ const routes = [
         name: 'NotFound',
         component: NotFound,
         meta: {
-            title: '404 | abSwitchJ'
+            titleKey: 'notFound'
         }
     },
     {

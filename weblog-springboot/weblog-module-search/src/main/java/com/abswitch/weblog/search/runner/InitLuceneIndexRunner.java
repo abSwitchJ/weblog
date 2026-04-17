@@ -5,6 +5,7 @@ import com.abswitch.weblog.common.domain.dos.ArticleContentDO;
 import com.abswitch.weblog.common.domain.dos.ArticleDO;
 import com.abswitch.weblog.common.domain.mapper.ArticleContentMapper;
 import com.abswitch.weblog.common.domain.mapper.ArticleMapper;
+import com.abswitch.weblog.common.service.translation.TranslationService;
 import com.abswitch.weblog.search.LuceneHelper;
 import com.abswitch.weblog.search.config.LuceneProperties;
 import com.abswitch.weblog.search.index.ArticleIndex;
@@ -41,6 +42,8 @@ public class InitLuceneIndexRunner implements CommandLineRunner {
     private ArticleMapper articleMapper;
     @Autowired
     private ArticleContentMapper articleContentMapper;
+    @Autowired
+    private TranslationService translationService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -75,6 +78,11 @@ public class InitLuceneIndexRunner implements CommandLineRunner {
                 return;
             }
 
+            // 查翻译缓存得到英文版字段（命中则填充，未命中则空串，英文搜索不会命中该文档）
+            String titleEn = translationService.getCachedOrNull(articleDO.getTitle(), "zh", "en");
+            String summaryEn = translationService.getCachedOrNull(articleDO.getSummary(), "zh", "en");
+            String contentEn = translationService.getCachedOrNull(articleContentDO.getContent(), "zh", "en");
+
             // 构建文档
             Document document = new Document();
             // 设置文档字段 Field
@@ -85,6 +93,9 @@ public class InitLuceneIndexRunner implements CommandLineRunner {
             document.add(new TextField(ArticleIndex.COLUMN_CONTENT, articleContentDO.getContent(), Field.Store.YES));
             document.add(new TextField(ArticleIndex.COLUMN_CREATE_TIME, Constants.DATE_TIME_FORMATTER.format(articleDO.getCreateTime()), Field.Store.YES));
             document.add(new StringField(ArticleIndex.COLUMN_SLUG, articleDO.getSlug() != null ? articleDO.getSlug() : "", Field.Store.YES));
+            document.add(new TextField(ArticleIndex.COLUMN_TITLE_EN, titleEn != null ? titleEn : "", Field.Store.YES));
+            document.add(new TextField(ArticleIndex.COLUMN_SUMMARY_EN, summaryEn != null ? summaryEn : "", Field.Store.YES));
+            document.add(new TextField(ArticleIndex.COLUMN_CONTENT_EN, contentEn != null ? contentEn : "", Field.Store.YES));
             documents.add(document);
         });
 

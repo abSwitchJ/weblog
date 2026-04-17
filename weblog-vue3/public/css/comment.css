@@ -166,7 +166,9 @@ main .gsc-left-header .color-text-secondary,
   margin-bottom: 16px;
   margin-left: 0;
 }
-
+html[lang="en"] .gsc-reactions-count:after {
+  content: "Feel free to discuss~";
+}
 /* =============================================
    评论列表
    ============================================= */

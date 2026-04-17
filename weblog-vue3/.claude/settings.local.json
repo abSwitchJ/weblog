@@ -14,7 +14,11 @@
       "Bash(sed -n '14,25p' \"D:/weblog/weblog-vue3/src/pages/frontend/404.vue\")",
       "Bash(sed -i 's/您要找的页面飞到月球去啦~/{{ $t\\('\\\\''notFound.message'\\\\''\\) }}/g' src/pages/frontend/404.vue)",
       "Bash(sed -i 's/>返回首页</>{{ $t\\('\\\\''notFound.backHome'\\\\''\\) }}</g' src/pages/frontend/404.vue)",
-      "Bash(mvn -f D:/weblog/weblog-springboot/pom.xml clean install -DskipTests)"
+      "Bash(mvn -f D:/weblog/weblog-springboot/pom.xml clean install -DskipTests)",
+      "Bash(grep -E \"\\\\.\\(java|class\\)$\")",
+      "Bash(xargs -r head -50)",
+      "Bash(xargs ls *)",
+      "Bash(mvn -q exec:java -Dexec.mainClass=com.abswitch.weblog.web.markdown.MarkdownHelper -Dexec.cleanupDaemonThreads=false)"
     ]
   }
 }

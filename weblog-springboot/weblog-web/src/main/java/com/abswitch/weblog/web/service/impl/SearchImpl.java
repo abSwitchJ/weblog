@@ -51,8 +51,12 @@ public class SearchImpl implements SearchService {
 
 
         String word = searchArticlePageListReqVO.getWord();
-        // 搜索字段：标题、摘要、正文、日期
-        String[] columns = {ArticleIndex.COLUMN_TITLE, ArticleIndex.COLUMN_SUMMARY, ArticleIndex.COLUMN_CONTENT, ArticleIndex.COLUMN_CREATE_TIME};
+        boolean isEn = "en".equalsIgnoreCase(searchArticlePageListReqVO.getLang());
+        String titleField = isEn ? ArticleIndex.COLUMN_TITLE_EN : ArticleIndex.COLUMN_TITLE;
+        String summaryField = isEn ? ArticleIndex.COLUMN_SUMMARY_EN : ArticleIndex.COLUMN_SUMMARY;
+        String contentField = isEn ? ArticleIndex.COLUMN_CONTENT_EN : ArticleIndex.COLUMN_CONTENT;
+        // 搜索字段：标题、摘要、正文、日期（按 lang 切换中英字段）
+        String[] columns = {titleField, summaryField, contentField, ArticleIndex.COLUMN_CREATE_TIME};
         // 查询总记录数
         long total = luceneHelper.searchTotal(ArticleIndex.NAME, word, columns);
         List<Document> documents = luceneHelper.search(ArticleIndex.NAME, word, columns, current, size);
@@ -65,7 +69,7 @@ public class SearchImpl implements SearchService {
         // ======================== 开始关键词高亮处理 ========================
         // 中文分析器
         Analyzer analyzer = new SmartChineseAnalyzer();
-        QueryParser parser = new QueryParser(ArticleIndex.COLUMN_TITLE, analyzer);
+        QueryParser parser = new QueryParser(titleField, analyzer);
         Query query = null;
         try {
             query = parser.parse(word);
@@ -79,16 +83,16 @@ public class SearchImpl implements SearchService {
         documents.forEach(document -> {
             try {
                 // 文章标题
-                String title = document.get(ArticleIndex.COLUMN_TITLE);
-                String summary = document.get(ArticleIndex.COLUMN_SUMMARY);
-                String content = document.get(ArticleIndex.COLUMN_CONTENT);
+                String title = document.get(titleField);
+                String summary = document.get(summaryField);
+                String content = document.get(contentField);
 
                 // 高亮标题
-                String highlightedTitle = getHighlightedText(title, ArticleIndex.COLUMN_TITLE, word);
+                String highlightedTitle = getHighlightedText(title, titleField, word);
                 // 高亮摘要
-                String highlightedSummary = getHighlightedText(summary, ArticleIndex.COLUMN_SUMMARY, word);
+                String highlightedSummary = getHighlightedText(summary, summaryField, word);
                 // 高亮正文片段（最多200字）
-                String highlightedContent = getHighlightedContent(content, ArticleIndex.COLUMN_CONTENT, word, 200);
+                String highlightedContent = getHighlightedContent(content, contentField, word, 200);
 
                 String id = document.get(ArticleIndex.COLUMN_ID);
                 String cover = document.get(ArticleIndex.COLUMN_COVER);

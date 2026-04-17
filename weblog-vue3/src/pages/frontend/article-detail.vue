@@ -5,6 +5,12 @@
     <div class="np-page" :class="{ 'dark': isDark }">
         <div class="np-container">
 
+            <!-- 加载指示器：数据未到达前显示 -->
+            <div v-if="loading" class="np-loading">
+                <span class="np-spinner"></span>
+            </div>
+
+            <template v-else-if="article && article.title">
             <!-- 报纸报头区域 -->
             <header class="np-masthead">
 
@@ -33,18 +39,11 @@
 
             </header>
 
-            <!-- 主内容区：两列布局 -->
-            <div class="np-main">
+            <!-- 主内容区：有目录时右侧浮动，无目录时正文占满 -->
+            <div class="np-main" :class="{ 'no-toc': !hasToc }">
 
-                <!-- 左侧：文章正文 -->
-                <main class="np-article">
-                    <div :class="{ 'dark': isDark }">
-                        <div ref="articleContentRef" class="article-content" v-viewer v-html="article.content"></div>
-                    </div>
-                </main>
-                
-                <!-- 右侧：文章目录（可折叠） -->
-                <aside class="np-sidebar">
+                <!-- 右侧：文章目录（可折叠，float:right，需放在正文前以便绕流） -->
+                <aside v-if="hasToc" class="np-sidebar">
                     <div class="np-toc-card">
                         <div class="np-toc-header" @click="tocCollapsed = !tocCollapsed">
                             <span>{{ t('article.toc') }}</span>
@@ -54,11 +53,18 @@
                             </svg>
                         </div>
                         <div v-show="!tocCollapsed" class="np-toc-body">
-                            <Toc></Toc>
+                            <Toc :titles="article.toc"></Toc>
                         </div>
                     </div>
                 </aside>
-                <div class="np-prevnext">   
+
+                <!-- 左侧：文章正文（自然绕流于浮动侧栏） -->
+                <main class="np-article">
+                    <div :class="{ 'dark': isDark }">
+                        <div ref="articleContentRef" class="article-content" v-viewer v-html="article.content"></div>
+                    </div>
+                </main>
+                <div class="np-prevnext">
                     <!-- 上下篇导航 -->
                     <div class="basis-1/2">
                         <a v-if="article.preArticle"
@@ -93,10 +99,11 @@
                     </div>
                 </div>
             </div>
-            
+            </template>
+
         </div>
-        
-        <div class="giscus-container" :class="{ 'dark': isDark }">
+
+        <div v-if="!loading && article && article.title" class="giscus-container" :class="{ 'dark': isDark }">
             <!-- 评论区（报纸组件外） -->
             <div class="np-comments">
                 <Giscus
@@ -130,7 +137,7 @@ import Toc from '@/layouts/frontend/components/Toc.vue'
 import { getArticleDetail } from '@/api/frontend/article'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ref, watch, onBeforeUnmount, nextTick, reactive } from 'vue'
+import { ref, computed, watch, onBeforeUnmount, nextTick, reactive } from 'vue'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/tokyo-night-dark.css'
 
@@ -160,17 +167,29 @@ const giscusTheme = import.meta.env.DEV
 // 文章数据
 const article = ref({})
 
+// 加载状态
+const loading = ref(true)
+
+// 是否存在目录
+const hasToc = computed(() => Array.isArray(article.value?.toc) && article.value.toc.length > 0)
+
 // 获取文章详情
 function refreshArticleDetail(slug) {
+    loading.value = true
     getArticleDetail(slug).then((res) => {
         // 该文章不存在(错误码为 20010)
         if (!res.success && res.errorCode == '20010') {
             // 手动跳转 404 页面
+            loading.value = false
             router.push({ name: 'NotFound' })
             return
         }
 
         article.value = res.data
+        if (res.data && res.data.title) {
+            document.title = res.data.title
+        }
+        loading.value = false
 
         nextTick(() => {
             // 获取所有 pre code 节点
@@ -207,6 +226,8 @@ function refreshArticleDetail(slug) {
                 preElement.addEventListener('mouseleave', handleMouseLeave);
             })
         })
+    }).catch(() => {
+        loading.value = false
     })
 }
 refreshArticleDetail(route.params.slug)
@@ -373,7 +394,7 @@ const handleMouseLeave = (event) => {
 /* 双线分隔 */
 .np-hrule-double {
     border: none;
-    border-top: 2px double #1a1a1a;
+    border-top: 3px double #1a1a1a;
     margin: 10px 0;
 }
 
@@ -426,27 +447,71 @@ const handleMouseLeave = (event) => {
     color: #eee;
 }
 
-/* 主内容两列布局 */
+/* 主内容布局：block + float 绕流（sidebar 浮右，正文绕流） */
 .np-main {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 40px;
-    align-items: start;
+    display: block;
     padding-top: 10px;
+}
+
+/* clearfix：撑开父容器高度，sticky 的包含块才有足够垂直范围 */
+.np-main::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* 浮动侧栏：目录卡片 */
+.np-sidebar {
+    float: right;
+    width: 300px;
+    margin-left: 40px;
+    margin-bottom: 20px;
 }
 
 .np-page.dark .np-main {
     border-top-color: #3a3a3a;
 }
 
-/* 上下篇导航（报纸组件外，独立居中区块） */
+
+/* 加载指示器 */
+.np-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 320px;
+}
+
+.np-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(26, 26, 26, 0.15);
+    border-top-color: #1a1a1a;
+    border-radius: 50%;
+    animation: np-spin 0.8s linear infinite;
+}
+
+.np-page.dark .np-spinner {
+    border-color: rgba(232, 232, 232, 0.2);
+    border-top-color: #e8e8e8;
+}
+
+@keyframes np-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 锚点跳转时避开固定 Header */
+.article-content :is(h1, h2, h3, h4, h5, h6) {
+    scroll-margin-top: 5.5rem;
+}
+
+/* 上下篇导航（清除浮动，始终从新行开始） */
 .np-prevnext {
+    clear: both;
     display: flex;
     flex-direction: row;
     max-width: 1000px;
-    margin: 0 0;
-    padding: 0 0;
-    grid-column: 1 / -1;
+    margin: 0;
+    padding: 0;
 }
 
 /* 评论区（报纸组件外，独立居中区块） */
@@ -461,7 +526,6 @@ const handleMouseLeave = (event) => {
     background-color: #faf9f7;
     border: 1px solid #ccc;
     border-radius: 0px;
-    overflow: hidden;
     position: sticky;
     top: 5.5rem;
 }
@@ -537,8 +601,10 @@ const handleMouseLeave = (event) => {
 
 /* 响应式 */
 @media (max-width: 768px) {
-    .np-main {
-        grid-template-columns: 1fr;
+    .np-sidebar {
+        float: none;
+        width: 100%;
+        margin: 0 0 20px;
     }
 
     .np-container {
@@ -546,6 +612,10 @@ const handleMouseLeave = (event) => {
     }
 
     .np-title {
+        font-size: 1.8em;
+    }
+
+    ::v-deep(.article-content h1) {
         font-size: 1.8em;
     }
 }
@@ -566,8 +636,24 @@ const handleMouseLeave = (event) => {
     color: #1a1a1a;
 }
 
-/* h2 报纸栏目标题风格 */
+/* h1 与报头标题同字族，左对齐，紧随双线之下 */
+::v-deep(.article-content h1) {
+    font-size: 2.6em;
+    font-weight: 700;
+    text-align: left;
+    line-height: 1.25;
+    letter-spacing: 1px;
+    color: #1a1a1a;
+    margin: 10px 0 14px;
+}
+
+.np-page.dark ::v-deep(.article-content h1) {
+    color: #e8e8e8;
+}
+
+/* h2 报纸栏目标题风格（flow-root 让其成为 BFC，不让 border-bottom 延伸到浮动 TOC 下方） */
 ::v-deep(.article-content h2) {
+    display: flow-root;
     font-size: 1.35em;
     font-weight: 700;
     text-transform: uppercase;

@@ -39,5 +39,14 @@ export default {
   notFound: {
     message: 'The page you are looking for has flown to the moon~',
     backHome: 'Back to Home'
+  },
+  title: {
+    archive: 'Archive',
+    categoryList: 'Category',
+    tagList: 'Tag',
+    about: 'About',
+    search: 'Search',
+    login: 'Login',
+    notFound: 'This page does not seem to exist'
   }
 }

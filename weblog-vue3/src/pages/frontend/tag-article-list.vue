@@ -338,10 +338,17 @@ const tagName = ref(route.query.name)
 // 标签 ID
 const tagId = ref(route.query.id)
 
+if (tagName.value) {
+    document.title = tagName.value
+}
+
 // 监听路由
 watch(route, (newRoute, oldRoute) => {
     tagName.value = newRoute.query.name
     tagId.value = newRoute.query.id
+    if (tagName.value) {
+        document.title = tagName.value
+    }
     getTagArticles(current.value)
 })
 

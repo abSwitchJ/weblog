@@ -25,4 +25,12 @@ public interface TranslationCacheMapper extends BaseMapper<TranslationCacheDO> {
                 .eq(TranslationCacheDO::getSourceLang, sourceLang)
                 .eq(TranslationCacheDO::getTargetLang, targetLang));
     }
+
+    default TranslationCacheDO selectByTranslated(String translatedText, String sourceLang, String targetLang) {
+        return selectOne(Wrappers.<TranslationCacheDO>lambdaQuery()
+                .eq(TranslationCacheDO::getTranslatedText, translatedText)
+                .eq(TranslationCacheDO::getSourceLang, sourceLang)
+                .eq(TranslationCacheDO::getTargetLang, targetLang)
+                .last("LIMIT 1"));
+    }
 }

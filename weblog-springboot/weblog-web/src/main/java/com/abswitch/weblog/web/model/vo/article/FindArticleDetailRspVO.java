@@ -71,4 +71,9 @@ public class FindArticleDetailRspVO {
      * 阅读时长
      */
     private String readTime;
+
+    /**
+     * 文章目录（h1-h6 中最高级别的所有标题）
+     */
+    private List<TocItemVO> toc;
 }

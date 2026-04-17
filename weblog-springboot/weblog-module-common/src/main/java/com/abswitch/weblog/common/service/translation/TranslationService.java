@@ -25,4 +25,9 @@ public interface TranslationService {
      * 缓存未命中的源文本不会出现在返回 Map 中（前端 fallback 显示原文）。
      */
     Map<String, String> getTranslations(List<String> sourceTexts, String sourceLang, String targetLang);
+
+    /**
+     * 反查：根据已翻译文本找到原文。未命中返回 null。
+     */
+    String getSourceByTranslated(String translatedText, String sourceLang, String targetLang);
 }
