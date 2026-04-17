@@ -2,6 +2,7 @@ import axios from "axios";
 import { getToken } from "@/composables/cookie"
 import { showMessage} from '@/composables/util'
 import { useUserStore } from '@/stores/user'
+import { useLocaleStore } from '@/stores/locale'
 
 // 创建 Axios 实例
 const instance = axios.create({
@@ -20,6 +21,21 @@ instance.interceptors.request.use(function (config) {
     if (token) {
         // 添加请求头, key 为 Authorization，value 值的前缀为 'Bearer '
         config.headers['Authorization'] = 'Bearer ' + token
+    }
+
+    // 前台中英文切换：仅对非 /admin 路径的 POST 请求注入 lang 字段
+    const url = config.url || ''
+    const isAdmin = url.startsWith('/admin')
+    if (!isAdmin) {
+        try {
+            const locale = useLocaleStore().locale
+            if (config.data == null || (typeof config.data === 'object' && !Array.isArray(config.data))) {
+                config.data = { ...(config.data || {}) }
+                if (config.data.lang == null) {
+                    config.data.lang = locale
+                }
+            }
+        } catch (_) { /* Pinia 未就绪时忽略 */ }
     }
 
     return config;

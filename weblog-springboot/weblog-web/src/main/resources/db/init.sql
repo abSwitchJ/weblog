@@ -165,6 +165,22 @@ CREATE TABLE `t_user_role`  (
   INDEX `idx_username`(`username` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户角色表' ROW_FORMAT = DYNAMIC;
 
+-- ----------------------------
+-- Table structure for t_translation_cache（中英文翻译缓存）
+-- ----------------------------
+DROP TABLE IF EXISTS `t_translation_cache`;
+CREATE TABLE `t_translation_cache` (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `source_hash` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'SHA-256 of source text',
+  `source_lang` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'zh',
+  `target_lang` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'en',
+  `source_text` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `translated_text` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_hash_lang` (`source_hash`, `source_lang`, `target_lang`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '翻译结果缓存' ROW_FORMAT = DYNAMIC;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- Weblog 所需的初始化数据，如登录用户、用户角色、博客设置信息

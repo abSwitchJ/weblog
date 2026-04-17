@@ -7,10 +7,20 @@
 </template>
 
 <script setup>
+import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
-const locale = zhCn
+import en from 'element-plus/dist/locale/en.mjs'
+import { useLocaleStore } from '@/stores/locale'
 
-console.log(import.meta.env)
+const localeStore = useLocaleStore()
+const { locale: i18nLocale } = useI18n()
+
+const locale = computed(() => localeStore.locale === 'en' ? en : zhCn)
+
+watch(() => localeStore.locale, (val) => {
+  i18nLocale.value = val
+}, { immediate: true })
 </script>
 
 <style>

@@ -27,7 +27,7 @@
                                 d="M676.4032 445.5424c-62.208 0-112.8448-50.6368-112.8448-112.8448s50.6368-112.8448 112.8448-112.8448c62.208 0 112.8448 50.6368 112.8448 112.8448s-50.6368 112.8448-112.8448 112.8448z m0-164.1984c-28.3648 0-51.4048 23.04-51.4048 51.4048s23.04 51.4048 51.4048 51.4048c28.3648 0 51.4048-23.04 51.4048-51.4048s-23.0912-51.4048-51.4048-51.4048z"
                                 fill="#4F4F4F" p-id="13861"></path>
                         </svg>
-                        标签
+                        {{ $t('tag.title') }}
                         <span class="ml-2 text-gray-600 font-normal dark:text-gray-300">( {{ tags.length }} )</span>
 
                     </h2>
@@ -246,7 +246,7 @@
                                 fill="#c0c7d2" fill-rule="evenodd" group-id="4" id="矩形" node-id="56" stroke="none"
                                 target-height="46" target-width="33.334473" target-x="380.8566" target-y="423" />
                         </svg>
-                        <p class="mt-2 mb-16 text-gray-400">此标签下还未发布文章哟~</p>
+                        <p class="mt-2 mb-16 text-gray-400">{{ $t('tag.empty') }}</p>
                     </div>
                 </div>
 
@@ -259,7 +259,7 @@
                                 class="flex items-center justify-center px-4 h-10 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                                 :class="[current > 1 ? '' : 'cursor-not-allowed']">
 
-                                <span class="sr-only">上一页</span>
+                                <span class="sr-only">{{ $t('pagination.prev') }}</span>
                                 <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                                     viewBox="0 0 6 10">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -280,7 +280,7 @@
                             <a @click="getTagArticles(current + 1)"
                                 class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                                 :class="[current < pages ? '' : 'cursor-not-allowed']">
-                                <span class="sr-only">下一页</span>
+                                <span class="sr-only">{{ $t('pagination.next') }}</span>
                                 <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                                     viewBox="0 0 6 10">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -325,9 +325,11 @@ import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.v
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getTagArticlePageList, getTagList } from '@/api/frontend/tag'
+import { useLocaleStore } from '@/stores/locale'
 
 const route = useRoute()
 const router = useRouter()
+const localeStore = useLocaleStore()
 
 // 文章集合
 const articles = ref([])
@@ -386,4 +388,14 @@ const goTagArticleListPage = (id, name) => {
     // 跳转时通过 query 携带参数（标签 ID、标签名称）
     router.push({ path: '/tag/article/list', query: { id, name } })
 }
+
+// 语言切换时重新加载
+watch(() => localeStore.locale, () => {
+    getTagArticles(current.value)
+    getTagList({}).then((res) => {
+        if (res.success) {
+            tags.value = res.data
+        }
+    })
+})
 </script>

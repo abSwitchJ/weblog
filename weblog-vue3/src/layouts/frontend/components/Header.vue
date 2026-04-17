@@ -36,7 +36,7 @@
 
                     <!-- 中英文切换 -->
                     <button @click="toggleLang" class="text-sm text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white font-medium nav-font">
-                        {{ isEnglish ? '中' : 'En' }}
+                        {{ localeStore.locale === 'en' ? '中' : 'En' }}
                     </button>
                 </div>
             </div>
@@ -63,7 +63,7 @@
                         </svg>
                     </div>
                     <input ref="searchInputRef" v-model="searchWord" type="text"
-                        class="search-input" placeholder="Search articles..." @keydown.esc="closeSearch">
+                        class="search-input" :placeholder="t('search.placeholder')" @keydown.esc="closeSearch">
                     <button @click="closeSearch" class="search-close-btn" aria-label="关闭搜索">
                         <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -75,12 +75,12 @@
                 <div class="search-divider"></div>
 
                 <!-- 提示行 -->
-                <p v-if="!searchWord" class="search-hint">Type to search articles...</p>
+                <p v-if="!searchWord" class="search-hint">{{ t('search.hint') }}</p>
 
                 <!-- 结果区域 -->
                 <div v-if="searchWord" class="search-results">
                     <div v-if="searchArticles && searchArticles.length > 0">
-                        <p class="search-result-count">{{ total }} results found</p>
+                        <p class="search-result-count">{{ t('search.resultsFound', { n: total }) }}</p>
 
                         <div v-for="(article, index) in searchArticles" :key="index"
                             class="search-card" :class="{ 'search-card-border': index < searchArticles.length - 1 }"
@@ -95,14 +95,14 @@
 
                         <!-- 翻页 -->
                         <div v-if="pages > 1" class="search-pagination">
-                            <a v-if="current > 1" @click="prePage" class="search-page-btn">上一页</a>
+                            <a v-if="current > 1" @click="prePage" class="search-page-btn">{{ t('pagination.prev') }}</a>
                             <span v-else></span>
-                            <a v-if="current < pages" @click="nextPage" class="search-page-btn">下一页</a>
+                            <a v-if="current < pages" @click="nextPage" class="search-page-btn">{{ t('pagination.next') }}</a>
                         </div>
                     </div>
 
                     <div v-else-if="!searchLoading" class="search-empty">
-                        <p>未查询到结果, 换个姿势搜索吧~</p>
+                        <p>{{ t('search.noResults') }}</p>
                     </div>
                 </div>
 
@@ -111,9 +111,9 @@
                 <!-- 底部快捷键提示 -->
                 <div class="search-footer">
                     <span class="search-kbd">/</span>
-                    <span class="search-kbd-label">to search</span>
+                    <span class="search-kbd-label">{{ t('search.toSearch') }}</span>
                     <span class="search-kbd">Esc</span>
-                    <span class="search-kbd-label">to close</span>
+                    <span class="search-kbd-label">{{ t('search.toClose') }}</span>
                 </div>
             </div>
         </div>
@@ -123,12 +123,16 @@
 <script setup>
 import { onMounted, ref, onBeforeUnmount, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { getArticleSearchPageList } from '@/api/frontend/search'
 import { useDark, useToggle } from '@vueuse/core'
+import { useLocaleStore } from '@/stores/locale'
 
 const router = useRouter()
+const { t } = useI18n()
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
+const localeStore = useLocaleStore()
 
 // 搜索弹窗状态
 const showSearchModal = ref(false)
@@ -187,10 +191,9 @@ onBeforeUnmount(() => {
     window.removeEventListener('scroll', handleScroll)
 })
 
-// 中英文切换状态
-const isEnglish = ref(false)
+// 中英文切换
 const toggleLang = () => {
-    isEnglish.value = !isEnglish.value
+    localeStore.toggleLocale()
 }
 
 // 文章搜索
@@ -208,6 +211,13 @@ watch(searchWord, (newText, oldText) => {
         renderSearchArticles({ current: 1, size: size.value, word: newText })
     } else if (newText == '') {
         searchArticles.value = []
+    }
+})
+
+// 语言切换时重新搜索（弹窗打开且有搜索词时）
+watch(() => localeStore.locale, () => {
+    if (showSearchModal.value && searchWord.value) {
+        renderSearchArticles({ current: current.value, size: size.value, word: searchWord.value })
     }
 })
 

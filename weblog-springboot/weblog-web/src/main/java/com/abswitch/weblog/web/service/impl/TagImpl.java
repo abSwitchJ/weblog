@@ -6,6 +6,7 @@ import com.abswitch.weblog.common.domain.mapper.ArticleTagRelMapper;
 import com.abswitch.weblog.common.domain.mapper.TagMapper;
 import com.abswitch.weblog.common.emuns.ResponseCodeEnum;
 import com.abswitch.weblog.common.exception.BizException;
+import com.abswitch.weblog.common.service.translation.TranslationService;
 import com.abswitch.weblog.common.utils.PageResponse;
 import com.abswitch.weblog.common.utils.Response;
 import com.abswitch.weblog.web.convert.ArticleConvert;
@@ -21,16 +22,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- * @Author：abSwitch
- * @url：
- * @date：2026-03-26 11:00
- * @Description：
- */
 @Service
 @Slf4j
 public class TagImpl implements TagService {
@@ -43,27 +40,35 @@ public class TagImpl implements TagService {
     @Autowired
     private ArticleTagRelMapper articleTagRelMapper;
 
+    @Autowired
+    private TranslationService translationService;
+
     @Override
     public Response findTagList(FindCategoryOrTagListReqVO findCategoryOrTagListReqVO) {
         Long size = findCategoryOrTagListReqVO.getSize();
 
-        List<TagDO> tagDOS = null;
-        // 如果接口入参中未指定 size
+        List<TagDO> tagDOS;
         if (Objects.isNull(size) || size == 0) {
-            // 查询所有分类
             tagDOS = tagMapper.selectList(Wrappers.emptyWrapper());
         } else {
-            // 否则查询指定的数量
             tagDOS = tagMapper.selectByLimit(size);
         }
-        List<FindCategoryOrTagListRspVO> findCategoryOrTagListRspVOS = tagDOS.stream().map(TagConvert.INSTANCE::convertDO2VO).collect(Collectors.toList());
+        List<FindCategoryOrTagListRspVO> rspVOS = tagDOS.stream().map(TagConvert.INSTANCE::convertDO2VO).collect(Collectors.toList());
 
-        return Response.ok(findCategoryOrTagListRspVOS);
+        if ("en".equalsIgnoreCase(findCategoryOrTagListReqVO.getLang()) && !rspVOS.isEmpty()) {
+            List<String> names = rspVOS.stream().map(FindCategoryOrTagListRspVO::getName).toList();
+            Map<String, String> map = translationService.getTranslations(names, "zh", "en");
+            rspVOS.forEach(v -> {
+                String t = map.get(v.getName());
+                if (t != null) v.setName(t);
+            });
+        }
+
+        return Response.ok(rspVOS);
     }
 
     @Override
     public Response findTagArticlePageList(FindCategoryOrTagOrArticlePageListReqVO findTagArticlePageListReqVO) {
-
 
         Long tagId = findTagArticlePageListReqVO.getId();
         Long current = findTagArticlePageListReqVO.getCurrent();
@@ -71,7 +76,6 @@ public class TagImpl implements TagService {
 
         TagDO tagDO = tagMapper.selectById(tagId);
 
-        // 判断该标签是否存在
         if (Objects.isNull(tagDO)) {
             log.warn("==> 该标签不存在, tagId: {}", tagId);
             throw new BizException(ResponseCodeEnum.TAG_NOT_EXISTED);
@@ -95,9 +99,24 @@ public class TagImpl implements TagService {
             return PageResponse.ok(null, null);
         }
 
-        List<FindCategoryOrTagArticlePageListRspVO> findCategoryOrTagArticlePageListRspVOS = articleDOS.stream()
-                .map(ArticleConvert.INSTANCE::convertDO2TagVO).toList();
+        List<FindCategoryOrTagArticlePageListRspVO> vos = articleDOS.stream()
+                .map(ArticleConvert.INSTANCE::convertDO2TagVO).collect(Collectors.toList());
 
-        return PageResponse.ok(articleDOPage, findCategoryOrTagArticlePageListRspVOS);
+        if ("en".equalsIgnoreCase(findTagArticlePageListReqVO.getLang()) && !vos.isEmpty()) {
+            List<String> sources = new ArrayList<>();
+            for (FindCategoryOrTagArticlePageListRspVO v : vos) {
+                if (v.getTitle() != null) sources.add(v.getTitle());
+                if (v.getSummary() != null) sources.add(v.getSummary());
+            }
+            Map<String, String> map = translationService.getTranslations(sources, "zh", "en");
+            vos.forEach(v -> {
+                String t = map.get(v.getTitle());
+                if (t != null) v.setTitle(t);
+                String s = map.get(v.getSummary());
+                if (s != null) v.setSummary(s);
+            });
+        }
+
+        return PageResponse.ok(articleDOPage, vos);
     }
 }

@@ -12,6 +12,7 @@ import com.abswitch.weblog.common.domain.mapper.ArticleTagRelMapper;
 import com.abswitch.weblog.common.domain.mapper.TagMapper;
 import com.abswitch.weblog.common.emuns.ResponseCodeEnum;
 import com.abswitch.weblog.common.exception.BizException;
+import com.abswitch.weblog.common.service.translation.PreTranslateAsyncService;
 import com.abswitch.weblog.common.utils.PageResponse;
 import com.abswitch.weblog.common.utils.Response;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -45,6 +46,9 @@ public class AdminTagImpl implements AdminTagService {
 
     @Autowired
     private ArticleTagRelMapper articleTagRelMapper;
+
+    @Autowired
+    private PreTranslateAsyncService preTranslateAsyncService;
     /**
      * 添加标签集合
      *
@@ -70,6 +74,10 @@ public class AdminTagImpl implements AdminTagService {
         } catch (Exception e) {
             log.warn("该标签已存在", e);
         }
+
+        // 异步预翻译标签名
+        preTranslateAsyncService.preTranslateTexts(
+                tagDOS.stream().map(TagDO::getName).collect(Collectors.toList()));
         return Response.ok();
     }
 

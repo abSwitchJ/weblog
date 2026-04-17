@@ -21,7 +21,7 @@
                         </a>
                     </span>
                     <span class="np-byline-right">
-                        <span>{{ article.totalWords }} 字</span>
+                        <span>{{ article.totalWords }} {{ t('article.words') }}</span>
                         <span class="np-sep">&nbsp;·&nbsp;</span>
                         <span>{{ article.readTime }}</span>
                     </span>
@@ -47,7 +47,7 @@
                 <aside class="np-sidebar">
                     <div class="np-toc-card">
                         <div class="np-toc-header" @click="tocCollapsed = !tocCollapsed">
-                            <span>文章目录</span>
+                            <span>{{ t('article.toc') }}</span>
                             <svg class="np-toc-arrow" :class="{ 'collapsed': tocCollapsed }"
                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
@@ -70,7 +70,7 @@
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                         stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"></path>
                                 </svg>
-                                上一篇
+                                {{ t('article.prevArticle') }}
                             </div>
                             <div>{{ article.preArticle.articleTitle }}</div>
                         </a>
@@ -81,7 +81,7 @@
                             @click="router.push('/article/' + article.nextArticle.articleSlug + '.html')"
                             class="cursor-pointer flex flex-col h-full text-right p-4 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:border-sky-500 hover:bg-gray-100 hover:text-gray-700 dark:bg-[#1e1e1e] dark:border-gray-700 dark:text-gray-400 dark:hover:bg-[#1a1a1a] dark:hover:text-white">
                             <div>
-                                下一篇
+                                {{ t('article.nextArticle') }}
                                 <svg class="inline w-3.5 h-3.5 ml-2 mb-1" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -107,7 +107,7 @@
                     emit-metadata="1"
                     input-position="top"
                     :theme="giscusTheme"
-                    lang="zh-CN"
+                    :lang="localeStore.locale === 'en' ? 'en' : 'zh-CN'"
                     loading="lazy"
                     crossorigin="anonymous"
                 />
@@ -129,16 +129,20 @@ import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.v
 import Toc from '@/layouts/frontend/components/Toc.vue'
 import { getArticleDetail } from '@/api/frontend/article'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { ref, watch, onBeforeUnmount, nextTick, reactive } from 'vue'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/tokyo-night-dark.css'
 
 import { useDark } from '@vueuse/core'
 import Giscus from '@giscus/vue';
+import { useLocaleStore } from '@/stores/locale'
 // @ts-ignore
 const config = __GISCUS_CONFIG__;
 // 是否是暗黑模式
 const isDark = useDark()
+const { t } = useI18n()
+const localeStore = useLocaleStore()
 
 const route = useRoute()
 const router = useRouter()
@@ -223,6 +227,9 @@ watch(route, (newRoute, oldRoute) => {
     // 重新渲染文章详情
     refreshArticleDetail(newRoute.params.slug)
 })
+
+// 语言切换时重新加载
+watch(() => localeStore.locale, () => refreshArticleDetail(route.params.slug))
 
 // 复制内容到剪切板
 function copyToClipboard(text) {

@@ -9,6 +9,7 @@ import com.abswitch.weblog.common.domain.mapper.ArticleCategoryRelMapper;
 import com.abswitch.weblog.common.domain.mapper.CategoryMapper;
 import com.abswitch.weblog.common.emuns.ResponseCodeEnum;
 import com.abswitch.weblog.common.exception.BizException;
+import com.abswitch.weblog.common.service.translation.PreTranslateAsyncService;
 import com.abswitch.weblog.common.utils.PageResponse;
 import com.abswitch.weblog.common.utils.Response;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -41,6 +42,9 @@ public class AdminCategoryImpl implements AdminCategoryService {
     @Autowired
     private ArticleCategoryRelMapper articleCategoryRelMapper;
 
+    @Autowired
+    private PreTranslateAsyncService preTranslateAsyncService;
+
     @Override
     public Response addCategory(AddCategoryReqVO addCategoryReqVO) {
 
@@ -56,6 +60,9 @@ public class AdminCategoryImpl implements AdminCategoryService {
         CategoryDO insterCategoryDO = CategoryDO.builder().name(categoryName).updateTime(LocalDateTime.now()).build();
 
         categoryMapper.insert(insterCategoryDO);
+
+        // 异步预翻译分类名
+        preTranslateAsyncService.preTranslateText(categoryName);
         return Response.ok();
     }
 

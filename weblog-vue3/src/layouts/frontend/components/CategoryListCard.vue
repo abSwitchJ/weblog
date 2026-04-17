@@ -23,7 +23,7 @@
                         d="M559.407407 512h-75.851851c-20.859259 0-37.925926-17.066667-37.925926-37.925926s17.066667-37.925926 37.925926-37.925926h75.851851c20.859259 0 37.925926 17.066667 37.925926 37.925926s-17.066667 37.925926-37.925926 37.925926z"
                         fill="#F9D523" p-id="21577"></path>
                 </svg>
-                分类
+                {{ $t('category.title') }}
             </h2>
             <span class="grow"></span>
 
@@ -60,10 +60,12 @@ dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-gray-
 
 <script setup>
 import { getCategoryList } from '@/api/frontend/category'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useLocaleStore } from '@/stores/locale'
 
 const router = useRouter()
+const localeStore = useLocaleStore()
 
 // 跳转分类文章列表页
 const goCategoryArticleListPage = (id, name) => {
@@ -75,9 +77,15 @@ const categories = ref([])
 // 一次显示的分类数
 const size = ref(10)
 
-getCategoryList({ size: size.value }).then((res) => {
-    if (res.success) {
-        categories.value = res.data
-    }
-})
+function loadCategories() {
+    getCategoryList({ size: size.value }).then((res) => {
+        if (res.success) {
+            categories.value = res.data
+        }
+    })
+}
+loadCategories()
+
+// 语言切换时重新加载
+watch(() => localeStore.locale, loadCategories)
 </script>

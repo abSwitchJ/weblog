@@ -16,7 +16,7 @@
                 data-tooltip-placement="bottom">{{ blogSettingsStore.blogSettings.introduction }}</span>
             <div id="introduction-tooltip-bottom" role="tooltip"
                 class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-white bg-gray-900 rounded shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                介绍语
+                {{ $t('sidebar.introduction') }}
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
 
@@ -30,21 +30,21 @@
                     <!-- 字体大小为 text-lg , 字体加粗 -->
                     <CountTo :value="statisticsInfo.articleTotalCount" customClass="text-lg font-bold"></CountTo>
                     <!-- 字体大小为 text-sm -->
-                    <div class="text-sm">文章</div>
+                    <div class="text-sm">{{ $t('sidebar.articles') }}</div>
                 </div>
-                <div 
+                <div
                     class="flex items-center flex-col gap-1 hover:text-sky-600 hover:scale-110 cursor-pointer">
                     <CountTo :value="statisticsInfo.categoryTotalCount" customClass="text-lg font-bold"></CountTo>
-                    <div class="text-sm">分类</div>
+                    <div class="text-sm">{{ $t('sidebar.categories') }}</div>
                 </div>
                 <div
                     class="flex items-center flex-col gap-1 hover:text-sky-600 hover:scale-110 cursor-pointer">
                     <CountTo :value="statisticsInfo.tagTotalCount" customClass="text-lg font-bold"></CountTo>
-                    <div class="text-sm">标签</div>
+                    <div class="text-sm">{{ $t('sidebar.tags') }}</div>
                 </div>
                 <div class="flex items-center flex-col gap-1">
                     <CountTo :value="statisticsInfo.pvTotalCount" customClass="text-lg font-bold"></CountTo>
-                    <div class="text-sm">总访问量</div>
+                    <div class="text-sm">{{ $t('sidebar.totalVisits') }}</div>
                 </div>
             </div>
 
@@ -64,7 +64,7 @@
                 </svg>
                 <div id="github-tooltip-bottom" role="tooltip"
                     class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-white bg-gray-900 rounded shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                    我的 GitHub
+                    {{ $t('sidebar.myGithub') }}
                     <div class="tooltip-arrow" data-popper-arrow></div>
                 </div>
                 <!-- Gitee -->
@@ -77,7 +77,7 @@
                 </svg>
                 <div id="gitee-tooltip-bottom" role="tooltip"
                     class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-white bg-gray-900 rounded shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                    我的 Gitee
+                    {{ $t('sidebar.myGitee') }}
                     <div class="tooltip-arrow" data-popper-arrow></div>
                 </div>
                 <!-- 知乎 -->
@@ -93,7 +93,7 @@
                 </svg>
                 <div id="zhihu-tooltip-bottom" role="tooltip"
                     class="absolute z-10 invisible inline-block px-3 py-2 text-xs rounded font-medium text-white bg-gray-900 shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                    我的知乎
+                    {{ $t('sidebar.myZhihu') }}
                     <div class="tooltip-arrow" data-popper-arrow></div>
                 </div>
                 <!-- CSDN -->
@@ -106,7 +106,7 @@
                 </svg>
                 <div id="csdn-tooltip-bottom" role="tooltip"
                     class="absolute z-10 invisible inline-block px-3 py-2 text-xs rounded font-medium text-white bg-gray-900 shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                    我的 CSDN
+                    {{ $t('sidebar.myCsdn') }}
                     <div class="tooltip-arrow" data-popper-arrow></div>
                 </div>
             </div>

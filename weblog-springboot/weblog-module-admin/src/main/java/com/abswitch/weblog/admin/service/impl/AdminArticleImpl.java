@@ -11,6 +11,7 @@ import com.abswitch.weblog.common.domain.mapper.*;
 import com.abswitch.weblog.common.emuns.ResponseCodeEnum;
 import com.abswitch.weblog.common.exception.BizException;
 import com.abswitch.weblog.common.config.BaiduTranslateProperties;
+import com.abswitch.weblog.common.service.translation.PreTranslateAsyncService;
 import com.abswitch.weblog.common.utils.PageResponse;
 import com.abswitch.weblog.common.utils.Response;
 import com.abswitch.weblog.common.utils.SlugUtil;
@@ -57,6 +58,8 @@ public class AdminArticleImpl implements AdminArticleService {
     private ApplicationEventPublisher eventPublisher;
     @Autowired
     private BaiduTranslateProperties baiduTranslateProperties;
+    @Autowired
+    private PreTranslateAsyncService preTranslateAsyncService;
     /**
      * 发布文章
      *
@@ -117,6 +120,12 @@ public class AdminArticleImpl implements AdminArticleService {
         insertTags(articleId, publishTags);
         // 发送文章发布事件
         eventPublisher.publishEvent(new PublishArticleEvent(this, articleId));
+
+        // 异步预翻译（标题/摘要/正文）
+        preTranslateAsyncService.preTranslateArticle(
+                publishArticleReqVO.getTitle(),
+                publishArticleReqVO.getSummary(),
+                publishArticleReqVO.getContent());
         return Response.ok();
     }
 
@@ -273,6 +282,12 @@ public class AdminArticleImpl implements AdminArticleService {
         insertTags(articleId, publishTags);
         // 发布文章修改事件
         eventPublisher.publishEvent(new UpdateArticleEvent(this, articleId));
+
+        // 异步预翻译（标题/摘要/正文）
+        preTranslateAsyncService.preTranslateArticle(
+                updateArticleReqVO.getTitle(),
+                updateArticleReqVO.getSummary(),
+                updateArticleReqVO.getContent());
         return Response.ok();
     }
 

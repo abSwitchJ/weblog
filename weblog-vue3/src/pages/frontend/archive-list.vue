@@ -39,20 +39,28 @@ import Header from '@/layouts/frontend/components/Header.vue'
 import Footer from '@/layouts/frontend/components/Footer.vue'
 import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
 import { getArchiveList } from '@/api/frontend/archive'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDark } from '@vueuse/core'
+import { useLocaleStore } from '@/stores/locale'
 
 const router = useRouter()
 const isDark = useDark()
+const localeStore = useLocaleStore()
 
 const archives = ref([])
 
-getArchiveList().then((res) => {
-    if (res.success) {
-        archives.value = res.data
-    }
-})
+function loadArchives() {
+    getArchiveList().then((res) => {
+        if (res.success) {
+            archives.value = res.data
+        }
+    })
+}
+loadArchives()
+
+// 语言切换时重新加载
+watch(() => localeStore.locale, loadArchives)
 
 function groupByMonth(articles) {
     const map = {}

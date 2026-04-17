@@ -2,6 +2,7 @@ package com.abswitch.weblog.web.service.impl;
 
 import com.abswitch.weblog.common.emuns.ResponseCodeEnum;
 import com.abswitch.weblog.common.exception.BizException;
+import com.abswitch.weblog.common.service.translation.TranslationService;
 import com.abswitch.weblog.common.utils.PageResponse;
 import com.abswitch.weblog.web.convert.ArticleConvert;
 import com.abswitch.weblog.common.domain.dos.ArticleCategoryRelDO;
@@ -24,15 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
-/**
- * @Author：abSwitch
- * @url：
- * @date：2026-03-26 10:25
- * @Description：
- */
 @Service
 @Slf4j
 public class CategoryImpl implements CategoryService {
@@ -46,24 +43,26 @@ public class CategoryImpl implements CategoryService {
     @Autowired
     private ArticleMapper articleMapper;
 
+    @Autowired
+    private TranslationService translationService;
+
     @Override
     public Response findCategoryList(FindCategoryOrTagListReqVO findCategoryListReqVO) {
 
         Long size = findCategoryListReqVO.getSize();
 
-        List<CategoryDO> categoryDOS = null;
-        // 如果接口入参中未指定 size
+        List<CategoryDO> categoryDOS;
         if (Objects.isNull(size) || size == 0) {
-            // 查询所有分类
             categoryDOS = categoryMapper.selectList(Wrappers.emptyWrapper());
         } else {
-            // 否则查询指定的数量
             categoryDOS = categoryMapper.selectByLimit(size);
         }
-        List<FindCategoryOrTagListRspVO> findCategoryOrTagListRspVOS = categoryDOS.stream()
-                .map(CategoryConvert.INSTANCE::convertDO2VO).toList();
+        List<FindCategoryOrTagListRspVO> rspVOS = categoryDOS.stream()
+                .map(CategoryConvert.INSTANCE::convertDO2VO).collect(java.util.stream.Collectors.toList());
 
-        return Response.ok(findCategoryOrTagListRspVOS);
+        translateNames(rspVOS, findCategoryListReqVO.getLang());
+
+        return Response.ok(rspVOS);
     }
 
     @Override
@@ -75,13 +74,12 @@ public class CategoryImpl implements CategoryService {
 
         CategoryDO categoryDO = categoryMapper.selectById(categoryId);
 
-        // 判断该分类是否存在
         if (Objects.isNull(categoryDO)) {
             log.warn("==> 该分类不存在, categoryId: {}", categoryId);
             throw new BizException(ResponseCodeEnum.CATEGORY_NOT_EXISTED);
         }
 
-        return doFindArticlePageByCategoryId(categoryId, current, size);
+        return doFindArticlePageByCategoryId(categoryId, current, size, findCategoryArticlePageListReqVO.getLang());
     }
 
     @Override
@@ -97,10 +95,10 @@ public class CategoryImpl implements CategoryService {
             throw new BizException(ResponseCodeEnum.CATEGORY_NOT_EXISTED);
         }
 
-        return doFindArticlePageByCategoryId(categoryDO.getId(), current, size);
+        return doFindArticlePageByCategoryId(categoryDO.getId(), current, size, reqVO.getLang());
     }
 
-    private Response doFindArticlePageByCategoryId(Long categoryId, Long current, Long size) {
+    private Response doFindArticlePageByCategoryId(Long categoryId, Long current, Long size, String lang) {
         List<ArticleCategoryRelDO> categoryRelDOS = articleCategoryRelMapper.selectListByCategoryId(categoryId);
 
         if (categoryRelDOS.isEmpty()) {
@@ -119,9 +117,37 @@ public class CategoryImpl implements CategoryService {
             return PageResponse.ok(null, null);
         }
 
-        List<FindCategoryOrTagArticlePageListRspVO> findCategoryOrTagArticlePageListRspVOS = articleDOS.stream()
-                .map(ArticleConvert.INSTANCE::convertDO2CategoryVO).toList();
+        List<FindCategoryOrTagArticlePageListRspVO> vos = articleDOS.stream()
+                .map(ArticleConvert.INSTANCE::convertDO2CategoryVO).collect(java.util.stream.Collectors.toList());
 
-        return PageResponse.ok(articleDOPage, findCategoryOrTagArticlePageListRspVOS);
+        translateArticleListVOs(vos, lang);
+
+        return PageResponse.ok(articleDOPage, vos);
+    }
+
+    private void translateNames(List<FindCategoryOrTagListRspVO> vos, String lang) {
+        if (!"en".equalsIgnoreCase(lang) || vos.isEmpty()) return;
+        List<String> names = vos.stream().map(FindCategoryOrTagListRspVO::getName).toList();
+        Map<String, String> map = translationService.getTranslations(names, "zh", "en");
+        vos.forEach(v -> {
+            String t = map.get(v.getName());
+            if (t != null) v.setName(t);
+        });
+    }
+
+    private void translateArticleListVOs(List<FindCategoryOrTagArticlePageListRspVO> vos, String lang) {
+        if (!"en".equalsIgnoreCase(lang) || vos.isEmpty()) return;
+        List<String> sources = new ArrayList<>();
+        for (FindCategoryOrTagArticlePageListRspVO v : vos) {
+            if (v.getTitle() != null) sources.add(v.getTitle());
+            if (v.getSummary() != null) sources.add(v.getSummary());
+        }
+        Map<String, String> map = translationService.getTranslations(sources, "zh", "en");
+        vos.forEach(v -> {
+            String t = map.get(v.getTitle());
+            if (t != null) v.setTitle(t);
+            String s = map.get(v.getSummary());
+            if (s != null) v.setSummary(s);
+        });
     }
 }

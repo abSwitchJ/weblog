@@ -25,19 +25,19 @@
             </div>
 
             <!-- 空态提示 -->
-            <p v-if="articles.length === 0" class="np-category-empty">此分类下还未发布文章哟~</p>
+            <p v-if="articles.length === 0" class="np-category-empty">{{ t('category.empty') }}</p>
 
             <!-- 分页 -->
             <nav v-if="pages > 1" class="np-index-pagination">
                 <a @click="getCategoryArticles(current - 1)"
                    class="np-index-page-btn"
                    :class="{ 'hidden': current <= 1 }">
-                    上一页
+                    {{ t('pagination.prev') }}
                 </a>
                 <a @click="getCategoryArticles(current + 1)"
                    class="np-index-page-btn"
                    :class="{ 'hidden': current >= pages }">
-                    下一页
+                    {{ t('pagination.next') }}
                 </a>
             </nav>
 
@@ -55,13 +55,17 @@ import Header from '@/layouts/frontend/components/Header.vue'
 import Footer from '@/layouts/frontend/components/Footer.vue'
 import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { getCategoryArticlePageList } from '@/api/frontend/category'
 import { useDark } from '@vueuse/core'
+import { useLocaleStore } from '@/stores/locale'
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const isDark = useDark()
+const localeStore = useLocaleStore()
 
 const categoryName = ref(decodeURIComponent(route.params.name || ''))
 
@@ -91,6 +95,9 @@ watch(() => route.params.name, (newName) => {
     current.value = 1
     getCategoryArticles(1)
 })
+
+// 语言切换时重新加载
+watch(() => localeStore.locale, () => getCategoryArticles(current.value))
 
 const goArticleDetailPage = (slug) => {
     router.push('/article/' + slug + '.html')

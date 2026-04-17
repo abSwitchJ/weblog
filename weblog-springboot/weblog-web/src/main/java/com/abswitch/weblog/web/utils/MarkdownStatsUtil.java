@@ -74,20 +74,25 @@ public class MarkdownStatsUtil {
      * @return
      */
     public static String calculateReadingTime(int wordCount) {
-        // 判断总字数是否大于一分钟阅读字数
+        return calculateReadingTime(wordCount, "zh");
+    }
+
+    /**
+     * 计算阅读时长（支持语言切换）
+     */
+    public static String calculateReadingTime(int wordCount, String lang) {
+        boolean isEn = "en".equalsIgnoreCase(lang);
         if (wordCount >= WORDS_READ_PRE_MINUTE) {
-            // 计算花费分钟数
             int minutes = wordCount / WORDS_READ_PRE_MINUTE;
-            return "约 " + minutes + " 分钟";
+            return isEn
+                    ? "About " + minutes + " min"
+                    : "约 " + minutes + " 分钟";
         }
-
-        // 若总字数小于一分钟阅读字数，则按秒来计算
         int seconds = (wordCount % WORDS_READ_PRE_MINUTE) * 60 / WORDS_READ_PRE_MINUTE;
-
-        // 最小阅读时长为 1s
         if (seconds == 0) seconds = 1;
-
-        return "约 " + seconds + " 秒";
+        return isEn
+                ? "About " + seconds + " sec"
+                : "约 " + seconds + " 秒";
     }
 
     /**

@@ -25,7 +25,7 @@
                                 d="M676.4032 445.5424c-62.208 0-112.8448-50.6368-112.8448-112.8448s50.6368-112.8448 112.8448-112.8448c62.208 0 112.8448 50.6368 112.8448 112.8448s-50.6368 112.8448-112.8448 112.8448z m0-164.1984c-28.3648 0-51.4048 23.04-51.4048 51.4048s23.04 51.4048 51.4048 51.4048c28.3648 0 51.4048-23.04 51.4048-51.4048s-23.0912-51.4048-51.4048-51.4048z"
                                 fill="#4F4F4F" p-id="13861"></path>
                         </svg>
-                        标签
+                        {{ $t('tag.title') }}
                         <span class="ml-2 text-gray-600 font-normal dark:text-gray-300">( {{ tags.length }} )</span>
                     </h2>
                     <!-- 标签列表 -->
@@ -78,18 +78,26 @@ import UserInfoCard from '@/layouts/frontend/components/UserInfoCard.vue'
 import CategoryListCard from '@/layouts/frontend/components/CategoryListCard.vue'
 import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
 import { getTagList } from '@/api/frontend/tag'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useLocaleStore } from '@/stores/locale'
 
 const router = useRouter()
+const localeStore = useLocaleStore()
 
 // 所有标签
 const tags = ref([])
-getTagList({}).then((res) => {
-    if (res.success) {
-        tags.value = res.data
-    }
-})
+function loadTags() {
+    getTagList({}).then((res) => {
+        if (res.success) {
+            tags.value = res.data
+        }
+    })
+}
+loadTags()
+
+// 语言切换时重新加载
+watch(() => localeStore.locale, loadTags)
 
 // 跳转标签文章列表页
 const goTagArticleListPage = (id, name) => {

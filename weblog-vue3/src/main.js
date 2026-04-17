@@ -10,6 +10,8 @@ import App from '@/App.vue'
 import router from '@/router'
 // 导入全局路由守卫
 import '@/permission'
+// 导入 i18n
+import i18n from '@/i18n'
 // 导入 Element Plus 图标
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 // 导入 element-plus 暗黑 css
@@ -24,6 +26,8 @@ const app = createApp(App)
 app.use(router)
 // 应用 Pinia
 app.use(pinia)
+// 应用 i18n
+app.use(i18n)
 
 // 引入图标
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {

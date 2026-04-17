@@ -26,12 +26,12 @@
                 <a @click="getArticles(current - 1)"
                    class="np-index-page-btn"
                    :class="{ 'hidden': current <= 1 }">
-                    上一页
+                    {{ t('pagination.prev') }}
                 </a>
                 <a @click="getArticles(current + 1)"
                    class="np-index-page-btn"
                    :class="{ 'hidden': current >= pages }">
-                    下一页
+                    {{ t('pagination.next') }}
                 </a>
             </nav>
 
@@ -48,13 +48,17 @@
 import Header from '@/layouts/frontend/components/Header.vue'
 import Footer from '@/layouts/frontend/components/Footer.vue'
 import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { getArticlePageList } from '@/api/frontend/article'
 import { useRouter } from 'vue-router'
 import { useDark } from '@vueuse/core'
+import { useLocaleStore } from '@/stores/locale'
 
+const { t } = useI18n()
 const router = useRouter()
 const isDark = useDark()
+const localeStore = useLocaleStore()
 
 // 文章集合
 const articles = ref([])
@@ -80,6 +84,9 @@ function getArticles(currentNo) {
     })
 }
 getArticles(current.value)
+
+// 语言切换时重新加载
+watch(() => localeStore.locale, () => getArticles(current.value))
 
 // 跳转文章详情页
 const goArticleDetailPage = (slug) => {

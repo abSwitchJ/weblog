@@ -8,7 +8,13 @@
       "Bash(npx vite *)",
       "Bash(mvn compile *)",
       "Bash(mysql --version)",
-      "Bash(grep -n \"中\\\\|英\\\\|搜索\\\\|上一页\\\\|下一页\\\\|返回\\\\|此分类\\\\|飞到月球\\\\|分类\\\\|标签\\\\|文章目录\\\\|文章\\\\|总访问量\\\\|我的\" src/pages/frontend/*.vue src/layouts/frontend/components/*.vue)"
+      "Bash(grep -n \"中\\\\|英\\\\|搜索\\\\|上一页\\\\|下一页\\\\|返回\\\\|此分类\\\\|飞到月球\\\\|分类\\\\|标签\\\\|文章目录\\\\|文章\\\\|总访问量\\\\|我的\" src/pages/frontend/*.vue src/layouts/frontend/components/*.vue)",
+      "Bash(npm install *)",
+      "Bash(sed -n '1,10p' \"D:/weblog/weblog-vue3/src/pages/frontend/404.vue\")",
+      "Bash(sed -n '14,25p' \"D:/weblog/weblog-vue3/src/pages/frontend/404.vue\")",
+      "Bash(sed -i 's/您要找的页面飞到月球去啦~/{{ $t\\('\\\\''notFound.message'\\\\''\\) }}/g' src/pages/frontend/404.vue)",
+      "Bash(sed -i 's/>返回首页</>{{ $t\\('\\\\''notFound.backHome'\\\\''\\) }}</g' src/pages/frontend/404.vue)",
+      "Bash(mvn -f D:/weblog/weblog-springboot/pom.xml clean install -DskipTests)"
     ]
   }
 }

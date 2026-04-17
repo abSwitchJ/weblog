@@ -37,33 +37,41 @@ import Header from '@/layouts/frontend/components/Header.vue'
 import Footer from '@/layouts/frontend/components/Footer.vue'
 import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
 import { getCategoryList, getCategoryArticlePageList } from '@/api/frontend/category'
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDark } from '@vueuse/core'
+import { useLocaleStore } from '@/stores/locale'
 
 const router = useRouter()
 const isDark = useDark()
+const localeStore = useLocaleStore()
 
 const categories = ref([])
 const articlesMap = reactive({})
 
-getCategoryList({}).then((res) => {
-    if (!res.success) return
-    categories.value = res.data
-    categories.value.forEach((cat) => {
-        if (!cat.articlesTotal || cat.articlesTotal <= 0) {
-            articlesMap[cat.id] = []
-            return
-        }
-        getCategoryArticlePageList({
-            current: 1,
-            size: cat.articlesTotal,
-            name: cat.name,
-        }).then((r) => {
-            if (r.success) articlesMap[cat.id] = r.data || []
+function loadCategories() {
+    getCategoryList({}).then((res) => {
+        if (!res.success) return
+        categories.value = res.data
+        categories.value.forEach((cat) => {
+            if (!cat.articlesTotal || cat.articlesTotal <= 0) {
+                articlesMap[cat.id] = []
+                return
+            }
+            getCategoryArticlePageList({
+                current: 1,
+                size: cat.articlesTotal,
+                name: cat.name,
+            }).then((r) => {
+                if (r.success) articlesMap[cat.id] = r.data || []
+            })
         })
     })
-})
+}
+loadCategories()
+
+// 语言切换时重新加载
+watch(() => localeStore.locale, loadCategories)
 
 function getArticles(id) {
     return articlesMap[id] || []
