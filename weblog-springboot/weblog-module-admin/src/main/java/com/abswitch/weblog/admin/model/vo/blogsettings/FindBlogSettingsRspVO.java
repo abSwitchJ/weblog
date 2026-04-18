@@ -38,4 +38,6 @@ public class FindBlogSettingsRspVO {
     private String zhihuHomepage;
 
     private String twitterHomepage;
+
+    private String about;
 }

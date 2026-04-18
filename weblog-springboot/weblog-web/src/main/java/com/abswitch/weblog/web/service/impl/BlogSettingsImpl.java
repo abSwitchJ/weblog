@@ -1,8 +1,11 @@
 package com.abswitch.weblog.web.service.impl;
 
+import com.abswitch.weblog.common.domain.dos.BlogSettingsDO;
 import com.abswitch.weblog.common.domain.mapper.BlogSettingsMapper;
 import com.abswitch.weblog.common.utils.Response;
 import com.abswitch.weblog.web.convert.BlogSettingsConvert;
+import com.abswitch.weblog.web.markdown.MarkdownHelper;
+import com.abswitch.weblog.web.model.vo.blogsettings.FindAboutDetailRspVO;
 import com.abswitch.weblog.web.model.vo.blogsettings.FindBlogSettingsDetailRspVO;
 import com.abswitch.weblog.web.service.BlogSettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +29,16 @@ public class BlogSettingsImpl implements BlogSettingsService {
                 .convertDO2VO(blogSettingsMapper.selectById(1L));
 
         return Response.ok(findBlogSettingsDetailRspVO);
+    }
+
+    @Override
+    public Response findAboutDetail() {
+        BlogSettingsDO blogSettingsDO = blogSettingsMapper.selectById(1L);
+        String about = blogSettingsDO == null ? null : blogSettingsDO.getAbout();
+        String aboutHtml = (about == null || about.isEmpty())
+                ? ""
+                : MarkdownHelper.convertMarkdown2Html(about);
+
+        return Response.ok(FindAboutDetailRspVO.builder().aboutHtml(aboutHtml).build());
     }
 }

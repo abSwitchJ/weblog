@@ -11,4 +11,5 @@ import com.abswitch.weblog.common.utils.Response;
 public interface BlogSettingsService {
     Response findDetail();
 
+    Response findAboutDetail();
 }

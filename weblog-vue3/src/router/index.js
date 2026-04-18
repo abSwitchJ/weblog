@@ -5,6 +5,7 @@ import CategoryArticleList from '@/pages/frontend/category-article-list.vue'
 import TagList from '@/pages/frontend/tag-list.vue'
 import TagArticleList from '@/pages/frontend/tag-article-list.vue'
 import ArticleDetail from '@/pages/frontend/article-detail.vue'
+import About from '@/pages/frontend/about.vue'
 import NotFound from '@/pages/frontend/404.vue'
 import Login from '@/pages/admin/login.vue'
 import AdminIndex from '@/pages/admin/index.vue'
@@ -59,6 +60,13 @@ const routes = [
         path: '/article/:slug([\\w-]+).html', // 文章详情页
         component: ArticleDetail,
         meta: {}
+    },
+    {
+        path: '/about', // 关于我
+        component: About,
+        meta: {
+            titleKey: 'about'
+        }
     },
     {
         path: '/login', // 登录页

@@ -42,4 +42,6 @@ public class BlogSettingsDO {
     private String zhihuHomepage;
 
     private String twitterHomepage;
+
+    private String about;
 }

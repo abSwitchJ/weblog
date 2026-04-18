@@ -310,9 +310,9 @@ const handleMouseLeave = (event) => {
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
 }
-/* .giscus-container.dark {
+.giscus-container.dark {
     background-color: #111;
-} */
+}
 .comment-welcome {
     text-align: center;
     font-size: 22px;
@@ -766,13 +766,25 @@ const handleMouseLeave = (event) => {
     color: #c849ff;
 }
 
-/* 超链接样式 */
+/* 超链接样式：中性灰文字 + 灰色虚线底边，hover 变灰色实线 */
 ::v-deep(.article-content a) {
-    color: #167bc2;
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px dotted #bbb;
+    padding-bottom: 1px;
+    transition: border-bottom-color 0.15s ease, border-bottom-style 0.15s ease;
 }
 
 ::v-deep(.article-content a:hover) {
-    text-decoration: underline;
+    border-bottom: 1px solid #666;
+}
+
+::v-deep(.dark .article-content a) {
+    border-bottom-color: #555;
+}
+
+::v-deep(.dark .article-content a:hover) {
+    border-bottom: 1px solid #999;
 }
 
 /* ul 样式 */

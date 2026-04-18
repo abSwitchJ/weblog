@@ -607,6 +607,17 @@ const handleIsTopChange = (row) => {
 .el-select--large {
     width: 600px;
 }
+
+:deep(.md-editor-preview) ul,
+:deep(.md-editor-preview) ol {
+    padding-left: 2em;
+    margin: 8px 0;
+}
+:deep(.md-editor-preview) ul { list-style: disc; }
+:deep(.md-editor-preview) ul ul { list-style: circle; }
+:deep(.md-editor-preview) ul ul ul { list-style: square; }
+:deep(.md-editor-preview) ol { list-style: decimal; }
+:deep(.md-editor-preview) li { margin: 4px 0; }
 </style>
 
 <style>

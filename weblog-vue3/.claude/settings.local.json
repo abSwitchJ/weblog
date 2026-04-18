@@ -18,7 +18,8 @@
       "Bash(grep -E \"\\\\.\\(java|class\\)$\")",
       "Bash(xargs -r head -50)",
       "Bash(xargs ls *)",
-      "Bash(mvn -q exec:java -Dexec.mainClass=com.abswitch.weblog.web.markdown.MarkdownHelper -Dexec.cleanupDaemonThreads=false)"
+      "Bash(mvn -q exec:java -Dexec.mainClass=com.abswitch.weblog.web.markdown.MarkdownHelper -Dexec.cleanupDaemonThreads=false)",
+      "Bash(grep -oE '\\\\.md-editor-preview[^,{ ]*\\\\s+\\(ul|ol|li\\)[^,{]*' D:/weblog/weblog-vue3/node_modules/md-editor-v3/lib/preview.css)"
     ]
   }
 }

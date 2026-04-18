@@ -74,6 +74,9 @@
                 <el-form-item label="Twitter/X 主页访问地址" v-if="isTwitterChecked">
                     <el-input v-model="form.twitterHomepage" clearable placeholder="请输入 Twitter/X 主页访问的 URL" />
                 </el-form-item>
+                <el-form-item label="关于我页内容" prop="about">
+                    <MdEditor v-model="form.about" @onUploadImg="onUploadImg" editorId="aboutEditor" style="height: 480px; width: 100%" />
+                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" :loading="btnLoading" @click="onSubmit">保存</el-button>
                 </el-form-item>
@@ -88,6 +91,8 @@ import { Check, Close } from '@element-plus/icons-vue'
 import { getBlogSettingsDetail, updateBlogSettings } from '@/api/admin/blogsettings'
 import { uploadFile } from '@/api/admin/file'
 import { showMessage } from '@/composables/util'
+import { MdEditor } from 'md-editor-v3'
+import 'md-editor-v3/lib/style.css'
 
 // 是否开启 GitHub
 const isGithubChecked = ref(false)
@@ -116,6 +121,7 @@ const form = reactive({
     zhihuHomepage: '',
     csdnHomepage: '',
     twitterHomepage: '',
+    about: '',
 })
 
 // 规则校验
@@ -172,6 +178,7 @@ function initBlogSettings() {
             form.logo = e.data.logo
             form.avatar = e.data.avatar
             form.introduction = e.data.introduction
+            form.about = e.data.about || ''
 
             // 第三方平台信息设置
             if (e.data.githubHomepage) {
@@ -243,6 +250,26 @@ const handleAvatarChange = (file) => {
     })
 }
 
+// MdEditor 图片上传到 Minio
+const onUploadImg = async (files, callback) => {
+    await Promise.all(
+        files.map((file) => {
+            return new Promise((resolve) => {
+                let formData = new FormData()
+                formData.append('file', file)
+                uploadFile(formData).then((res) => {
+                    if (res.success) {
+                        callback([res.data.url])
+                    } else {
+                        showMessage(res.message || '上传失败', 'error')
+                    }
+                    resolve()
+                })
+            })
+        })
+    )
+}
+
 // 保存当前博客设置
 const onSubmit = () => {
     // 先验证 form 表单字段
@@ -279,6 +306,17 @@ const onSubmit = () => {
     height: 100px;
     display: block;
 }
+
+:deep(.md-editor-preview) ul,
+:deep(.md-editor-preview) ol {
+    padding-left: 2em;
+    margin: 8px 0;
+}
+:deep(.md-editor-preview) ul { list-style: disc; }
+:deep(.md-editor-preview) ul ul { list-style: circle; }
+:deep(.md-editor-preview) ul ul ul { list-style: square; }
+:deep(.md-editor-preview) ol { list-style: decimal; }
+:deep(.md-editor-preview) li { margin: 4px 0; }
 </style>
 
 <style>

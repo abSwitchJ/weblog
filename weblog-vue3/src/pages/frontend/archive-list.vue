@@ -5,23 +5,32 @@
         <div class="np-archive-container">
 
             <div v-for="yearGroup in archives" :key="yearGroup.year" class="np-archive-year-group">
-                <h2 class="np-archive-year" :id="'year-' + yearGroup.year" @click="scrollTo('year-' + yearGroup.year)">
-                    {{ yearGroup.year }}
-                </h2>
+                <div class="np-archive-title-wrap">
+                    <h1 class="np-archive-year" :id="'year-' + yearGroup.year" @click="scrollTo('year-' + yearGroup.year)">
+                        {{ yearGroup.year }}
+                    </h1>
+                    <span class="np-archive-badge">{{ yearGroup.articles.length }}</span>
+                </div>
 
                 <div v-for="(monthArticles, month) in groupByMonth(yearGroup.articles)" :key="month"
                      class="np-archive-month-group">
-                    <h3 class="np-archive-month" :id="'month-' + yearGroup.year + '-' + month" @click="scrollTo('month-' + yearGroup.year + '-' + month)">
-                        {{ month }}
-                    </h3>
+                    <div class="np-archive-title-wrap">
+                        <h2 class="np-archive-month" :id="'month-' + yearGroup.year + '-' + month" @click="scrollTo('month-' + yearGroup.year + '-' + month)">
+                            {{ month }}
+                        </h2>
+                        <span class="np-archive-badge">{{ monthArticles.length }}</span>
+                    </div>
 
-                    <div v-for="(dayArticles, day) in groupByDay(monthArticles)" :key="day"
+                    <div v-for="dayGroup in groupByDay(monthArticles)" :key="dayGroup.day"
                          class="np-archive-day-group">
-                        <span class="np-archive-day">{{ day }}</span>
+                        <div class="np-archive-title-wrap np-archive-day-wrap">
+                            <h6 class="np-archive-day">{{ dayGroup.day }}</h6>
+                            <span class="np-archive-badge np-archive-badge-sm">{{ dayGroup.articles.length }}</span>
+                        </div>
                         <div class="np-archive-titles">
-                            <div v-for="article in dayArticles" :key="article.id" class="np-archive-item">
-                                <a class="np-archive-title" @click="goArticleDetailPage(article.slug)">{{ article.title }}</a>
-                            </div>
+                            <p v-for="article in dayGroup.articles" :key="article.id"
+                               class="np-archive-title"
+                               @click="goArticleDetailPage(article.slug)">{{ article.title }}</p>
                         </div>
                     </div>
                 </div>
@@ -74,7 +83,7 @@ function groupByMonth(articles) {
     return sorted
 }
 
-// 按天分组，返回按天倒序的对象
+// 按天分组，返回按天倒序的数组（避免 JS 对象整数 key 升序迭代的坑）
 function groupByDay(articles) {
     const map = {}
     for (const article of articles) {
@@ -82,10 +91,11 @@ function groupByDay(articles) {
         if (!map[day]) map[day] = []
         map[day].push(article)
     }
-    const sorted = {}
-    Object.keys(map).sort((a, b) => b.localeCompare(a)).forEach(k => sorted[k] = map[k])
-    return sorted
+    return Object.keys(map)
+        .sort((a, b) => b.localeCompare(a))
+        .map(day => ({ day, articles: map[day] }))
 }
+
 
 const goArticleDetailPage = (slug) => {
     router.push('/article/' + slug + '.html')
@@ -152,12 +162,18 @@ const scrollTo = (id) => {
     line-height: 2;
 }
 
-/* 日：固定宽度，每行左对齐 */
-.np-archive-day {
+/* 日所在的 wrap：flex 行中的固定宽度项 */
+.np-archive-day-wrap {
     min-width: 1em;
     flex-shrink: 0;
+}
+
+/* 日：去除 h6 默认 margin/加粗，保持灰色小字 */
+.np-archive-day {
+    margin: 0;
     color: #999;
     font-size: 0.95em;
+    font-weight: normal;
 }
 
 .np-archive-page.dark .np-archive-day {
@@ -169,18 +185,13 @@ const scrollTo = (id) => {
     padding-left: 2em;
 }
 
-/* 同一天多篇文章各占一行，标题左对齐 */
-.np-archive-item {
-    line-height: 2;
-}
-
 .np-archive-title {
+    margin: 0;
     color: #1a1a1a;
     font-size: 1em;
+    line-height: 2;
     cursor: pointer;
-    text-decoration: none;
     transition: color 0.15s;
-    padding-left: 0em;  /* 调大/调小 */
 }
 
 .np-archive-title:hover {
@@ -194,6 +205,43 @@ const scrollTo = (id) => {
 
 .np-archive-page.dark .np-archive-title:hover {
     color: #fff;
+}
+
+/* 标题 + 角标包裹：撑到内容宽度，为 badge 提供定位上下文 */
+.np-archive-title-wrap {
+    position: relative;
+    display: inline-block;
+}
+
+/* 右上角角标 */
+.np-archive-badge {
+    position: absolute;
+    top: -4px;
+    left: 100%;
+    margin-left: -2px;
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 0.5em;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 1px 5px;
+    border-radius: 999px;
+    min-width: 14px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.np-archive-page.dark .np-archive-badge {
+    background: #333;
+    color: #e8e8e8;
+}
+
+/* day 的角标更小 */
+.np-archive-badge-sm {
+    font-size: 0.6em;
+    padding: 0 4px;
+    min-width: 12px;
+    top: -3px;
 }
 
 @media (max-width: 768px) {

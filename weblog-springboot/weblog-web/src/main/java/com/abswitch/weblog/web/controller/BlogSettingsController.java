@@ -31,4 +31,12 @@ public class BlogSettingsController {
 
         return blogSettingsService.findDetail();
     }
+
+    @PostMapping("/about")
+    @ApiOperationLog(description = "前台获取关于我 HTML")
+    @Operation(summary = "前台获取关于我 HTML")
+    public Response findAboutDetail(){
+
+        return blogSettingsService.findAboutDetail();
+    }
 }
