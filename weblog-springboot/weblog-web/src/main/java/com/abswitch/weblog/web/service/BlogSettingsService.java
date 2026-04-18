@@ -1,6 +1,7 @@
 package com.abswitch.weblog.web.service;
 
 import com.abswitch.weblog.common.utils.Response;
+import com.abswitch.weblog.web.model.vo.blogsettings.FindAboutDetailReqVO;
 
 /**
  * @Author：abSwitch
@@ -11,5 +12,5 @@ import com.abswitch.weblog.common.utils.Response;
 public interface BlogSettingsService {
     Response findDetail();
 
-    Response findAboutDetail();
+    Response findAboutDetail(FindAboutDetailReqVO reqVO);
 }

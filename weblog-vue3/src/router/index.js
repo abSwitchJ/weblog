@@ -26,7 +26,7 @@ const routes = [
         }
     },
     {
-        path: '/archive/list', // 归档页
+        path: '/archive', // 归档页
         component: ArchiveList,
         meta: {
             titleKey: 'archive'
@@ -52,7 +52,7 @@ const routes = [
         }
     },
     {
-        path: '/tag/article/list', // 标签文章列表页
+        path: '/tag/:name', // 标签文章列表页
         component: TagArticleList,
         meta: {}
     },

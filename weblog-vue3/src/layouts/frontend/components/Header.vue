@@ -18,7 +18,7 @@
                         </svg>
                     </button>
 
-                    <a @click="router.push('/archive/list')" class="cursor-pointer text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white">Archive</a>
+                    <a @click="router.push('/archive')" class="cursor-pointer text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white">Archive</a>
                     <a href="https://github.com/abSwitchJ" target="_blank" class="text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white">GitHub</a>
                     <a href="https://x.com/AbswitchJ" target="_blank" class="text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white">Twitter</a>
                     <a @click="router.push('/about')" class="cursor-pointer text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white">About</a>

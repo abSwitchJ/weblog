@@ -48,5 +48,9 @@ export default {
     search: '搜索',
     login: '登录',
     notFound: '这个页面好像不存在'
+  },
+  footer: {
+    copyright: '版权所有',
+    icp: '备案号：'
   }
 }

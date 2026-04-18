@@ -18,7 +18,7 @@ public class ArchiveController {
     @Autowired
     private ArchiveService archiveService;
 
-    @PostMapping("/archive/list")
+    @PostMapping("/archive")
     @ApiOperationLog(description = "获取文章归档数据")
     @Operation(summary = "获取文章归档数据")
     public Response findArchiveList(@RequestBody(required = false) FindArchiveListReqVO reqVO) {

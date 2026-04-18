@@ -2,11 +2,13 @@ package com.abswitch.weblog.web.controller;
 
 import com.abswitch.weblog.common.aspect.ApiOperationLog;
 import com.abswitch.weblog.common.utils.Response;
+import com.abswitch.weblog.web.model.vo.blogsettings.FindAboutDetailReqVO;
 import com.abswitch.weblog.web.service.BlogSettingsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,8 +37,8 @@ public class BlogSettingsController {
     @PostMapping("/about")
     @ApiOperationLog(description = "前台获取关于我 HTML")
     @Operation(summary = "前台获取关于我 HTML")
-    public Response findAboutDetail(){
+    public Response findAboutDetail(@RequestBody FindAboutDetailReqVO reqVO){
 
-        return blogSettingsService.findAboutDetail();
+        return blogSettingsService.findAboutDetail(reqVO);
     }
 }

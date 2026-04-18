@@ -48,5 +48,9 @@ export default {
     search: 'Search',
     login: 'Login',
     notFound: 'This page does not seem to exist'
+  },
+  footer: {
+    copyright: 'All rights reserved',
+    icp: 'ICP License: '
   }
 }
