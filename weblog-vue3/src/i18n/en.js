@@ -38,7 +38,8 @@ export default {
   },
   notFound: {
     message: 'The page you are looking for has flown to the moon~',
-    backHome: 'Back to Home'
+    backHome: 'Back to Home',
+    attribution: 'Artwork originally by {author}~'
   },
   title: {
     archive: 'Archive',

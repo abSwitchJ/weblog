@@ -45,6 +45,12 @@
         <div class="np-404-actions">
             <button class="np-404-btn" @click="router.push('/')">{{ $t('notFound.backHome') }}</button>
         </div>
+
+        <i18n-t keypath="notFound.attribution" tag="p" class="np-404-credit">
+            <template #author>
+                <a href="https://tw93.fun" target="_blank" rel="noopener noreferrer">Tw93</a>
+            </template>
+        </i18n-t>
     </div>
 
     <Footer></Footer>
@@ -582,6 +588,39 @@ const isDark = useDark()
 
 .np-404-page.dark .np-404-btn:hover {
     background-color: #fff;
+}
+
+.np-404-credit {
+    margin: 8px 0 0;
+    font-size: 0.8em;
+    text-align: center;
+    color: rgba(19, 36, 44, 0.45);
+    position: relative;
+    z-index: 2;
+}
+
+.np-404-credit a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px dotted #bbb;
+    padding-bottom: 1px;
+    transition: border-bottom-color 0.15s ease, border-bottom-style 0.15s ease;
+}
+
+.np-404-credit a:hover {
+    border-bottom: 1px solid #666;
+}
+
+.np-404-page.dark .np-404-credit {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.np-404-page.dark .np-404-credit a {
+    border-bottom-color: #555;
+}
+
+.np-404-page.dark .np-404-credit a:hover {
+    border-bottom: 1px solid #999;
 }
 
 /* mobile */

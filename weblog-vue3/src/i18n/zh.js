@@ -38,7 +38,8 @@ export default {
   },
   notFound: {
     message: '您要找的页面飞到月球去啦~',
-    backHome: '返回首页'
+    backHome: '返回首页',
+    attribution: '本页面原创是 {author}~'
   },
   title: {
     archive: '归档',
