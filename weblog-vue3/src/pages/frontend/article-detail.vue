@@ -521,6 +521,10 @@ const handleMouseLeave = (event) => {
     padding: 0 20px 40px;
 }
 
+.giscus-container.dark.np-comments {
+    background-color: #1e1e1e;
+}
+
 /* 侧边栏：可折叠目录卡片 */
 .np-toc-card {
     background-color: #faf9f7;
