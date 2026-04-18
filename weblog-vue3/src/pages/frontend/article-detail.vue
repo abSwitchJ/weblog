@@ -521,7 +521,7 @@ const handleMouseLeave = (event) => {
     padding: 0 20px 40px;
 }
 
-.giscus-container.dark.np-comments {
+.np-page.dark .np-comments {
     background-color: #1e1e1e;
 }
 
