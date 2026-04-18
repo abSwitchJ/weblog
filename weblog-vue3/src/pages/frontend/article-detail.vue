@@ -159,10 +159,17 @@ console.log(route.params.slug)
 // 侧边栏目录折叠状态
 const tocCollapsed = ref(false)
 
-// Giscus 主题：开发环境用内置 light（http 无法加载自定义 CSS），生产环境用自定义 CSS
-const giscusTheme = import.meta.env.DEV
-  ? 'light'
-  : `${window.location.origin}/css/comment.css`
+// Giscus 主题：暗色模式用 comment-dark.css，亮色模式用 comment.css；dev 环境无法加载自定义 CSS，退回内置主题
+const giscusTheme = computed(() => {
+    if (isDark.value) {
+        return import.meta.env.DEV
+            ? 'dark_dimmed'
+            : `${window.location.origin}/css/comment-dark.css`
+    }
+    return import.meta.env.DEV
+        ? 'light'
+        : `${window.location.origin}/css/comment.css`
+})
 
 // 文章数据
 const article = ref({})
