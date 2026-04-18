@@ -311,7 +311,7 @@ const handleMouseLeave = (event) => {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
 }
 .giscus-container.dark {
-    background-color: #111;
+    background-color: #1e1e1e;
 }
 .comment-welcome {
     text-align: center;
