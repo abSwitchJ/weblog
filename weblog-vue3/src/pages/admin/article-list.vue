@@ -31,14 +31,14 @@
 
             <!-- 分页列表 -->
             <el-table :data="tableData" border stripe style="width: 100%" v-loading="tableLoading">
-                <el-table-column prop="id" label="ID" width="50" />
-                <el-table-column prop="title" label="标题" width="380" />
-                <el-table-column prop="cover" label="封面" width="180">
+                <el-table-column prop="id" label="ID" width="60" />
+                <el-table-column prop="title" label="标题" min-width="260" />
+                <el-table-column prop="cover" label="封面" width="120">
                     <template #default="scope">
                         <el-image style="width: 100px;" :src="scope.row.cover" />
                     </template>
                 </el-table-column>
-                <el-table-column prop="isTop" label="是否置顶" width="100">
+                <el-table-column prop="isTop" label="是否置顶" width="90">
                     <template #default="scope">
                         <el-switch
                             @change="handleIsTopChange(scope.row)"
@@ -49,8 +49,8 @@
                         />
                     </template>
                 </el-table-column>
-                <el-table-column prop="createTime" label="发布时间" width="180" />
-                <el-table-column label="操作">
+                <el-table-column prop="createTime" label="发布时间" width="160" />
+                <el-table-column label="操作" min-width="240">
                     <template #default="scope">
                         <el-button size="small" @click="showArticleUpdateEditor(scope.row)">
                             <el-icon class="mr-1">

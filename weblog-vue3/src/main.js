@@ -16,6 +16,8 @@ import i18n from '@/i18n'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 // 导入 element-plus 暗黑 css
 import 'element-plus/theme-chalk/dark/css-vars.css'
+// 导入后台主题覆盖（需在 element-plus 暗色主题之后加载，保证覆盖生效）
+import '@/assets/admin-theme.css'
 // 图片点击放大
 import 'viewerjs/dist/viewer.css'
 import VueViewer from 'v-viewer'

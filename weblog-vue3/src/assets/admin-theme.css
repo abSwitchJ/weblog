@@ -1,0 +1,250 @@
+/* ============================================================
+   后台主题样式（向前台米白/深夜报纸风靠拢）
+   - 全局覆盖 Element Plus primary 色为前台深黑 #1a1a1a
+   - .admin-root 作用域下：页面背景、卡片、表格、表单、标签栏等深浅色适配
+   - 深色模式统一通过 html.dark 触发（配合 @vueuse/core useDark()）
+   ============================================================ */
+
+/* ---------- 1. 全局 Element Plus 主色覆盖 ---------- */
+:root {
+    --el-color-primary: #1a1a1a;
+    --el-color-primary-light-3: #4a4a4a;
+    --el-color-primary-light-5: #6b6b6b;
+    --el-color-primary-light-7: #aaaaaa;
+    --el-color-primary-light-8: #cccccc;
+    --el-color-primary-light-9: #e5e5e5;
+    --el-color-primary-dark-2: #000000;
+}
+
+html.dark {
+    --el-color-primary: #e8e8e8;
+    --el-color-primary-light-3: #bbbbbb;
+    --el-color-primary-light-5: #8a8a8a;
+    --el-color-primary-light-7: #555555;
+    --el-color-primary-light-8: #3a3a3a;
+    --el-color-primary-light-9: #2a2a2a;
+    --el-color-primary-dark-2: #ffffff;
+}
+
+/* primary 按钮在浅色下文字须为白 */
+.el-button--primary {
+    --el-button-text-color: #ffffff;
+    --el-button-hover-text-color: #ffffff;
+    --el-button-active-text-color: #ffffff;
+}
+
+html.dark .el-button--primary {
+    --el-button-text-color: #1a1a1a;
+    --el-button-hover-text-color: #1a1a1a;
+    --el-button-active-text-color: #1a1a1a;
+}
+
+/* ---------- 2. NProgress 顶部进度条色 ---------- */
+#nprogress .bar {
+    background: #1a1a1a !important;
+}
+
+html.dark #nprogress .bar {
+    background: #e8e8e8 !important;
+}
+
+/* ---------- 3. admin-root：整体背景/字色 ---------- */
+.admin-root {
+    background-color: #f7f7f4;
+    color: #1a1a1a;
+    min-height: 100vh;
+    font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei UI", Arial, sans-serif;
+}
+
+html.dark .admin-root {
+    background-color: #111;
+    color: #e8e8e8;
+}
+
+/* admin 主内容区域：居中 + 最大宽度 */
+.admin-root .admin-main {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 16px 24px;
+}
+
+/* ---------- 4. ElCard 深浅色 ---------- */
+.admin-root .el-card {
+    --el-card-bg-color: #ffffff;
+    --el-card-border-color: #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06) !important;
+    transition: box-shadow 0.2s ease;
+}
+
+html.dark .admin-root .el-card {
+    --el-card-bg-color: #1e1e1e;
+    --el-card-border-color: #374151;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3) !important;
+    color: #e8e8e8;
+}
+
+/* ---------- 5. ElTable 深色适配 ---------- */
+html.dark .admin-root .el-table {
+    --el-table-bg-color: #1e1e1e;
+    --el-table-tr-bg-color: #1e1e1e;
+    --el-table-header-bg-color: #262626;
+    --el-table-row-hover-bg-color: #2a2a2a;
+    --el-table-border-color: #374151;
+    --el-table-header-text-color: #e8e8e8;
+    --el-table-text-color: #c9c9c9;
+    color: #c9c9c9;
+}
+
+html.dark .admin-root .el-table tr,
+html.dark .admin-root .el-table th.el-table__cell {
+    background-color: transparent;
+}
+
+/* 斑马纹 */
+html.dark .admin-root .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+    background: #232323;
+}
+
+/* ---------- 6. ElForm 标签色 ---------- */
+html.dark .admin-root .el-form-item__label {
+    color: #c9c9c9;
+}
+
+html.dark .admin-root .el-text {
+    color: #c9c9c9;
+}
+
+/* ---------- 7. ElInput / ElTextarea 深色 ---------- */
+html.dark .admin-root .el-input__wrapper,
+html.dark .admin-root .el-textarea__inner {
+    background-color: #262626;
+    box-shadow: 0 0 0 1px #3a3a3a inset;
+}
+
+html.dark .admin-root .el-input__inner,
+html.dark .admin-root .el-textarea__inner {
+    color: #e8e8e8;
+}
+
+html.dark .admin-root .el-input__wrapper:hover {
+    box-shadow: 0 0 0 1px #555 inset;
+}
+
+html.dark .admin-root .el-input.is-focus .el-input__wrapper,
+html.dark .admin-root .el-input__wrapper.is-focus {
+    box-shadow: 0 0 0 1px #e8e8e8 inset !important;
+}
+
+/* ---------- 8. ElDialog（teleport 到 body，依赖 html.dark） ---------- */
+html.dark .el-dialog {
+    --el-dialog-bg-color: #1e1e1e;
+    background-color: #1e1e1e;
+    color: #e8e8e8;
+}
+
+html.dark .el-dialog__title {
+    color: #e8e8e8;
+}
+
+html.dark .el-dialog__headerbtn .el-dialog__close {
+    color: #aaa;
+}
+
+html.dark .el-dialog__body {
+    color: #c9c9c9;
+}
+
+/* 写文章对话框内部的白色 affix 背景 */
+html.dark .el-dialog .bg-white {
+    background-color: #1e1e1e !important;
+}
+
+/* ---------- 9. ElDropdown / ElPopper 下拉菜单 ---------- */
+html.dark .el-popper {
+    --el-bg-color-overlay: #1e1e1e;
+    background-color: #1e1e1e !important;
+    color: #e8e8e8 !important;
+    border: 1px solid #3a3a3a !important;
+}
+
+html.dark .el-popper .el-dropdown-menu__item,
+html.dark .el-popper .el-select-dropdown__item {
+    color: #e8e8e8;
+}
+
+html.dark .el-popper .el-dropdown-menu__item:hover,
+html.dark .el-popper .el-select-dropdown__item:hover,
+html.dark .el-popper .el-select-dropdown__item.hover {
+    background-color: #2a2a2a;
+}
+
+html.dark .el-popper.is-light .el-popper__arrow::before {
+    background: #1e1e1e !important;
+    border-color: #3a3a3a !important;
+}
+
+/* ---------- 10. ElPagination 深色 ---------- */
+html.dark .admin-root .el-pagination {
+    --el-pagination-bg-color: #262626;
+    --el-pagination-button-color: #e8e8e8;
+    --el-pagination-button-bg-color: #262626;
+    --el-pagination-hover-color: #ffffff;
+    --el-pagination-text-color: #e8e8e8;
+    color: #e8e8e8;
+}
+
+html.dark .admin-root .el-pagination button {
+    background-color: #262626 !important;
+    color: #e8e8e8 !important;
+}
+
+html.dark .admin-root .el-pagination .el-pager li {
+    background-color: #262626 !important;
+    color: #e8e8e8 !important;
+}
+
+html.dark .admin-root .el-pagination .el-pager li.is-active {
+    background-color: #e8e8e8 !important;
+    color: #1a1a1a !important;
+}
+
+/* ---------- 12. ElSwitch：借用 primary 变量，无需额外覆盖 ---------- */
+
+/* ---------- 13. ElTag 深色下对比度 ---------- */
+html.dark .admin-root .el-tag--success {
+    background-color: #14532d;
+    color: #86efac;
+    border-color: #166534;
+}
+
+/* ---------- 14. ElMessage / ElMessageBox（弹出层，走 html.dark） ---------- */
+/* Element Plus 官方暗色主题已经覆盖，这里仅微调 */
+
+/* ---------- 15. md-editor-v3 深色（由组件自身 theme 属性控制，默认跟随 html.dark） ---------- */
+
+/* ---------- 16. avatar-uploader 统一适配 ---------- */
+html.dark .admin-root .avatar-uploader .el-upload {
+    border-color: #3a3a3a;
+    background-color: #262626;
+}
+
+html.dark .admin-root .avatar-uploader .el-upload:hover {
+    border-color: #e8e8e8;
+}
+
+html.dark .admin-root .el-icon.avatar-uploader-icon {
+    color: #666;
+}
+
+/* ---------- 17. ElAffix 内透明背景问题修复（写文章对话框） ---------- */
+.admin-root .el-dialog .el-affix .bg-white {
+    background-color: #ffffff;
+}
+
+html.dark .admin-root .el-dialog .el-affix .bg-white,
+html.dark .el-dialog .el-affix .bg-white {
+    background-color: #1e1e1e !important;
+}

@@ -1,6 +1,6 @@
 <template>
-    <div class="bg-white py-5 flex items-center justify-center text-sm text-gray-500 shadow-none">
-        <!-- Copyright 版权信息 -->
-        Copyright © 2023. All rights reserved. Provided by&nbsp;<a class="underline" href="https://www.quanxiaoha.com" target="_blank">犬小哈</a>
-    </div>
+    <footer class="py-6 text-center text-sm text-gray-500 dark:text-gray-400 bg-[#f7f7f4] dark:bg-[#111]">
+        © 2026 <a href="https://www.abswitchj.com" class="hover:underline">abSwitchJ</a> · All rights reserved ·
+        备案号：<a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank" class="hover:underline">赣ICP备2026006527号</a>
+    </footer>
 </template>

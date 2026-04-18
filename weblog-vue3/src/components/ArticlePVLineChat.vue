@@ -1,31 +1,33 @@
 <template>
-    <!-- PV 折线图容器 -->
-    <div id="lineChat" class="overflow-x-auto w-full h-60"></div>
+    <div ref="lineChartRef" class="w-full h-60"></div>
 </template>
 
 <script setup>
 import * as echarts from 'echarts'
-import { watch } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 
-// 对外暴露的属性值
 const props = defineProps({
-    value: { // 属性值名称
-        type: Object, // 类型为对象
-        default: null // 默认为 null
+    value: {
+        type: Object,
+        default: null
     }
 })
 
-// 初始化折线图
+const lineChartRef = ref(null)
+let myChart = null
+
 function initLineChat() {
-    var chartDom = document.getElementById('lineChat');
-    var myChart = echarts.init(chartDom, null, { width: 550 });
-    var option;
+    if (!lineChartRef.value) return
 
-    // 从 props.value 中获取日期集合和 pv 访问量集合
-    const pvDates = props.value.pvDates
-    const pvCounts = props.value.pvCounts
+    if (!myChart) {
+        myChart = echarts.init(lineChartRef.value)
+    }
 
-    option = {
+    const pvDates = props.value?.pvDates || []
+    const pvCounts = props.value?.pvCounts || []
+
+    const option = {
+        grid: { top: 20, right: 20, bottom: 30, left: 40 },
         xAxis: {
             type: 'category',
             data: pvDates
@@ -39,11 +41,25 @@ function initLineChat() {
                 type: 'line'
             }
         ]
-    };
+    }
 
-    option && myChart.setOption(option);
+    myChart.setOption(option)
 }
 
-// 侦听属性, 监听 props.value 的变化，一旦 props.value 发生变化，就调用 initLineChat 初始化折线图
-watch(() => props.value, () => initLineChat())
+const handleResize = () => myChart && myChart.resize()
+
+watch(() => props.value, () => nextTick(initLineChat), { deep: true })
+
+onMounted(() => {
+    nextTick(initLineChat)
+    window.addEventListener('resize', handleResize)
+})
+
+onBeforeUnmount(() => {
+    window.removeEventListener('resize', handleResize)
+    if (myChart) {
+        myChart.dispose()
+        myChart = null
+    }
+})
 </script>

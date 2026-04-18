@@ -75,7 +75,7 @@
                     <el-input v-model="form.twitterHomepage" clearable placeholder="请输入 Twitter/X 主页访问的 URL" />
                 </el-form-item>
                 <el-form-item label="关于我页内容" prop="about">
-                    <MdEditor v-model="form.about" @onUploadImg="onUploadImg" editorId="aboutEditor" style="height: 480px; width: 100%" />
+                    <MdEditor v-if="loaded" v-model="form.about" @onUploadImg="onUploadImg" editorId="aboutEditor" style="height: 480px; width: 100%" />
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" :loading="btnLoading" @click="onSubmit">保存</el-button>
@@ -106,6 +106,8 @@ const isCSDNChecked = ref(false)
 const isTwitterChecked = ref(false)
 // 是否显示保存按钮的 loading 状态，默认为 false
 const btnLoading = ref(false)
+// 博客设置是否加载完成，用于延迟挂载 MdEditor 保证 about 正确回填
+const loaded = ref(false)
 
 // 表单引用
 const formRef = ref(null)
@@ -171,7 +173,7 @@ const twitterSwitchChange = (checked) => {
 // 初始化博客设置数据，并渲染到页面上
 function initBlogSettings() {
     getBlogSettingsDetail().then((e) => {
-        if (e.success = true) {
+        if (e.success) {
             // 设置表单数据
             form.name = e.data.name
             form.author = e.data.author
@@ -206,6 +208,8 @@ function initBlogSettings() {
                 form.twitterHomepage = e.data.twitterHomepage
             }
         }
+    }).finally(() => {
+        loaded.value = true
     })
 }
 initBlogSettings()

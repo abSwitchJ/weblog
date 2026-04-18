@@ -52,5 +52,14 @@ export default {
   footer: {
     copyright: '版权所有',
     icp: '备案号：'
+  },
+  login: {
+    title: '登录 abSwitchJ',
+    username: '用户名',
+    password: '密码',
+    submit: '登录',
+    usernameRequired: '用户名不能为空',
+    passwordRequired: '密码不能为空',
+    success: '登录成功'
   }
 }

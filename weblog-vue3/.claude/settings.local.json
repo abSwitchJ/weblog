@@ -22,7 +22,12 @@
       "Bash(grep -oE '\\\\.md-editor-preview[^,{ ]*\\\\s+\\(ul|ol|li\\)[^,{]*' D:/weblog/weblog-vue3/node_modules/md-editor-v3/lib/preview.css)",
       "Bash(mvn -q -pl weblog-web -am compile -DskipTests)",
       "Bash(mvn -q -f /d/weblog/weblog-springboot/pom.xml -pl weblog-web -am compile -DskipTests)",
-      "Bash(mvn -f /d/weblog/weblog-springboot/pom.xml -pl weblog-web -am compile -DskipTests)"
+      "Bash(mvn -f /d/weblog/weblog-springboot/pom.xml -pl weblog-web -am compile -DskipTests)",
+      "Bash(grep *)",
+      "Bash(xargs cat *)",
+      "Bash(xargs wc *)",
+      "Bash(curl *)",
+      "Bash(git checkout *)"
     ]
   }
 }

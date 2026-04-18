@@ -52,5 +52,14 @@ export default {
   footer: {
     copyright: 'All rights reserved',
     icp: 'ICP License: '
+  },
+  login: {
+    title: 'Login to abSwitchJ',
+    username: 'Username',
+    password: 'Password',
+    submit: 'Log in',
+    usernameRequired: 'Username is required',
+    passwordRequired: 'Password is required',
+    success: 'Login successful'
   }
 }
