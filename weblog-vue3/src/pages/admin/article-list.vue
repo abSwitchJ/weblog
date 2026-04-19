@@ -148,14 +148,14 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="标签" prop="tags">
-                    <span class="w-60">
+                    <!-- <span class="w-60"> -->
                         <!-- 标签选择 -->
                         <el-select v-model="form.tags" multiple filterable remote reserve-keyword placeholder="请输入文章标签"
                             remote-show-suffix allow-create default-first-option :remote-method="remoteMethod"
                             :loading="tagSelectLoading" size="large">
                             <el-option v-for="item in tags" :key="item.value" :label="item.label" :value="item.value" />
                         </el-select>
-                    </span>
+                    <!-- </span> -->
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -213,14 +213,14 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="标签" prop="tags">
-                    <span class="w-60">
+                    <!-- <span class="w-60"> -->
                         <!-- 标签选择 -->
                         <el-select v-model="updateArticleForm.tags" multiple filterable remote reserve-keyword
                             placeholder="请输入文章标签" remote-show-suffix allow-create default-first-option
                             :remote-method="remoteMethod" :loading="tagSelectLoading" size="large">
                             <el-option v-for="item in tags" :key="item.value" :label="item.label" :value="item.value" />
                         </el-select>
-                    </span>
+                    <!-- </span> -->
                 </el-form-item>
             </el-form>
         </el-dialog>
