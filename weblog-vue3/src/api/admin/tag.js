@@ -10,6 +10,11 @@ export function addTag(data) {
     return axios.post("/admin/tag/add", data)
 }
 
+// 更新标签
+export function updateTag(data) {
+    return axios.post("/admin/tag/update", data)
+}
+
 // 删除标签
 export function deleteTag(id) {
     return axios.post("/admin/tag/delete", {id})

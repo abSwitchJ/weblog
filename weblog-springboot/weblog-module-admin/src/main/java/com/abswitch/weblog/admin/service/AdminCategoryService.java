@@ -3,6 +3,7 @@ package com.abswitch.weblog.admin.service;
 import com.abswitch.weblog.admin.model.vo.category.AddCategoryReqVO;
 import com.abswitch.weblog.admin.model.vo.category.DeleteCategoryReqVO;
 import com.abswitch.weblog.admin.model.vo.category.FindCategoryPageListReqVO;
+import com.abswitch.weblog.admin.model.vo.category.UpdateCategoryReqVO;
 import com.abswitch.weblog.common.utils.PageResponse;
 import com.abswitch.weblog.common.utils.Response;
 
@@ -21,6 +22,8 @@ public interface AdminCategoryService {
     PageResponse findCategoryList(FindCategoryPageListReqVO findCategoryPageListReqVO);
 
     Response deleteCategory(DeleteCategoryReqVO deleteCategoryReqVO);
+
+    Response updateCategory(UpdateCategoryReqVO updateCategoryReqVO);
 
     Response findCategorySelectList();
 }

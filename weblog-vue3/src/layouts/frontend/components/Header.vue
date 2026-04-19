@@ -3,8 +3,8 @@
         <nav class="bg-white dark:bg-[#111] border-b border-gray-200 dark:border-gray-700">
             <div class="max-w-[1030px] mx-auto px-4 py-4 flex items-center justify-between">
                 <!-- 左侧导航 -->
-                <div class="flex items-center gap-5 text-sm nav-font">
-                    <a @click="router.push('/')" class="cursor-pointer font-semibold text-[#1a1a1a] dark:text-white hover:opacity-70 text-lg mr-[-12px]">abSwitchJ</a>
+                <div class="flex items-center gap-2 md:gap-5 text-sm nav-font">
+                    <a @click="router.push('/')" class="cursor-pointer font-semibold text-[#1a1a1a] dark:text-white hover:opacity-70 text-lg md:mr-[-12px]">abSwitchJ</a>
 
                     <!-- 白天/黑夜切换 -->
                     <button @click="toggleDark()" class="flex items-center justify-center w-5 h-5 text-[#707070] dark:text-gray-300 hover:opacity-70" aria-label="切换深色模式">
@@ -18,14 +18,16 @@
                         </svg>
                     </button>
 
-                    <a @click="router.push('/archive')" class="cursor-pointer text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white">Archive</a>
-                    <a href="https://github.com/abSwitchJ" target="_blank" class="text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white">GitHub</a>
-                    <a href="https://x.com/AbswitchJ" target="_blank" class="text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white">Twitter</a>
-                    <a @click="router.push('/about')" class="cursor-pointer text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white">About</a>
+                    <div class="hidden md:contents">
+                        <a @click="router.push('/archive')" class="cursor-pointer text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white">Archive</a>
+                        <a href="https://github.com/abSwitchJ" target="_blank" class="text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white">GitHub</a>
+                        <a href="https://x.com/AbswitchJ" target="_blank" class="text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white">Twitter</a>
+                        <a @click="router.push('/about')" class="cursor-pointer text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white">About</a>
+                    </div>
                 </div>
 
                 <!-- 右侧功能 -->
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 md:gap-4">
                     <!-- 搜索图标 -->
                     <button @click="openSearch" class="text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white" aria-label="搜索">
                         <svg class="w-[18px] h-[18px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -38,8 +40,28 @@
                     <button @click="toggleLang" class="text-sm text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white font-medium nav-font">
                         {{ localeStore.locale === 'en' ? '中' : 'En' }}
                     </button>
+
+                    <!-- 汉堡菜单（仅移动端） -->
+                    <button @click="menuOpen = !menuOpen" class="md:hidden flex items-center justify-center text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white" :aria-label="menuOpen ? '关闭菜单' : '打开菜单'" :aria-expanded="menuOpen">
+                        <svg v-if="!menuOpen" class="w-[18px] h-[18px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 5h16M2 10h16M2 15h16" />
+                        </svg>
+                        <svg v-else class="w-[18px] h-[18px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l14 14M17 3L3 17" />
+                        </svg>
+                    </button>
                 </div>
             </div>
+
+            <!-- 移动端下拉菜单 -->
+            <Transition name="mobile-menu">
+                <div v-show="menuOpen" class="mobile-menu-wrapper md:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-[#111]">
+                    <a @click="goAndCloseMenu('/archive')" class="mobile-menu-item block px-4 py-3 text-sm text-[#707070] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#1a1a1a] hover:text-[#1a1a1a] dark:hover:text-white cursor-pointer nav-font">Archive</a>
+                    <a href="https://github.com/abSwitchJ" target="_blank" @click="menuOpen = false" class="mobile-menu-item block px-4 py-3 text-sm text-[#707070] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#1a1a1a] hover:text-[#1a1a1a] dark:hover:text-white nav-font">GitHub</a>
+                    <a href="https://x.com/AbswitchJ" target="_blank" @click="menuOpen = false" class="mobile-menu-item block px-4 py-3 text-sm text-[#707070] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#1a1a1a] hover:text-[#1a1a1a] dark:hover:text-white nav-font">Twitter</a>
+                    <a @click="goAndCloseMenu('/about')" class="mobile-menu-item block px-4 py-3 text-sm text-[#707070] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#1a1a1a] hover:text-[#1a1a1a] dark:hover:text-white cursor-pointer nav-font">About</a>
+                </div>
+            </Transition>
         </nav>
     </header>
 
@@ -138,6 +160,16 @@ const localeStore = useLocaleStore()
 const showSearchModal = ref(false)
 const searchInputRef = ref(null)
 
+// 移动端汉堡菜单状态
+const menuOpen = ref(false)
+const goAndCloseMenu = (path) => {
+    menuOpen.value = false
+    router.push(path)
+}
+watch(() => router.currentRoute.value.fullPath, () => {
+    menuOpen.value = false
+})
+
 // 导航栏滚动隐藏/显示
 const headerVisible = ref(true)
 let lastScrollY = 0
@@ -176,8 +208,9 @@ const handleKeyDown = (event) => {
         openSearch()
         return
     }
-    if (event.key === 'Escape' && showSearchModal.value) {
-        closeSearch()
+    if (event.key === 'Escape') {
+        if (showSearchModal.value) closeSearch()
+        if (menuOpen.value) menuOpen.value = false
     }
 }
 
@@ -251,6 +284,38 @@ const jumpToArticleDetailPage = (slug) => {
 <style scoped>
 .nav-font {
     font-family: Georgia, 'Times New Roman', "Songti SC", "SimSun", "STSong", serif;
+}
+
+/* ========== 移动端汉堡下拉菜单 ========== */
+.mobile-menu-item {
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.mobile-menu-item + .mobile-menu-item {
+    border-top: 1px solid #f0f0f0;
+}
+
+.dark .mobile-menu-item + .mobile-menu-item {
+    border-top-color: #222;
+}
+
+/* Transition: 菜单滑入/滑出 */
+.mobile-menu-enter-active,
+.mobile-menu-leave-active {
+    transition: max-height 0.22s ease, opacity 0.22s ease;
+    overflow: hidden;
+}
+
+.mobile-menu-enter-from,
+.mobile-menu-leave-to {
+    max-height: 0;
+    opacity: 0;
+}
+
+.mobile-menu-enter-to,
+.mobile-menu-leave-from {
+    max-height: 320px;
+    opacity: 1;
 }
 
 /* ========== 搜索弹窗 ========== */

@@ -1,10 +1,10 @@
 <template>
     <el-affix :offset="0">
         <header
-            class="bg-white dark:bg-[#111] border-b border-gray-200 dark:border-gray-700 h-[76px] flex">
-            <div class="w-full max-w-[1200px] mx-auto px-4 flex items-center">
-            <!-- 横向菜单 -->
-            <nav class="flex items-center gap-1">
+            class="bg-white dark:bg-[#111] border-b border-gray-200 dark:border-gray-700">
+            <div class="w-full max-w-[1200px] mx-auto px-4 h-[76px] flex items-center">
+            <!-- 横向菜单（桌面端） -->
+            <nav class="hidden md:flex items-center gap-1">
                 <a v-for="item in menus" :key="item.path" @click="router.push(item.path)"
                     class="cursor-pointer px-3 py-2 text-base rounded transition-colors"
                     :class="isActive(item.path)
@@ -13,6 +13,18 @@
                     {{ item.name }}
                 </a>
             </nav>
+
+            <!-- 汉堡按钮（移动端） -->
+            <button @click="menuOpen = !menuOpen"
+                class="md:hidden w-[40px] h-[40px] rounded flex items-center justify-center text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                :aria-label="menuOpen ? '关闭菜单' : '打开菜单'" :aria-expanded="menuOpen">
+                <svg v-if="!menuOpen" class="w-[18px] h-[18px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 5h16M2 10h16M2 15h16" />
+                </svg>
+                <svg v-else class="w-[18px] h-[18px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l14 14M17 3L3 17" />
+                </svg>
+            </button>
 
             <!-- 右侧工具区 -->
             <div class="ml-auto flex items-center gap-1">
@@ -46,23 +58,12 @@
                     </button>
                 </el-tooltip>
 
-                <!-- 全屏 -->
-                <el-tooltip effect="dark" content="全屏" placement="bottom">
-                    <button @click="toggle"
-                        class="w-[40px] h-[40px] rounded cursor-pointer flex items-center justify-center text-[#707070] dark:text-gray-300 hover:text-[#1a1a1a] dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors mr-1">
-                        <el-icon>
-                            <FullScreen v-if="!isFullscreen" />
-                            <Aim v-else />
-                        </el-icon>
-                    </button>
-                </el-tooltip>
-
                 <!-- 用户下拉 -->
                 <el-dropdown class="flex items-center justify-center" @command="handleCommand">
                     <span class="flex items-center justify-center text-[#707070] dark:text-gray-300 text-xs cursor-pointer">
                         <el-avatar class="mr-2" :size="28"
                             src="https://img.abswitchj.com/abswitchj/IMG_20260327_160706.jpg" />
-                        {{ userStore.userInfo.username }}
+                        <span class="hidden sm:inline">{{ userStore.userInfo.username }}</span>
                         <el-icon class="el-icon--right"><arrow-down /></el-icon>
                     </span>
                     <template #dropdown>
@@ -74,6 +75,19 @@
                 </el-dropdown>
             </div>
             </div>
+
+            <!-- 移动端下拉菜单 -->
+            <Transition name="mobile-menu">
+                <div v-show="menuOpen" class="mobile-menu-wrapper md:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-[#111]">
+                    <a v-for="item in menus" :key="item.path" @click="goAndCloseMenu(item.path)"
+                        class="mobile-menu-item block px-4 py-3 text-sm cursor-pointer"
+                        :class="isActive(item.path)
+                            ? 'text-[#1a1a1a] dark:text-white font-semibold bg-gray-50 dark:bg-[#1a1a1a]'
+                            : 'text-[#707070] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#1a1a1a] hover:text-[#1a1a1a] dark:hover:text-white'">
+                        {{ item.name }}
+                    </a>
+                </div>
+            </Transition>
         </header>
 
         <!-- 修改密码 -->
@@ -96,7 +110,7 @@
 <script setup>
 import { ref, reactive, watch, computed } from 'vue'
 import { useUserStore } from '@/stores/user'
-import { useFullscreen, useDark, useToggle } from '@vueuse/core'
+import { useDark, useToggle } from '@vueuse/core'
 import { updateAdminPassword } from '@/api/admin/user'
 import { showMessage, showModel } from '@/composables/util'
 import { useRouter, useRoute } from 'vue-router'
@@ -109,10 +123,17 @@ const route = useRoute()
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
-// 全屏
-const { isFullscreen, toggle } = useFullscreen()
-
 const userStore = useUserStore()
+
+// 移动端汉堡菜单状态
+const menuOpen = ref(false)
+const goAndCloseMenu = (path) => {
+    menuOpen.value = false
+    router.push(path)
+}
+watch(() => route.path, () => {
+    menuOpen.value = false
+})
 
 // 顶部菜单
 const menus = [
@@ -192,3 +213,34 @@ const onSubmit = () => {
 }
 </script>
 
+<style scoped>
+.mobile-menu-item {
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.mobile-menu-item + .mobile-menu-item {
+    border-top: 1px solid #f0f0f0;
+}
+
+.dark .mobile-menu-item + .mobile-menu-item {
+    border-top-color: #222;
+}
+
+.mobile-menu-enter-active,
+.mobile-menu-leave-active {
+    transition: max-height 0.22s ease, opacity 0.22s ease;
+    overflow: hidden;
+}
+
+.mobile-menu-enter-from,
+.mobile-menu-leave-to {
+    max-height: 0;
+    opacity: 0;
+}
+
+.mobile-menu-enter-to,
+.mobile-menu-leave-from {
+    max-height: 320px;
+    opacity: 1;
+}
+</style>

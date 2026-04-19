@@ -2,7 +2,9 @@
     <div>
         <!-- 卡片组件， shadow="never" 指定 card 卡片组件没有阴影 -->
         <el-card shadow="never">
-            <el-form ref="formRef" :model="form" label-width="160px" :rules="rules">
+            <el-form ref="formRef" :model="form" :label-width="isNarrow ? 'auto' : '180px'"
+                :label-position="isNarrow ? 'top' : 'right'" :rules="rules"
+                :class="{ 'is-narrow': isNarrow }">
                 <el-form-item label="博客名称" prop="name">
                     <el-input v-model="form.name" clearable />
                 </el-form-item>
@@ -75,9 +77,10 @@
                     <el-input v-model="form.twitterHomepage" clearable placeholder="请输入 Twitter/X 主页访问的 URL" />
                 </el-form-item>
                 <el-form-item label="关于我页内容" prop="about">
-                    <MdEditor v-if="loaded" v-model="form.about" @onUploadImg="onUploadImg" editorId="aboutEditor" style="height: 480px; width: 100%" />
+                    <MdEditor v-if="loaded" v-model="form.about" @onUploadImg="onUploadImg" editorId="aboutEditor"
+                        :style="{ height: isNarrow ? '640px' : '480px', width: '100%' }" />
                 </el-form-item>
-                <el-form-item>
+                <el-form-item class="submit-item">
                     <el-button type="primary" :loading="btnLoading" @click="onSubmit">保存</el-button>
                 </el-form-item>
             </el-form>
@@ -88,11 +91,14 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { Check, Close } from '@element-plus/icons-vue'
+import { useMediaQuery } from '@vueuse/core'
 import { getBlogSettingsDetail, updateBlogSettings } from '@/api/admin/blogsettings'
 import { uploadFile } from '@/api/admin/file'
 import { showMessage } from '@/composables/util'
 import { MdEditor } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
+
+const isNarrow = useMediaQuery('(max-width: 640px)')
 
 // 是否开启 GitHub
 const isGithubChecked = ref(false)
@@ -321,6 +327,24 @@ const onSubmit = () => {
 :deep(.md-editor-preview) ul ul ul { list-style: square; }
 :deep(.md-editor-preview) ol { list-style: decimal; }
 :deep(.md-editor-preview) li { margin: 4px 0; }
+
+@media (max-width: 640px) {
+    .is-narrow :deep(.md-editor-content) { flex-direction: column; }
+    .is-narrow :deep(.md-editor-content) > .md-editor-input-wrapper,
+    .is-narrow :deep(.md-editor-content) > .md-editor-preview-wrapper,
+    .is-narrow :deep(.md-editor-content) > .md-editor-preview {
+        width: 100% !important;
+        height: 50% !important;
+    }
+    .is-narrow :deep(.md-editor-content) > .md-editor-preview-wrapper,
+    .is-narrow :deep(.md-editor-content) > .md-editor-preview {
+        border-top: 1px solid var(--el-border-color-light);
+    }
+
+    .is-narrow .submit-item :deep(.el-form-item__content) {
+        justify-content: center;
+    }
+}
 </style>
 
 <style>

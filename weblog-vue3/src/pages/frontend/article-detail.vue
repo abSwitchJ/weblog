@@ -629,6 +629,18 @@ const handleMouseLeave = (event) => {
     ::v-deep(.article-content h1) {
         font-size: 1.8em;
     }
+
+    .np-byline {
+        flex-wrap: wrap;
+        row-gap: 4px;
+        column-gap: 12px;
+        font-size: 0.78em;
+    }
+
+    .np-byline-left,
+    .np-byline-right {
+        white-space: nowrap;
+    }
 }
 
 /* ===========================

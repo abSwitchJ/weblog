@@ -27,7 +27,19 @@
       "Bash(xargs cat *)",
       "Bash(xargs wc *)",
       "Bash(curl *)",
-      "Bash(git checkout *)"
+      "Bash(git checkout *)",
+      "Bash(magick -version)",
+      "Bash(python -c \"import cairosvg\")",
+      "Bash(python -c \"from PIL import Image\")",
+      "Bash(python gen_favicons.py)",
+      "Bash(python gen_favicons.py \"C:/Users/--/Desktop/1.png\")",
+      "WebFetch(domain:claude.ai)",
+      "Bash(cp -r \"C:/Users/--/Desktop/图标/icons\" ./icons)",
+      "Bash(cp \"C:/Users/--/Desktop/图标/manifest.json\" ./manifest.json)",
+      "Bash(find \"D:\\\\\\\\weblog\\\\\\\\weblog-vue3\" -name \"*.css\" -o -name \"*.scss\")",
+      "Bash(awk -F 'label=\"' '{print $2}')",
+      "Bash(awk -F '\"' '{print length\\($1\\) \" - \" $1}')",
+      "Bash(find \"D:\\\\\\\\weblog\\\\\\\\weblog-vue3\\\\\\\\src\" -type f \\\\\\( -name \"*.css\" -o -name \"*.scss\" \\\\\\))"
     ]
   }
 }

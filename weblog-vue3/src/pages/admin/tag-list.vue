@@ -2,20 +2,27 @@
     <div>
         <!-- 表头分页查询条件， shadow="never" 指定 card 卡片组件没有阴影 -->
         <el-card shadow="never" class="mb-5">
-            <!-- flex 布局，内容垂直居中 -->
-            <div class="flex items-center">
-                <el-text>标签名称</el-text>
-                <div class="ml-3 w-52 mr-5"><el-input v-model="searchTagName" placeholder="请输入（模糊查询）" /></div>
-
-                <el-text>创建日期</el-text>
-                <div class="ml-3 w-30 mr-5">
-                    <!-- 日期选择组件（区间选择） -->
-                    <el-date-picker v-model="pickDate" type="daterange" range-separator="至" start-placeholder="开始时间"
-                        end-placeholder="结束时间" size="default" :shortcuts="shortcuts" @change="datepickerChange" />
+            <!-- flex 布局，允许换行；中窄屏下按钮组占整行两端对齐 -->
+            <div class="flex flex-wrap items-center gap-y-3">
+                <div class="flex items-center w-full sm:w-auto sm:mr-5">
+                    <el-text class="whitespace-nowrap">标签名称</el-text>
+                    <div class="ml-3 flex-1 sm:flex-none sm:w-52"><el-input v-model="searchTagName" placeholder="请输入（模糊查询）" /></div>
                 </div>
 
-                <el-button type="primary" class="ml-3" :icon="Search" @click="getTableData">查询</el-button>
-                <el-button class="ml-3" :icon="RefreshRight" @click="reset">重置</el-button>
+                <div class="flex items-center w-full sm:w-auto sm:mr-5">
+                    <el-text class="whitespace-nowrap">创建日期</el-text>
+                    <div class="ml-3 flex-1 min-w-0 sm:flex-none">
+                        <!-- 日期选择组件（区间选择） -->
+                        <el-date-picker v-model="pickDate" type="daterange" range-separator="至" start-placeholder="开始时间"
+                            end-placeholder="结束时间" size="default" :shortcuts="shortcuts" @change="datepickerChange"
+                            class="!w-full sm:!w-auto" />
+                    </div>
+                </div>
+
+                <div class="flex items-center w-full lg:w-auto justify-between lg:justify-start">
+                    <el-button type="primary" :icon="Search" @click="getTableData">查询</el-button>
+                    <el-button class="ml-3" :icon="RefreshRight" @click="reset">重置</el-button>
+                </div>
             </div>
         </el-card>
 
@@ -31,15 +38,28 @@
 
             <!-- 分页列表 -->
             <el-table :data="tableData" border stripe style="width: 100%" v-loading="tableLoading">
-                <el-table-column prop="name" label="标签名称" width="180">
+                <el-table-column prop="name" label="标签名称" min-width="360">
                     <template #default="scope">
                         <el-tag class="ml-2" type="success">{{ scope.row.name }}</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column prop="articlesTotal" label="文章数" width="100" />
-                <el-table-column prop="createTime" label="创建时间" width="180" />
-                <el-table-column label="操作">
+                <el-table-column prop="articlesTotal" label="文章数" min-width="180" />
+                <el-table-column prop="createTime" label="创建时间" min-width="180">
                     <template #default="scope">
+                        <div class="flex flex-col md:flex-row md:gap-1">
+                            <span>{{ scope.row.createTime?.split(' ')[0] }}</span>
+                            <span>{{ scope.row.createTime?.split(' ')[1] }}</span>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" min-width="180">
+                    <template #default="scope">
+                        <el-button size="small" @click="editTagBtnClick(scope.row)">
+                            <el-icon class="mr-1">
+                                <Edit />
+                            </el-icon>
+                            编辑
+                        </el-button>
                         <el-button type="danger" size="small" @click="deleteTagSubmit(scope.row)">
                             <el-icon class="mr-1">
                                 <Delete />
@@ -53,16 +73,19 @@
             <!-- 分页 -->
             <div class="mt-10 flex justify-center">
                 <el-pagination v-model:current-page="current" v-model:page-size="size" :page-sizes="[10, 20, 50]"
-                    :small="false" :background="true" layout="total, sizes, prev, pager, next, jumper" :total="total"
+                    :small="paginationSmall" :background="true" :layout="paginationLayout" :total="total"
                     @size-change="handleSizeChange" @current-change="getTableData" />
             </div>
 
         </el-card>
 
-        <!-- 添加标签 -->
-        <FormDialog ref="formDialogRef" title="添加文章标签" destroyOnClose @submit="onSubmit">
+        <!-- 添加/编辑标签 -->
+        <FormDialog ref="formDialogRef" :title="editId ? '编辑文章标签' : '添加文章标签'" destroyOnClose @submit="onSubmit">
             <el-form ref="formRef" :model="form">
-                <el-form-item prop="name">
+                <el-form-item v-if="editId" label="标签名称" prop="name" label-width="80px" size="large">
+                    <el-input v-model="form.name" placeholder="请输入标签名称" maxlength="20" show-word-limit clearable />
+                </el-form-item>
+                <el-form-item v-else prop="name">
                     <el-tag v-for="tag in dynamicTags" :key="tag" class="mx-1" closable :disable-transitions="false"
                         @close="handleClose(tag)">
                         {{ tag }}
@@ -82,12 +105,15 @@
 </template>
 
 <script setup>
-import { Search, RefreshRight } from '@element-plus/icons-vue'
+import { Search, RefreshRight, Edit } from '@element-plus/icons-vue'
 import { ref, reactive, nextTick } from 'vue'
-import { getTagPageList, addTag, deleteTag } from '@/api/admin/tag'
+import { getTagPageList, addTag, updateTag, deleteTag } from '@/api/admin/tag'
 import moment from 'moment'
 import { showMessage, showModel } from '@/composables/util'
+import { usePaginationLayout } from '@/composables/usePaginationLayout'
 import FormDialog from '@/components/FormDialog.vue'
+
+const { layout: paginationLayout, small: paginationSmall } = usePaginationLayout()
 
 // 分页查询的标签名称
 const searchTagName = ref('')
@@ -186,8 +212,22 @@ const reset = () => {
 // 对话框是否显示
 const formDialogRef = ref(null)
 
-// 新增分类按钮点击事件
+// 当前编辑标签 ID，为 null 表示新增模式
+const editId = ref(null)
+
+// 新增标签按钮点击事件
 const addCategoryBtnClick = () => {
+    editId.value = null
+    form.name = ''
+    form.tags = []
+    dynamicTags.value = []
+    formDialogRef.value.open()
+}
+
+// 编辑标签按钮点击事件
+const editTagBtnClick = (row) => {
+    editId.value = row.id
+    form.name = row.name
     formDialogRef.value.open()
 }
 
@@ -195,9 +235,10 @@ const addCategoryBtnClick = () => {
 // 表单引用
 const formRef = ref(null)
 
-// 添加文章分类表单对象
+// 标签表单对象（tags 用于批量新增、name 用于单条编辑）
 const form = reactive({
-    tags: []
+    tags: [],
+    name: ''
 })
 
 
@@ -206,13 +247,24 @@ const onSubmit = () => {
     formRef.value.validate((valid) => {
         // 显示提交按钮 loading
         formDialogRef.value.showBtnLoading()
-        form.tags = dynamicTags.value
-        addTag(form).then((res) => {
+
+        const isEdit = editId.value !== null
+        let request
+        if (isEdit) {
+            request = updateTag({ id: editId.value, name: form.name })
+        } else {
+            form.tags = dynamicTags.value
+            request = addTag(form)
+        }
+
+        request.then((res) => {
             if (res.success == true) {
-                showMessage('添加成功')
-                // 将表单中标签数组置空
+                showMessage(isEdit ? '修改成功' : '添加成功')
+                // 重置表单状态
                 form.tags = []
+                form.name = ''
                 dynamicTags.value = []
+                editId.value = null
                 // 隐藏对话框
                 formDialogRef.value.close()
                 // 重新请求分页接口，渲染数据

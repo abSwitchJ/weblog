@@ -3,6 +3,7 @@ package com.abswitch.weblog.admin.service;
 import com.abswitch.weblog.admin.model.vo.tag.AddTagsReqVO;
 import com.abswitch.weblog.admin.model.vo.tag.DeleteTagReqVO;
 import com.abswitch.weblog.admin.model.vo.tag.FindTagPageListReqVO;
+import com.abswitch.weblog.admin.model.vo.tag.UpdateTagReqVO;
 import com.abswitch.weblog.common.utils.PageResponse;
 import com.abswitch.weblog.common.utils.Response;
 
@@ -19,6 +20,8 @@ public interface AdminTagService {
     PageResponse findTagList(FindTagPageListReqVO findTagPageListReqVO);
 
     Response deleteTag(DeleteTagReqVO deleteTagReqVO);
+
+    Response updateTag(UpdateTagReqVO updateTagReqVO);
 
     Response findTagSelectList();
 

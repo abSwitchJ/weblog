@@ -3,6 +3,7 @@ package com.abswitch.weblog.admin.controller;
 import com.abswitch.weblog.admin.model.vo.tag.AddTagsReqVO;
 import com.abswitch.weblog.admin.model.vo.tag.DeleteTagReqVO;
 import com.abswitch.weblog.admin.model.vo.tag.FindTagPageListReqVO;
+import com.abswitch.weblog.admin.model.vo.tag.UpdateTagReqVO;
 import com.abswitch.weblog.admin.service.AdminTagService;
 import com.abswitch.weblog.common.aspect.ApiOperationLog;
 import com.abswitch.weblog.common.utils.PageResponse;
@@ -52,6 +53,14 @@ public class AdminTagController {
     public Response deleteTag(@RequestBody @Validated DeleteTagReqVO deleteTagReqVO){
 
         return adminTagService.deleteTag(deleteTagReqVO);
+    }
+
+    @PostMapping("/tag/update")
+    @ApiOperationLog(description = "更新标签")
+    @Operation(summary = "更新标签")
+    public Response updateTag(@RequestBody @Validated UpdateTagReqVO updateTagReqVO){
+
+        return adminTagService.updateTag(updateTagReqVO);
     }
 
     @PostMapping("/tag/select/list")

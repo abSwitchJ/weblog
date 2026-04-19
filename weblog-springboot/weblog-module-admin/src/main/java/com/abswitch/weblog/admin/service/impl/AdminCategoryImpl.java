@@ -111,6 +111,42 @@ public class AdminCategoryImpl implements AdminCategoryService {
     }
 
     @Override
+    public Response updateCategory(UpdateCategoryReqVO updateCategoryReqVO) {
+        Long id = updateCategoryReqVO.getId();
+        String newName = updateCategoryReqVO.getName().trim();
+
+        // 校验分类是否存在
+        CategoryDO existCategoryDO = categoryMapper.selectById(id);
+        if (Objects.isNull(existCategoryDO)) {
+            log.warn("分类不存在，id: {}", id);
+            throw new BizException(ResponseCodeEnum.CATEGORY_NOT_EXISTED);
+        }
+
+        // 名称未变化，直接返回
+        if (Objects.equals(existCategoryDO.getName(), newName)) {
+            return Response.ok();
+        }
+
+        // 校验新名称是否已被其他分类占用
+        CategoryDO sameNameCategoryDO = categoryMapper.selectByName(newName);
+        if (Objects.nonNull(sameNameCategoryDO) && !Objects.equals(sameNameCategoryDO.getId(), id)) {
+            log.warn("分类名称： {}, 此分类已存在", newName);
+            throw new BizException(ResponseCodeEnum.CATEGORY_NAME_IS_EXISTED);
+        }
+
+        CategoryDO updateCategoryDO = CategoryDO.builder()
+                .id(id)
+                .name(newName)
+                .updateTime(LocalDateTime.now())
+                .build();
+        categoryMapper.updateById(updateCategoryDO);
+
+        // 异步预翻译新分类名
+        preTranslateAsyncService.preTranslateText(newName);
+        return Response.ok();
+    }
+
+    @Override
     public Response deleteCategory(DeleteCategoryReqVO deleteCategoryReqVO) {
         // 分类 ID
         Long categoryId = deleteCategoryReqVO.getId();

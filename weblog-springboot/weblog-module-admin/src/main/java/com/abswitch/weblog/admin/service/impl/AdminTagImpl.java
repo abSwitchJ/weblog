@@ -5,6 +5,7 @@ import com.abswitch.weblog.admin.model.vo.tag.AddTagsReqVO;
 import com.abswitch.weblog.admin.model.vo.tag.DeleteTagReqVO;
 import com.abswitch.weblog.admin.model.vo.tag.FindTagPageListReqVO;
 import com.abswitch.weblog.admin.model.vo.tag.FindTagPageListRspVO;
+import com.abswitch.weblog.admin.model.vo.tag.UpdateTagReqVO;
 import com.abswitch.weblog.admin.service.AdminTagService;
 import com.abswitch.weblog.common.domain.dos.ArticleTagRelDO;
 import com.abswitch.weblog.common.domain.dos.TagDO;
@@ -141,6 +142,38 @@ public class AdminTagImpl implements AdminTagService {
         int count = tagMapper.deleteById(tagId);
 
         return count == 1 ? Response.ok() : Response.fail(ResponseCodeEnum.TAG_NOT_EXISTED);
+    }
+
+    @Override
+    public Response updateTag(UpdateTagReqVO updateTagReqVO) {
+        Long id = updateTagReqVO.getId();
+        String newName = updateTagReqVO.getName().trim();
+
+        TagDO existTagDO = tagMapper.selectById(id);
+        if (Objects.isNull(existTagDO)) {
+            log.warn("标签不存在，id: {}", id);
+            throw new BizException(ResponseCodeEnum.TAG_NOT_EXISTED);
+        }
+
+        if (Objects.equals(existTagDO.getName(), newName)) {
+            return Response.ok();
+        }
+
+        TagDO sameNameTagDO = tagMapper.selectByName(newName);
+        if (Objects.nonNull(sameNameTagDO) && !Objects.equals(sameNameTagDO.getId(), id)) {
+            log.warn("标签名称： {}, 此标签已存在", newName);
+            throw new BizException(ResponseCodeEnum.TAG_NAME_IS_EXISTED);
+        }
+
+        TagDO updateTagDO = TagDO.builder()
+                .id(id)
+                .name(newName)
+                .updateTime(LocalDateTime.now())
+                .build();
+        tagMapper.updateById(updateTagDO);
+
+        preTranslateAsyncService.preTranslateText(newName);
+        return Response.ok();
     }
 
     @Override

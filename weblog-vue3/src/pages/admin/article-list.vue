@@ -2,20 +2,27 @@
     <div>
         <!-- 表头分页查询条件， shadow="never" 指定 card 卡片组件没有阴影 -->
         <el-card shadow="never" class="mb-5">
-            <!-- flex 布局，内容垂直居中 -->
-            <div class="flex items-center">
-                <el-text>文章标题</el-text>
-                <div class="ml-3 w-52 mr-5"><el-input v-model="searchArticleTitle" placeholder="请输入（模糊查询）" /></div>
-
-                <el-text>创建日期</el-text>
-                <div class="ml-3 w-30 mr-5">
-                    <!-- 日期选择组件（区间选择） -->
-                    <el-date-picker v-model="pickDate" type="daterange" range-separator="至" start-placeholder="开始时间"
-                        end-placeholder="结束时间" size="default" :shortcuts="shortcuts" @change="datepickerChange" />
+            <!-- flex 布局，允许换行；中窄屏下按钮组占整行两端对齐 -->
+            <div class="flex flex-wrap items-center gap-y-3">
+                <div class="flex items-center w-full sm:w-auto sm:mr-5">
+                    <el-text class="whitespace-nowrap">文章标题</el-text>
+                    <div class="ml-3 flex-1 sm:flex-none sm:w-52"><el-input v-model="searchArticleTitle" placeholder="请输入（模糊查询）" /></div>
                 </div>
 
-                <el-button type="primary" class="ml-3" :icon="Search" @click="getTableData">查询</el-button>
-                <el-button class="ml-3" :icon="RefreshRight" @click="reset">重置</el-button>
+                <div class="flex items-center w-full sm:w-auto sm:mr-5">
+                    <el-text class="whitespace-nowrap">创建日期</el-text>
+                    <div class="ml-3 flex-1 min-w-0 sm:flex-none">
+                        <!-- 日期选择组件（区间选择） -->
+                        <el-date-picker v-model="pickDate" type="daterange" range-separator="至" start-placeholder="开始时间"
+                            end-placeholder="结束时间" size="default" :shortcuts="shortcuts" @change="datepickerChange"
+                            class="!w-full sm:!w-auto" />
+                    </div>
+                </div>
+
+                <div class="flex items-center w-full lg:w-auto justify-between lg:justify-start">
+                    <el-button type="primary" :icon="Search" @click="getTableData">查询</el-button>
+                    <el-button class="ml-3" :icon="RefreshRight" @click="reset">重置</el-button>
+                </div>
             </div>
         </el-card>
 
@@ -49,7 +56,14 @@
                         />
                     </template>
                 </el-table-column>
-                <el-table-column prop="createTime" label="发布时间" width="160" />
+                <el-table-column prop="createTime" label="发布时间" width="180">
+                    <template #default="scope">
+                        <div class="flex flex-col md:flex-row md:gap-1">
+                            <span>{{ scope.row.createTime?.split(' ')[0] }}</span>
+                            <span>{{ scope.row.createTime?.split(' ')[1] }}</span>
+                        </div>
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作" min-width="240">
                     <template #default="scope">
                         <el-button size="small" @click="showArticleUpdateEditor(scope.row)">
@@ -75,7 +89,7 @@
             <!-- 分页 -->
             <div class="mt-10 flex justify-center">
                 <el-pagination v-model:current-page="current" v-model:page-size="size" :page-sizes="[10, 20, 50]"
-                    :small="false" :background="true" layout="total, sizes, prev, pager, next, jumper" :total="total"
+                    :small="paginationSmall" :background="true" :layout="paginationLayout" :total="total"
                     @size-change="handleSizeChange" @current-change="getTableData" />
             </div>
 
@@ -112,7 +126,8 @@
                 </el-form-item>
                 <el-form-item label="内容" prop="content">
                     <!-- Markdown 编辑器 -->
-                    <MdEditor v-model="form.content" @onUploadImg="onUploadImg" editorId="publishArticleEditor" />
+                    <MdEditor v-model="form.content" @onUploadImg="onUploadImg" editorId="publishArticleEditor"
+                        class="article-md-editor" />
                 </el-form-item>
                 <el-form-item label="封面" prop="cover">
                     <el-upload class="avatar-uploader" action="#" :on-change="handleCoverChange" :auto-upload="false"
@@ -177,7 +192,7 @@
                 <el-form-item label="内容" prop="content">
                     <!-- Markdown 编辑器 -->
                     <MdEditor v-model="updateArticleForm.content" @onUploadImg="onUploadImg"
-                        editorId="updateArticleEditor" />
+                        editorId="updateArticleEditor" class="article-md-editor" />
                 </el-form-item>
                 <el-form-item label="封面" prop="cover">
                     <el-upload class="avatar-uploader" action="#" :on-change="handleUpdateCoverChange" :auto-upload="false"
@@ -226,6 +241,9 @@ import 'md-editor-v3/lib/style.css'
 import { useRouter } from 'vue-router'
 import { Check, Close } from '@element-plus/icons-vue'
 import { updateArticleIsTop } from '@/api/admin/article'
+import { usePaginationLayout } from '@/composables/usePaginationLayout'
+
+const { layout: paginationLayout, small: paginationSmall } = usePaginationLayout()
 
 const router = useRouter()
 
@@ -623,5 +641,23 @@ const handleIsTopChange = (row) => {
 <style>
 .md-editor-footer {
     height: 40px;
+}
+
+@media (max-width: 640px) {
+    .article-md-editor .md-editor-content {
+        flex-direction: column !important;
+    }
+    .article-md-editor .md-editor-content > .md-editor-input-wrapper,
+    .article-md-editor .md-editor-content > .md-editor-preview-wrapper,
+    .article-md-editor .md-editor-content > .md-editor-preview,
+    .article-md-editor .md-editor-content > .md-editor-html-wrapper {
+        width: 100% !important;
+        height: 50% !important;
+    }
+    .article-md-editor .md-editor-content > .md-editor-preview-wrapper,
+    .article-md-editor .md-editor-content > .md-editor-preview,
+    .article-md-editor .md-editor-content > .md-editor-html-wrapper {
+        border-top: 1px solid var(--el-border-color-light);
+    }
 }
 </style>

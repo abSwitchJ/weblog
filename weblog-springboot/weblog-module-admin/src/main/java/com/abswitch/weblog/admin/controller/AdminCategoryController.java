@@ -3,6 +3,7 @@ package com.abswitch.weblog.admin.controller;
 import com.abswitch.weblog.admin.model.vo.category.AddCategoryReqVO;
 import com.abswitch.weblog.admin.model.vo.category.DeleteCategoryReqVO;
 import com.abswitch.weblog.admin.model.vo.category.FindCategoryPageListReqVO;
+import com.abswitch.weblog.admin.model.vo.category.UpdateCategoryReqVO;
 import com.abswitch.weblog.admin.service.AdminCategoryService;
 import com.abswitch.weblog.common.aspect.ApiOperationLog;
 import com.abswitch.weblog.common.utils.PageResponse;
@@ -50,6 +51,14 @@ public class AdminCategoryController {
     public Response deleteCategory(@RequestBody @Validated DeleteCategoryReqVO deleteCategoryReqVO){
 
         return adminCategoryService.deleteCategory(deleteCategoryReqVO);
+    }
+
+    @PostMapping("/category/update")
+    @ApiOperationLog(description = "更新分类")
+    @Operation(summary = "更新分类")
+    public Response updateCategory(@RequestBody @Validated UpdateCategoryReqVO updateCategoryReqVO){
+
+        return adminCategoryService.updateCategory(updateCategoryReqVO);
     }
 
     @PostMapping("/category/select/list")
