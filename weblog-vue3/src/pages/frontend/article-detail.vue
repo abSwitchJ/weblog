@@ -61,7 +61,7 @@
                 <!-- 左侧：文章正文（自然绕流于浮动侧栏） -->
                 <main class="np-article">
                     <div :class="{ 'dark': isDark }">
-                        <div ref="articleContentRef" class="article-content" v-viewer v-html="article.content"></div>
+                        <div ref="articleContentRef" class="article-content" v-viewer="viewerOptions" v-html="article.content"></div>
                     </div>
                 </main>
                 <div class="np-prevnext">
@@ -173,6 +173,38 @@ const giscusTheme = computed(() => {
 
 // 文章数据
 const article = ref({})
+
+// 图片预览配置：纯净背景 + 仅显示当前一张图，全部交互由手势/键盘/双击完成
+const viewerOptions = {
+    navbar: false,
+    title: false,
+    toolbar: false,
+    button: false,
+    tooltip: true,
+    backdrop: true,
+    keyboard: true,
+    movable: true,
+    zoomable: true,
+    zoomOnTouch: true,
+    zoomOnWheel: true,
+    slideOnTouch: true,
+    rotatable: false,
+    scalable: false,
+    fullscreen: false,
+    transition: true,
+    loop: true,
+    // 双击：在（fit + 居中）和（1:1 + 居中）之间循环；每次都先 reset 让图片居中
+    inited(viewer) {
+        viewer.toggle = function () {
+            if (Math.abs(this.imageData.ratio - 1) < 0.001) {
+                this.reset()
+            } else {
+                this.reset()
+                this.zoomTo(1)
+            }
+        }
+    },
+}
 
 // 加载状态
 const loading = ref(true)
