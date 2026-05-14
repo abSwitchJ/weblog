@@ -3,6 +3,23 @@
 
     <!-- 报纸页面背景 -->
     <div class="np-page" :class="{ 'dark': isDark }">
+
+        <!-- 文章目录：fixed 钉在视口右侧，与 np-container 无任何位置耦合 -->
+        <aside v-if="hasToc" class="np-sidebar">
+            <div class="np-toc-card">
+                <div class="np-toc-header" @click="tocCollapsed = !tocCollapsed">
+                    <span>{{ t('article.toc') }}</span>
+                    <svg class="np-toc-arrow" :class="{ 'collapsed': tocCollapsed }"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                <div v-show="!tocCollapsed" class="np-toc-body">
+                    <Toc :titles="article.toc"></Toc>
+                </div>
+            </div>
+        </aside>
+
         <div class="np-container">
 
             <!-- 加载指示器：数据未到达前显示 -->
@@ -39,26 +56,9 @@
 
             </header>
 
-            <!-- 主内容区：有目录时右侧浮动，无目录时正文占满 -->
-            <div class="np-main" :class="{ 'no-toc': !hasToc }">
+            <!-- 主内容区 -->
+            <div class="np-main">
 
-                <!-- 右侧：文章目录（可折叠，float:right，需放在正文前以便绕流） -->
-                <aside v-if="hasToc" class="np-sidebar">
-                    <div class="np-toc-card">
-                        <div class="np-toc-header" @click="tocCollapsed = !tocCollapsed">
-                            <span>{{ t('article.toc') }}</span>
-                            <svg class="np-toc-arrow" :class="{ 'collapsed': tocCollapsed }"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                        <div v-show="!tocCollapsed" class="np-toc-body">
-                            <Toc :titles="article.toc"></Toc>
-                        </div>
-                    </div>
-                </aside>
-
-                <!-- 左侧：文章正文（自然绕流于浮动侧栏） -->
                 <main class="np-article">
                     <div :class="{ 'dark': isDark }">
                         <div ref="articleContentRef" class="article-content" v-viewer="viewerOptions" v-html="article.content"></div>
@@ -486,25 +486,21 @@ const handleMouseLeave = (event) => {
     color: #eee;
 }
 
-/* 主内容布局：block + float 绕流（sidebar 浮右，正文绕流） */
+/* 主内容布局 */
 .np-main {
     display: block;
     padding-top: 10px;
 }
 
-/* clearfix：撑开父容器高度，sticky 的包含块才有足够垂直范围 */
-.np-main::after {
-    content: "";
-    display: table;
-    clear: both;
-}
-
-/* 浮动侧栏：目录卡片 */
+/* 文章目录：fixed 钉在视口右侧（container 1000 居中，右边缘 = 50% + 500） */
 .np-sidebar {
-    float: right;
-    width: 300px;
-    margin-left: 40px;
-    margin-bottom: 20px;
+    position: fixed;
+    top: 5.5rem;
+    left: calc(50% + 500px + 8px);
+    width: 250px;
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+    z-index: 10;
 }
 
 .np-page.dark .np-main {
@@ -564,13 +560,11 @@ const handleMouseLeave = (event) => {
     background-color: #1e1e1e;
 }
 
-/* 侧边栏：可折叠目录卡片 */
+/* 侧边栏：可折叠目录卡片（外层 .np-sidebar 已 fixed，这里不再 sticky） */
 .np-toc-card {
     background-color: #faf9f7;
     border: 1px solid #ccc;
     border-radius: 0px;
-    position: sticky;
-    top: 5.5rem;
 }
 
 .np-page.dark .np-toc-card {
@@ -626,30 +620,15 @@ const handleMouseLeave = (event) => {
     padding: 4px 0;
 }
 
-/* 去掉 Toc 自身的卡片外壳，由 np-toc-card 统一管理 */
-::v-deep(.np-sidebar .sticky) {
-    position: static;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    border-radius: 0;
-    padding: 0;
-    margin: 0;
-}
-
-.np-page.dark ::v-deep(.np-sidebar .sticky) {
-    background: transparent;
-    border: none;
+/* 响应式：视口窄于此值时，container 右侧已无空间放置 TOC，直接隐藏 */
+@media (max-width: 1316px) {
+    .np-sidebar {
+        display: none;
+    }
 }
 
 /* 响应式 */
 @media (max-width: 768px) {
-    .np-sidebar {
-        float: none;
-        width: 100%;
-        margin: 0 0 20px;
-    }
-
     .np-container {
         padding: 24px 20px;
     }

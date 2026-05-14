@@ -110,3 +110,19 @@ mvn clean package
 核心实体：`ArticleDO`、`ArticleContentDO`、`ArticleCategoryRelDO`、`ArticleTagRelDO`、`CategoryDO`、`TagDO`、`UserDO`、`BlogSettingsDO`。
 
 MapStruct `*Convert.java` 负责 DO ↔ VO 映射（web 与 admin 模块）。
+
+
+
+## 点击文章详情页中的图片展示太丑了
+
+& 'c:\Users\--\Pictures\Screenshots\屏幕截图 2026-05-09 102145.png'
+
+- 我需要点击某张图片后只展示那一张
+- 放大图片后鼠标的滚轮向前滚动就是放大，向后就是缩小
+- 在图片内容上鼠标按下可以上下左右拖动图片，在图片内容外鼠标按下不可移动图片
+- 在移动端放大图片后可以左滑右滑切换图片
+- 放大图片后，双击图片要实现从原始大小到100%大小的循环切换
+
+- 不需要右上角的关闭图标
+- 双击图片需要让它切换到刚点开图片的原始位置
+- 放大缩小时需要对照原始图显示百分比
