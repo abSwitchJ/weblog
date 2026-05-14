@@ -4,8 +4,8 @@
     <!-- 报纸页面背景 -->
     <div class="np-page" :class="{ 'dark': isDark }">
 
-        <!-- 文章目录：fixed 钉在视口右侧，与 np-container 无任何位置耦合 -->
-        <aside v-if="hasToc" class="np-sidebar">
+        <!-- 桌面态（≥ 1316px）：文章目录 fixed 钉在视口右侧 -->
+        <aside v-if="hasToc && !isMobile" class="np-sidebar">
             <div class="np-toc-card">
                 <div class="np-toc-header" @click="tocCollapsed = !tocCollapsed">
                     <span>{{ t('article.toc') }}</span>
@@ -19,6 +19,36 @@
                 </div>
             </div>
         </aside>
+
+        <!-- 窄屏态（< 1316px）：FAB 把手 + 抽屉 -->
+        <template v-if="hasToc && isMobile">
+            <button class="np-toc-fab" :class="{ 'is-open': tocDrawerOpen }"
+                ref="fabRef" @click="tocDrawerOpen = !tocDrawerOpen"
+                :aria-label="tocDrawerOpen ? t('article.toc') + ' 收起' : t('article.toc') + ' 展开'"
+                :aria-expanded="tocDrawerOpen">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline v-if="!tocDrawerOpen" points="15 6 9 12 15 18" />
+                    <polyline v-else points="9 6 15 12 9 18" />
+                </svg>
+            </button>
+            <transition name="np-toc-drawer">
+                <aside v-show="tocDrawerOpen" ref="drawerRef" class="np-toc-drawer">
+                    <div class="np-toc-card">
+                        <div class="np-toc-header" @click="tocCollapsed = !tocCollapsed">
+                            <span>{{ t('article.toc') }}</span>
+                            <svg class="np-toc-arrow" :class="{ 'collapsed': tocCollapsed }"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+                        <div v-show="!tocCollapsed" class="np-toc-body">
+                            <Toc :titles="article.toc"></Toc>
+                        </div>
+                    </div>
+                </aside>
+            </transition>
+        </template>
 
         <div class="np-container">
 
@@ -141,7 +171,7 @@ import { ref, computed, watch, onBeforeUnmount, nextTick, reactive } from 'vue'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/tokyo-night-dark.css'
 
-import { useDark } from '@vueuse/core'
+import { useDark, useMediaQuery, onClickOutside } from '@vueuse/core'
 import Giscus from '@giscus/vue';
 import { useLocaleStore } from '@/stores/locale'
 // @ts-ignore
@@ -158,6 +188,16 @@ console.log(route.params.slug)
 
 // 侧边栏目录折叠状态
 const tocCollapsed = ref(false)
+
+// 窄屏（< 1316px）抽屉相关状态
+const isMobile = useMediaQuery('(max-width: 1315px)')
+const tocDrawerOpen = ref(false)
+const fabRef = ref(null)
+const drawerRef = ref(null)
+
+onClickOutside(drawerRef, () => { tocDrawerOpen.value = false }, { ignore: [fabRef] })
+
+watch(isMobile, (v) => { if (!v) tocDrawerOpen.value = false })
 
 // Giscus 主题：暗色模式用 comment-dark.css，亮色模式用 comment.css；dev 环境无法加载自定义 CSS，退回内置主题
 const giscusTheme = computed(() => {
@@ -284,6 +324,8 @@ const goTagArticleListPage = (id, name) => {
 
 // 监听路由
 watch(route, (newRoute, oldRoute) => {
+    // 切文章关闭窄屏抽屉
+    tocDrawerOpen.value = false
     // 重新渲染文章详情
     refreshArticleDetail(newRoute.params.slug)
 })
@@ -492,7 +534,7 @@ const handleMouseLeave = (event) => {
     padding-top: 10px;
 }
 
-/* 文章目录：fixed 钉在视口右侧（container 1000 居中，右边缘 = 50% + 500） */
+/* 桌面态文章目录：fixed 钉在视口右侧（container 1000 居中，右边缘 = 50% + 500） */
 .np-sidebar {
     position: fixed;
     top: 5.5rem;
@@ -500,7 +542,7 @@ const handleMouseLeave = (event) => {
     width: 250px;
     max-height: calc(100vh - 6rem);
     overflow-y: auto;
-    z-index: 10;
+    z-index: 5;
 }
 
 .np-page.dark .np-main {
@@ -620,11 +662,89 @@ const handleMouseLeave = (event) => {
     padding: 4px 0;
 }
 
-/* 响应式：视口窄于此值时，container 右侧已无空间放置 TOC，直接隐藏 */
-@media (max-width: 1316px) {
-    .np-sidebar {
-        display: none;
-    }
+/* 窄屏态（< 1316px）FAB 把手：垂直居中贴视口右沿；抽屉打开时跟随抽屉左移到其外沿 */
+.np-toc-fab {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 44px;
+    z-index: 8;
+    background-color: #faf9f7;
+    color: #555;
+    border: 1px solid #ccc;
+    border-right: none;
+    border-radius: 6px 0 0 6px;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: right 0.2s ease;
+}
+
+.np-toc-fab:hover {
+    background-color: #f0ede8;
+    color: #1a1a1a;
+}
+
+.np-toc-fab svg {
+    width: 20px;
+    height: 20px;
+}
+
+.np-toc-fab.is-open {
+    right: 250px;
+}
+
+.np-page.dark .np-toc-fab {
+    background-color: #2a2a2a;
+    color: #aaa;
+    border-color: #444;
+}
+
+.np-page.dark .np-toc-fab:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+/* 窄屏态抽屉：fixed 垂直居中、贴视口右沿，覆盖 .np-container 上方 */
+.np-toc-drawer {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 250px;
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    z-index: 5;
+    box-shadow: -4px 0 16px rgba(0, 0, 0, 0.15);
+}
+
+.np-toc-drawer::-webkit-scrollbar {
+    display: none;
+}
+
+.np-toc-drawer-enter-active,
+.np-toc-drawer-leave-active {
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.np-toc-drawer-enter-from,
+.np-toc-drawer-leave-to {
+    opacity: 0;
+    transform: translate(8px, -50%);
+}
+
+.np-toc-drawer-enter-to,
+.np-toc-drawer-leave-from {
+    opacity: 1;
+    transform: translate(0, -50%);
 }
 
 /* 响应式 */
