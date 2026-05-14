@@ -1105,6 +1105,23 @@ img:focus) {
     background-color: rgb(21 41 55 / 1);
 }
 
+/* 窄屏 (< 633px)：让表格按容器宽度收缩、单元格内容换行，禁止外溢与水平滚动 */
+@media (max-width: 633px) {
+    ::v-deep(.article-content table) {
+        width: 100%;
+        max-width: 100%;
+        table-layout: auto;
+    }
+
+    ::v-deep(.article-content table th),
+    ::v-deep(.article-content table td) {
+        padding: 6px 8px;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+        white-space: normal;
+    }
+}
+
 /* hr 横线 */
 ::v-deep(hr) {
     margin-bottom: 20px;
