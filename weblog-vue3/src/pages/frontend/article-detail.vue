@@ -700,7 +700,7 @@ const handleMouseLeave = (event) => {
 }
 
 .np-page.dark .np-toc-fab {
-    background-color: #2a2a2a;
+    background-color: #111;
     color: #aaa;
     border-color: #444;
 }
@@ -1086,7 +1086,7 @@ img:focus) {
 }
 
 ::v-deep(.dark table tr) {
-    background-color: rgb(31 41 55 / 1);
+    background-color: #2a2a2a;
 }
 
 ::v-deep(.dark table) {
@@ -1102,7 +1102,7 @@ img:focus) {
 }
 
 ::v-deep(.dark table tr:nth-child(2n)) {
-    background-color: rgb(21 41 55 / 1);
+    background-color: #2a2a2a;
 }
 
 /* 窄屏 (< 633px)：让表格按容器宽度收缩、单元格内容换行，禁止外溢与水平滚动 */
