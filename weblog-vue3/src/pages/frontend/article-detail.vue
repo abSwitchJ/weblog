@@ -214,6 +214,9 @@ const giscusTheme = computed(() => {
 // 文章数据
 const article = ref({})
 
+// 文章内容容器引用：用于 nextTick 后给文章内 img 批量加 crossorigin 属性
+const articleContentRef = ref(null)
+
 // 图片预览配置：纯净背景 + 仅显示当前一张图，全部交互由手势/键盘/双击完成
 const viewerOptions = {
     navbar: false,
@@ -244,6 +247,44 @@ const viewerOptions = {
             }
         }
     },
+    // 放大态下让 iOS Safari 长按能弹出原生菜单：viewer.css 把 .viewer-canvas 设为
+    // -webkit-touch-callout: none，viewer.js 又在 img 的 touchstart 上 preventDefault，
+    // 两者合力屏蔽了长按。这里 capture 阶段拦截单指 touchstart/pointerdown，让 viewer 的
+    // handler 收不到——浏览器才会按原生流程在 ~500ms 后弹出菜单。多指（pinch 缩放）仍
+    // 交给 viewer；双击走 click→dblclick 链路也不受影响。代价是单指拖动手势丧失——
+    // 双指 pinch / 双击切档 / Esc 关闭仍可用。
+    // 用 viewed 而非 shown：viewer.image 要 view() 跑完才赋值，shown 时 image 还是 null。
+    // 回调签名是 DOM event（viewerjs 用 addListener 注册），viewer 实例从 event.target.$viewer 拿。
+    viewed(event) {
+        const element = event.target
+        const viewer = element && element.$viewer
+        if (!viewer) return
+        const image = viewer.image
+        // 当前显示的 img 每次切换都是新元素，inline style 每次都要重设
+        if (image) {
+            image.style.webkitTouchCallout = 'default'
+            image.style.webkitUserSelect = 'auto'
+            image.style.userSelect = 'auto'
+        }
+        // 长按拦截只装一次（canvas 是同一节点跨多次 show/hide 复用）
+        if (viewer.__longPressInstalled) return
+        const canvas = viewer.canvas
+        if (!canvas) return
+        canvas.style.webkitTouchCallout = 'default'
+        canvas.style.webkitUserSelect = 'auto'
+        canvas.style.userSelect = 'auto'
+        const stopSingleTouch = (e) => {
+            if (e.touches && e.touches.length === 1) e.stopImmediatePropagation()
+        }
+        const stopSinglePointer = (e) => {
+            if (e.pointerType === 'touch' || e.pointerType === 'pen') {
+                e.stopImmediatePropagation()
+            }
+        }
+        canvas.addEventListener('touchstart', stopSingleTouch, { capture: true, passive: false })
+        canvas.addEventListener('pointerdown', stopSinglePointer, { capture: true, passive: false })
+        viewer.__longPressInstalled = true
+    },
 }
 
 // 加载状态
@@ -271,6 +312,18 @@ function refreshArticleDetail(slug) {
         loading.value = false
 
         nextTick(() => {
+            // 给文章里所有 <img> 加 crossorigin="anonymous"，让 Chrome 以 CORS 模式加载。
+            // 后端 (img.abswitchj.com) nginx 已按 Origin 动态回声 Access-Control-Allow-Origin。
+            // 这样 Chrome 移动端长按图片时（尤其是 SVG）能正常生成预览缩略图，而不是把
+            // 跨子域图片视为 tainted 显示破图占位符。
+            const imgs = articleContentRef.value
+                ? articleContentRef.value.querySelectorAll('img')
+                : []
+            imgs.forEach((img) => {
+                img.setAttribute('crossorigin', 'anonymous')
+                img.setAttribute('referrerpolicy', 'no-referrer')
+            })
+
             // 获取所有 pre code 节点
             let highlight = document.querySelectorAll('pre code')
             // 循环高亮
