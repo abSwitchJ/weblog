@@ -248,11 +248,13 @@ const viewerOptions = {
         }
     },
     // 放大态下让 iOS Safari 长按能弹出原生菜单：viewer.css 把 .viewer-canvas 设为
-    // -webkit-touch-callout: none，viewer.js 又在 img 的 touchstart 上 preventDefault，
-    // 两者合力屏蔽了长按。这里 capture 阶段拦截单指 touchstart/pointerdown，让 viewer 的
-    // handler 收不到——浏览器才会按原生流程在 ~500ms 后弹出菜单。多指（pinch 缩放）仍
-    // 交给 viewer；双击走 click→dblclick 链路也不受影响。代价是单指拖动手势丧失——
-    // 双指 pinch / 双击切档 / Esc 关闭仍可用。
+    // -webkit-touch-callout: none，viewer.js 又在 pointerdown 中无条件 preventDefault
+    // （viewer.js:1499-1535），两者合力屏蔽了原生 callout。所以两把锁都要解：
+    //   1. inline style 覆盖 -webkit-touch-callout 为 default；
+    //   2. 在 capture 阶段把传给 viewer 的 event.preventDefault 替换为 noop——
+    //      viewer 仍能正常更新 pointers 字典、决定 ACTION_MOVE/ZOOM/SWITCH，所以
+    //      单指拖动 / 双指 pinch / 左右滑切图全部保留；同时浏览器看到 down 没被
+    //      preventDefault，~500ms 不动就触发原生长按菜单。
     // 用 viewed 而非 shown：viewer.image 要 view() 跑完才赋值，shown 时 image 还是 null。
     // 回调签名是 DOM event（viewerjs 用 addListener 注册），viewer 实例从 event.target.$viewer 拿。
     viewed(event) {
@@ -273,16 +275,9 @@ const viewerOptions = {
         canvas.style.webkitTouchCallout = 'default'
         canvas.style.webkitUserSelect = 'auto'
         canvas.style.userSelect = 'auto'
-        const stopSingleTouch = (e) => {
-            if (e.touches && e.touches.length === 1) e.stopImmediatePropagation()
-        }
-        const stopSinglePointer = (e) => {
-            if (e.pointerType === 'touch' || e.pointerType === 'pen') {
-                e.stopImmediatePropagation()
-            }
-        }
-        canvas.addEventListener('touchstart', stopSingleTouch, { capture: true, passive: false })
-        canvas.addEventListener('pointerdown', stopSinglePointer, { capture: true, passive: false })
+        const blockPD = (e) => { try { e.preventDefault = () => {} } catch (_) {} }
+        canvas.addEventListener('touchstart', blockPD, { capture: true, passive: false })
+        canvas.addEventListener('pointerdown', blockPD, { capture: true, passive: false })
         viewer.__longPressInstalled = true
     },
 }
